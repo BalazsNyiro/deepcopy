@@ -2,6 +2,10 @@
 Python based OCR program with deep text structure analysing and style detecting
 
 Features:
+ - Rolling screen reading: 
+    - screenshot -> OCR current screen
+    - keyboard/mouse simulation -> next page
+    - OCR again, until we reach end page
  - Wawed paper/text recognition
  - Phone screenshots OCR 
  - Windows/Linux desktop screenshot OCR

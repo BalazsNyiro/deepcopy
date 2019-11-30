@@ -1,0 +1,8 @@
+{ 
+    "os_detect": {
+        "detected" : { "eng": "Detected os: {:s}",
+                       "hun": "Észlelt oprendszer: {:s}"
+        }
+    }
+
+}
