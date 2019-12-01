@@ -14,7 +14,9 @@ Prg = {"Os": "",
        "FilesDeleteLater": []
        }
 sys.path.append(os.path.join(Prg["PrgDirParent"], "src"))
-import util
+import util, test_all
+
+test_all.run_all_tests(Prg)
 
 util.ui_msg_init(Prg)
 util.os_detect(Prg)
