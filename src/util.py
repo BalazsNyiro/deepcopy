@@ -27,18 +27,21 @@ def ui_msg(Prg, MsgPath):
         if Key in Container:
             Container = Container[Key]
         else:
-            Prg["Errors"].append("Ui message key is unknown: " + Prg["UiLanguage"] + " - " + MsgPath)
-            return
+            Msg = "Ui message key is unknown: " + Prg["UiLanguage"] + " - " + MsgPath
+            Prg["Errors"].append(Msg)
+            return Msg
 
     # check: eng msg always has to be defined
     if "eng" not in Container:
-        Prg["Errors"].append("Ui message is unknown: eng - " + MsgPath)
+        Msg = "Ui message, default eng translation is missing: " + MsgPath
+        Prg["Errors"].append(Msg)
+        return Msg
 
     # here we get one lang block, for example: {"eng": "menu", "hun":"menü"}
     if Prg["UiLanguage"] in Container:
         return Container[Prg["UiLanguage"]]
     else:
-        if "eng" in Containter:
+        if "eng" in Container:
             Prg["Warnings"].append("Ui message is unknown: " + Prg["UiLanguage"] + " - " + MsgPath)
             return Container["eng"]
 
