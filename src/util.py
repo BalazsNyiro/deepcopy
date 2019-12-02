@@ -1,10 +1,15 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import platform, sys, json, os
 
+def installed_environment_detect(Prg):
+    Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
 
-# import language.py
+    if Major < 3:
+        Prg["Errors"].append("Please use deepcopy with minimum Python 3.7!")
+
+    if Major == 3 and Minor < 7:
+        Prg["Warnings"].append("Tested with Python 3.7. Maybe it works with older versions.")
 
 
 def os_detect(Prg):

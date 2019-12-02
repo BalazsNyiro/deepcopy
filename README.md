@@ -21,11 +21,13 @@ Features:
 
  - use only basic Python3 libs if it's possible
 
- ROADMAP: 
-  - 2019 december: program planning, api definitions, 
 
- TODO: 
-  - program planning in doc dir
-  - unit test
-  - Common Prg state variable: File Cleaning, Init mode: environment check? 
-    errors, warnings
+ROADMAP: 
+ - 2019 december: program planning, api definitions, 
+
+INSTALL:
+ - deepcopy uses Tkinter and PIL modules mainly.
+   the program tests it's environment and help you to detect any problems with fixing instructions
+
+TODO: 
+ - program planning in doc dir
