@@ -26,8 +26,10 @@ ROADMAP:
  - 2019 december: program planning, api definitions, 
 
 INSTALL:
- - deepcopy uses Tkinter and PIL modules mainly.
-   the program tests it's environment and help you to detect any problems with fixing instructions
+ - important python3 modules (Ubuntu package names)
+   - tkinter
+   - python3-pil
+   - python3-pil.imagetk
 
 TODO: 
  - program planning in doc dir

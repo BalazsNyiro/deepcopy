@@ -3,6 +3,27 @@
         "detected" : { "eng": "Detected os: {:s}",
                        "hun": "Észlelt oprendszer: {:s}"
         }
+    },
+    "install": {
+        "missing": {
+            "module_tkinter": {
+                "eng" : "Please install tkinter module! Ubuntu: sudo apt install python3-tk",
+                "hun" : "Kérlek telepítsd a tkinter modult' Ubuntun: sudo apt install python3-tk"
+            },
+            "module_pillow": {
+                "eng" : "Please install Pillow module for image handling: http://python-pillow.github.io/",
+                "hun" : "Kérlek telepítsd a Pillow modult a képek kezeléséhez http://python-pillow.github.io/"
+            }
+        }
+    },
+    "window": {
+        "main": {
+            "title": {
+                "eng": "deepcopy",
+                "hun": "deepcopy"
+            }
+        }
+
     }
 
 }

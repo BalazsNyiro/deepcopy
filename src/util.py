@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import platform, sys, json, os
+import platform, sys, json, os, importlib
 
 def installed_environment_detect(Prg):
     Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
@@ -11,6 +11,11 @@ def installed_environment_detect(Prg):
     if Major == 3 and Minor < 7:
         Prg["Warnings"].append("Tested with Python 3.7. Maybe it works with older versions.")
 
+def module_available(Prg, ModuleName, Msg):
+    if not importlib.util.find_spec(ModuleName):
+        Prg["Errors"].append(Msg)
+        return False
+    return True
 
 def os_detect(Prg):
     Os = Prg["Os"] = platform.system() 
