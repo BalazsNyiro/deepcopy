@@ -13,6 +13,10 @@
             "module_pillow": {
                 "eng" : "Please install Pillow module for image handling: http://python-pillow.github.io/",
                 "hun" : "Kérlek telepítsd a Pillow modult a képek kezeléséhez http://python-pillow.github.io/"
+            },
+            "package_ImageTk": {
+                "eng": "Please install python3-pil.imagetk package (Ubuntu)",
+                "hun": "Kérlek telepítsd a python3-pil.imagetk csomagot: sudo apt install python3-pil.imagetk"
             }
         }
     },

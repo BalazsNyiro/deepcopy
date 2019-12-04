@@ -11,6 +11,10 @@ def installed_environment_detect(Prg):
     if Major == 3 and Minor < 7:
         Prg["Warnings"].append("Tested with Python 3.7. Maybe it works with older versions.")
 
+# def module_import_
+
+# Real situation: PIL is available but ImageTk is not.
+# so module_available is not totally enough to successful import.
 def module_available(Prg, ModuleName, Msg):
     if not importlib.util.find_spec(ModuleName):
         Prg["Errors"].append(Msg)
