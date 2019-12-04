@@ -32,10 +32,17 @@ def os_detect(Prg):
 def ui_msg_init(Prg):
     Txt = file_read_all( os.path.join(Prg["PrgDirParent"], "resources", "ui_messages.json"))
     Prg["UiMessages"] = json.loads(Txt)
-    print(Prg)
 
 # MsgPath example: os_detect.detected
 def ui_msg(Prg, MsgPath):
+
+    # it can handle one path or list of paths
+    if isinstance(MsgPath, list):
+        Texts = []
+        for Path in MsgPath:
+            Texts.append(ui_msg(Prg, Path))
+        return Texts
+
     Container = Prg["UiMessages"]
     for Key in MsgPath.split("."):
         if Key in Container:

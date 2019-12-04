@@ -5,9 +5,9 @@ def window_main(Prg):
     # I collect the msg NOT in the if because if one of them is missing, it's
     # an immediatelly test
 
-    MsgTk = util.ui_msg(Prg, "install.missing.module_tkinter")
-    MsgPil = util.ui_msg(Prg, "install.missing.module_pillow")
-    MsgImageTk = util.ui_msg(Prg, "install.missing.package_ImageTk")
+    MsgTk, MsgPil, MsgImageTk = util.ui_msg(Prg, ["install.missing.package_ImageTk"
+                                                  "install.missing.module_pillow",
+                                                  "install.missing.package_ImageTk"])
 
     if util.module_available(Prg, "tkinter", MsgTk):
         import tkinter as Tkinter

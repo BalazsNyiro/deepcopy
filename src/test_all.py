@@ -3,7 +3,15 @@
 
 import unittest, util, os
 
+
+
 class TestMethods(unittest.TestCase):
+    def PrgEmpty(self):
+        return {"Errors":[]}
+
+    def test_module_available(self):
+        self.assertFalse(util.module_available(self.PrgEmpty(), "unknown_module", "please install unknown module :-)"))
+        self.assertTrue(util.module_available(self.PrgEmpty(), "os", "Please install os module if you want to reach files"))
 
     def test_ui_msg(self):
         Prg = {"Os": "Linux",
@@ -29,6 +37,11 @@ class TestMethods(unittest.TestCase):
               }
         # happy path:
         self.assertEqual("Mentés másként", util.ui_msg(Prg, "Menu.File.SaveAs"))
+
+        # handle multiple value in one request:
+        TxtSaveAs, Export = util.ui_msg(Prg, ["Menu.File.SaveAs", "Menu.File.Load"])
+        self.assertEqual("Mentés másként", TxtSaveAs)
+        self.assertEqual("Load", Export)
 
         # key is unknown:
         self.assertEqual("Ui message key is unknown: hun - Menu.File.UnknownKey",
