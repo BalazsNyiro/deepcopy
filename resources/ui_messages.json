@@ -28,6 +28,12 @@
             }
         }
 
+    },
+    "file_operation": {
+        "file_missing": {
+            "eng": "Missing File: {:s}",
+            "hun": "Hiányzó fájl: {:s}"
+        }
     }
 
 }

@@ -34,7 +34,9 @@ def ui_msg_init(Prg):
     Prg["UiMessages"] = json.loads(Txt)
 
 # MsgPath example: os_detect.detected
-def ui_msg(Prg, MsgPath):
+# if we process an error message and later the program can be broken,
+# we print the message immediately
+def ui_msg(Prg, MsgPath, PrintInTerminal=False):
 
     # it can handle one path or list of paths
     if isinstance(MsgPath, list):
@@ -50,12 +52,14 @@ def ui_msg(Prg, MsgPath):
         else:
             Msg = "Ui message key is unknown: " + Prg["UiLanguage"] + " - " + MsgPath
             Prg["Errors"].append(Msg)
+            if PrintInTerminal: print(Msg)
             return Msg
 
     # check: eng msg always has to be defined
     if "eng" not in Container:
         Msg = "Ui message, default eng translation is missing: " + MsgPath
         Prg["Errors"].append(Msg)
+        if PrintInTerminal: print(Msg)
         return Msg
 
     # here we get one lang block, for example: {"eng": "menu", "hun":"menü"}
@@ -81,6 +85,7 @@ def list_display(List, Title):
     for L in List:
         print(L)
 ##################################
+
 def file_read_all(Fname="", Mode="r"): # if you want read binary, write "rb"
     Content = ""
     if file_test(Fname, MsgErr="File doesn't exists: '" + Fname + "'"):

@@ -1,33 +1,45 @@
 # -*- coding: utf-8 -*-
-import util
+import util, os
+
+ErrorsLocal = []
+
+try:    import tkinter as Tkinter
+except: ErrorsLocal.append("install.missing.module_tkinter")
+
+try:    from PIL import Image
+except: ErrorsLocal.append("install.missing.module_pillow")
+
+try:    from PIL import ImageTk
+except: ErrorsLocal.append("install.missing.package_ImageTk")
 
 def window_main(Prg):
-    # I collect the msg NOT in the if because if one of them is missing, it's
-    # an immediatelly test
-
-    MsgTk, MsgPil, MsgImageTk = util.ui_msg(Prg, ["install.missing.package_ImageTk"
-                                                  "install.missing.module_pillow",
-                                                  "install.missing.package_ImageTk"])
-
-    if util.module_available(Prg, "tkinter", MsgTk):
-        import tkinter as Tkinter
-
-    if util.module_available(Prg, "PIL", MsgPil):
-        from PIL import Image
-        try: # if PIL is available, you have to check ImageTk too in PIL
-            from PIL import ImageTk
-        except:
-            Prg["Errors"].append(MsgImageTk)
+    # I collect the msg NOT in the if because if one of them is missing, it causes Error
+    for ErrTxtKey in ErrorsLocal:
+        Prg["Errors"].append(util.ui_msg(Prg, ErrTxtKey))
 
     if Prg["Errors"]: return
 
-    print("ui main interface")
-    Window = Tkinter.Tk()
-    Window.title(util.ui_msg(Prg, "window.main.title"))
+    print("Tkinter ui main interface")
+    Window = window_new(Prg, "window.main.title")
 
-    Load = Image.open("resources/deepcopy_logo_64.png")
-    Img = ImageTk.PhotoImage(Load)
+    Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
     Panel = Tkinter.Label(Window, image=Img)
     Panel.pack(side="bottom", fill="both", expand="yes")
 
     Window.mainloop()
+
+def window_new(Prg, TitleKey=""):
+    Window = Tkinter.Tk()
+    if TitleKey:
+        Window.title(util.ui_msg(Prg, TitleKey))
+    return Window
+
+def image_file_load_to_tk(Prg, Path):
+    if not os.path.isfile(Path):
+        Msg = util.ui_msg(Prg, "file_operation.file_missing", PrintInTerminal=True)
+        Prg["Errors"].append(Msg)
+        return
+
+    Load = Image.open(Path)
+    return ImageTk.PhotoImage(Load)
+

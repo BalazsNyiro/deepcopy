@@ -32,9 +32,13 @@ class TestMethods(unittest.TestCase):
                                "hun": "Exportálás"
                            }
                        }
+                   },
+                   "Text_formatted": {
+                       "eng": "File: {:s}",
+                       "hun": "Fájl: {:s}"
                    }
-                }
-              }
+               }
+        }
         # happy path:
         self.assertEqual("Mentés másként", util.ui_msg(Prg, "Menu.File.SaveAs"))
 
@@ -54,6 +58,8 @@ class TestMethods(unittest.TestCase):
         self.assertEqual("Ui message, default eng translation is missing: Menu.File.Export",
                          util.ui_msg(Prg, "Menu.File.Export"))
 
+        # text with formatting:
+        self.assertEqual("Fájl: /tmp/file.txt", util.ui_msg(Prg, "Text_formatted").format("/tmp/file.txt"))
 
     def test_file_read_all(self):
         TxtRaw = "  Test Line 1\n\n  Test Line 3"
