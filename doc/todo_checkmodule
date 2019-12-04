@@ -1,6 +1,0 @@
-try:
-    import tkinter as tk
-except ImportError:
-    print('Module not found')
-
-    print("on ubuntu install:  apt install python3-tk")

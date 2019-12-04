@@ -23,8 +23,9 @@ def window_main(Prg):
     Window = window_new(Prg, "window.main.title")
 
     Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
-    Panel = Tkinter.Label(Window, image=Img)
-    Panel.pack(side="bottom", fill="both", expand="yes")
+    if Img:
+        Panel = Tkinter.Label(Window, image=Img)
+        Panel.pack(side="bottom", fill="both", expand="yes")
 
     Window.mainloop()
 
@@ -37,8 +38,8 @@ def window_new(Prg, TitleKey=""):
 def image_file_load_to_tk(Prg, Path):
     if not os.path.isfile(Path):
         Msg = util.ui_msg(Prg, "file_operation.file_missing", PrintInTerminal=True)
-        Prg["Errors"].append(Msg)
-        return
+        Prg["Warning"].append(Msg)
+        return False
 
     Load = Image.open(Path)
     return ImageTk.PhotoImage(Load)
