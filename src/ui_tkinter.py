@@ -4,13 +4,13 @@ import util, os
 ErrorsLocal = []
 
 try:    import tkinter as Tkinter
-except: ErrorsLocal.append("install.missing.module_tkinter")
+except ImportError: ErrorsLocal.append("install.missing.module_tkinter")
 
 try:    from PIL import Image
-except: ErrorsLocal.append("install.missing.module_pillow")
+except ImportError: ErrorsLocal.append("install.missing.module_pillow")
 
 try:    from PIL import ImageTk
-except: ErrorsLocal.append("install.missing.package_ImageTk")
+except ImportError: ErrorsLocal.append("install.missing.package_ImageTk")
 
 def window_main(Prg):
     # I collect the msg NOT in the if because if one of them is missing, it causes Error
@@ -22,11 +22,20 @@ def window_main(Prg):
     print("Tkinter ui main interface")
     Window = window_new(Prg, "window.main.title")
 
+    FrameSourcePages = Tkinter.Frame(Window)
+    FrameOnePage = Tkinter.Frame(Window)
+    FrameTextRecognised = Tkinter.Frame(Window)
+
     Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
     if Img:
-        Panel = Tkinter.Label(Window, image=Img)
+        Panel = Tkinter.Label(FrameSourcePages, image=Img)
         Panel.pack(side="bottom", fill="both", expand="yes")
+        Tkinter.Label(FrameOnePage, text="Frame One Page").pack()
+        Tkinter.Label(FrameTextRecognised, text="Text Recognised").pack()
 
+    FrameSourcePages.pack()
+    FrameOnePage.pack()
+    FrameTextRecognised.pack()
     Window.mainloop()
 
 def window_new(Prg, TitleKey=""):
