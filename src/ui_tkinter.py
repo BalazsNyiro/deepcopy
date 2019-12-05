@@ -22,20 +22,21 @@ def window_main(Prg):
     print("Tkinter ui main interface")
     Window = window_new(Prg, "window.main.title")
 
-    FrameSourcePages = Tkinter.Frame(Window)
-    FrameOnePage = Tkinter.Frame(Window)
+    MainHeight = 600
+    FrameSourcePages = Tkinter.Frame(Window, bg='cyan', width=350, height=MainHeight, pady=3).grid(row=0, columnspan=3)
+    FrameOnePage = Tkinter.Frame(Window, bg='purple', width=800, height=MainHeight, pady=3).grid(row=0, columnspan=3)
     FrameTextRecognised = Tkinter.Frame(Window)
 
     Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
     if Img:
         Panel = Tkinter.Label(FrameSourcePages, image=Img)
-        Panel.pack(side="bottom", fill="both", expand="yes")
-        Tkinter.Label(FrameOnePage, text="Frame One Page").pack()
+        Panel.grid(row=0)
+        Tkinter.Label(FrameOnePage, text="Frame One Page").grid(row=0)
         Tkinter.Label(FrameTextRecognised, text="Text Recognised").pack()
 
-    FrameSourcePages.pack()
-    FrameOnePage.pack()
-    FrameTextRecognised.pack()
+    # top_frame = Frame(root, bg='cyan', width = 450, height=50, pady=3).grid(row=0, columnspan=3)
+    # FrameSourcePages.grid(row=0, column=0, sticky='e')
+
     Window.mainloop()
 
 def window_new(Prg, TitleKey=""):
