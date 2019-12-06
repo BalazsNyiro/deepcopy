@@ -3,7 +3,9 @@ import util, os
 
 ErrorsLocal = []
 
-try:    import tkinter as Tkinter
+try:
+    import tkinter as Tkinter
+    import tkinter.filedialog as FileDialog
 except ImportError: ErrorsLocal.append("install.missing.module_tkinter")
 
 try:    from PIL import Image
@@ -31,13 +33,13 @@ def window_main(Prg):
     OnePageWidth = 600
     TextRecognisedWidth = MainWidth - SourceWidth - OnePageWidth
 
-    FrameSourcePages = frame_new(Prg, Window, SourceWidth, MainHeight)
+    FrameSourcePages = frame_new(Prg, Window, SourceWidth, MainHeight, bg="yellow")
     FrameSourcePages.grid(row=0, column=0, rowspan=3)
 
     FrameOnePage = frame_new(Prg, Window, OnePageWidth, MainHeight)
     FrameOnePage.grid(row=0, column=1, rowspan=3)
 
-    FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight)
+    FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
     FrameTextRecognised.grid(row=0, column=2, rowspan=3)
 
     Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
@@ -55,10 +57,15 @@ def window_main(Prg):
         Tkinter.Label(FrameOnePage, text="2222").grid(row=1, column=1)
         Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
 
+    file_selector()
     # top_frame = Frame(root, bg='cyan', width = 450, height=50, pady=3).grid(row=0, columnspan=3)
     # FrameSourcePages.grid(row=0, column=0, sticky='e')
 
     Window.mainloop()
+
+def files_selector():
+    return FileDialog.askopenfilenames( initialdir="/", title="Select file",
+    filetypes=(("jpeg files", "*.jpg"), ("png files", "*.png"), ("all files", "*.*")))
 
 def frame_new(Prg, Parent, Width, Height, bg=""):
     return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height,pady=3)
