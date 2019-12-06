@@ -30,15 +30,14 @@ def window_main(Prg):
     SourceWidth = 300
     OnePageWidth = 600
     TextRecognisedWidth = MainWidth - SourceWidth - OnePageWidth
-    Pady = 3
 
-    FrameSourcePages = Tkinter.Frame(Window, bg='cyan', width=SourceWidth, height=MainHeight, pady=Pady)
+    FrameSourcePages = frame_new(Prg, Window, SourceWidth, MainHeight)
     FrameSourcePages.grid(row=0, column=0, rowspan=3)
 
-    FrameOnePage = Tkinter.Frame(Window, bg='purple', width=OnePageWidth, height=MainHeight, pady=Pady)
+    FrameOnePage = frame_new(Prg, Window, OnePageWidth, MainHeight)
     FrameOnePage.grid(row=0, column=1, rowspan=3)
 
-    FrameTextRecognised = Tkinter.Frame(Window, bg='green', width=TextRecognisedWidth, height=MainHeight,pady=Pady)
+    FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight)
     FrameTextRecognised.grid(row=0, column=2, rowspan=3)
 
     Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
@@ -60,6 +59,9 @@ def window_main(Prg):
     # FrameSourcePages.grid(row=0, column=0, sticky='e')
 
     Window.mainloop()
+
+def frame_new(Prg, Parent, Width, Height, bg=""):
+    return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height,pady=3)
 
 def window_new(Prg, TitleKey=""):
     Window = Tkinter.Tk()
