@@ -11,7 +11,8 @@ Prg = {"Os": "",
        "UiLanguage": "eng",
        "UiMessages": "",
        "UiInterface": "ui_tkinter",
-       "FilesDeleteLater": []
+       "FilesDeleteLater": [],
+       "PathDefaultFileSelectDir": os.path.abspath(__file__)
        }
 sys.path.append(os.path.join(Prg["PrgDirParent"], "src"))
 import util, test_all

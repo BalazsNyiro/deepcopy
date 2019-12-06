@@ -28,7 +28,7 @@ def os_detect(Prg):
         Prg["Errors"].append("Not supported Os detected: {:s}".format(Os))
         if Os == "Darwin": 
             Prg["Warnings"].append("Theoretically DeepCopy can run on Mac if the necessary external commands are available, TODO in the future")
-    
+
 def ui_msg_init(Prg):
     Txt = file_read_all( os.path.join(Prg["PrgDirParent"], "resources", "ui_messages.json"))
     Prg["UiMessages"] = json.loads(Txt)

@@ -42,29 +42,30 @@ def window_main(Prg):
     FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
     FrameTextRecognised.grid(row=0, column=2, rowspan=3)
 
-    Img = image_file_load_to_tk(Prg, "resources/deepcopy_logo_64.png")
-    if Img:
-        Panel = Tkinter.Label(FrameSourcePages, image=Img)
-        Panel.grid(row=0, column=0)
+    Tkinter.Label(FrameOnePage, text="Frame One Page").grid(row=0, column=1)
+    Tkinter.Label(FrameOnePage, text="2222").grid(row=1, column=1)
+    Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
 
-        Panel2 = Tkinter.Label(FrameSourcePages, image=Img)
-        Panel2.grid(row=1, column=1)
+    files_thumbnails_load(Prg, FrameSourcePages)
 
-        Panel3 = Tkinter.Label(FrameSourcePages, image=Img)
-        Panel3.grid(row=2, column=2)
-
-        Tkinter.Label(FrameOnePage, text="Frame One Page").grid(row=0, column=1)
-        Tkinter.Label(FrameOnePage, text="2222").grid(row=1, column=1)
-        Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
-
-    file_selector()
     # top_frame = Frame(root, bg='cyan', width = 450, height=50, pady=3).grid(row=0, columnspan=3)
     # FrameSourcePages.grid(row=0, column=0, sticky='e')
 
     Window.mainloop()
 
-def files_selector():
-    return FileDialog.askopenfilenames( initialdir="/", title="Select file",
+# FIXME: dynamic image inserting doesn't work correctly
+def files_thumbnails_load(Prg, Parent):
+    for FileSelected in files_selector(Prg):
+        print(FileSelected)
+        Img = image_file_load_to_tk(Prg, FileSelected)
+        if Img:
+            Panel = Tkinter.Label(Parent, image=Img)
+            Panel.pack()
+
+def files_selector(Prg):
+    Dir = Prg["PathDefaultFileSelectDir"]
+    print(Dir)
+    return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
     filetypes=(("jpeg files", "*.jpg"), ("png files", "*.png"), ("all files", "*.*")))
 
 def frame_new(Prg, Parent, Width, Height, bg=""):
