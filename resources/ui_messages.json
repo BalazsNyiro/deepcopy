@@ -33,6 +33,10 @@
         "file_missing": {
             "eng": "Missing File: {:s}",
             "hun": "Hiányzó fájl: {:s}"
+        },
+        "file_load_into_thumbnail_list": {
+            "eng": "Select file(s) to be recognised",
+            "hun": "Feldolgozandó fájl kijelölése"
         }
     }
 
