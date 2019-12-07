@@ -24,7 +24,7 @@ def window_main(Prg):
 
     global PrgGlobal
     PrgGlobal = Prg
-    Prg["Tkinter"] = {"pictures_loaded": []}
+    Prg["Tkinter"] = {"images_loaded": {}}
 
     print("Tkinter ui main interface")
     MainWidth = 1200
@@ -70,26 +70,29 @@ def files_thumbnails_load_button():
     Prg = PrgGlobal
     files_thumbnails_load(Prg, Prg["Tkinter"]["FrameSourcePages"], Prg["Tkinter"]["Window"])
     print("button")
-
 def files_thumbnails_load(Prg, Parent, Window):
-    print(time.time())
     for FileSelected in files_selector(Prg):
-        print(FileSelected)
+        ImgId = img_generate_id_for_loaded_list(Prg, "thumbnalis")
         Img = image_file_load_to_tk(Prg, FileSelected)
-        Prg["Tkinter"]["pictures_loaded"].append(Img)
+        Img.ImgId = ImgId # all image knows his own id, if you want to remove them, delete them from loaded image list
+        print("img type: ", type(Img))
+
+        Prg["Tkinter"]["images_loaded"][ImgId] = Img # save reference of Img, otherwise garbace collector remove it
+
         if Img:
-            print("Img true")
             Panel = Tkinter.Label(Parent, image=Img)
-            # Panel = Tkinter.Label(Parent, text="Frame One Page")
             Panel.pack()
             Window.update_idletasks()
-            #Window.update()
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
     print(Dir)
     return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
     filetypes=( ("png files", "*.png"), ("jpeg files", "*.jpg"),("all files", "*.*")))
+
+def img_generate_id_for_loaded_list(Prg, IdPlusText):
+    NumOfLoadedPics = len(Prg["Tkinter"]["images_loaded"].keys())
+    return "{:d}_{:s}".format(NumOfLoadedPics + 1, IdPlusText)
 
 def frame_new(Prg, Parent, Width, Height, bg=""):
     return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height,pady=3)
