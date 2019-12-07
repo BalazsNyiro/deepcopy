@@ -46,7 +46,7 @@ def window_main(Prg):
     Tkinter.Label(FrameOnePage, text="2222").grid(row=1, column=1)
     Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
 
-    files_thumbnails_load(Prg, FrameSourcePages)
+    files_thumbnails_load(Prg, FrameSourcePages, Window)
 
     # top_frame = Frame(root, bg='cyan', width = 450, height=50, pady=3).grid(row=0, columnspan=3)
     # FrameSourcePages.grid(row=0, column=0, sticky='e')
@@ -54,19 +54,22 @@ def window_main(Prg):
     Window.mainloop()
 
 # FIXME: dynamic image inserting doesn't work correctly
-def files_thumbnails_load(Prg, Parent):
+# https://python-forum.io/Thread-Tkinter-How-do-I-change-an-image-dynamically
+# ??
+def files_thumbnails_load(Prg, Parent, Window):
     for FileSelected in files_selector(Prg):
         print(FileSelected)
         Img = image_file_load_to_tk(Prg, FileSelected)
         if Img:
             Panel = Tkinter.Label(Parent, image=Img)
             Panel.pack()
+            Window.update_idletasks()
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
     print(Dir)
     return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
-    filetypes=(("jpeg files", "*.jpg"), ("png files", "*.png"), ("all files", "*.*")))
+    filetypes=( ("png files", "*.png"), ("jpeg files", "*.jpg"),("all files", "*.*")))
 
 def frame_new(Prg, Parent, Width, Height, bg=""):
     return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height,pady=3)
