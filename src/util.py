@@ -30,7 +30,7 @@ def os_detect(Prg):
             Prg["Warnings"].append("Theoretically DeepCopy can run on Mac if the necessary external commands are available, TODO in the future")
 
 def ui_msg_init(Prg):
-    Txt = file_read_all( os.path.join(Prg["PrgDirParent"], "resources", "ui_messages.json"))
+    Txt = file_read_all( os.path.join(Prg["DirPrgParent"], "resources", "ui_messages.json"))
     Prg["UiMessages"] = json.loads(Txt)
 
 # MsgPath example: os_detect.detected

@@ -57,7 +57,7 @@ def window_main(Prg):
 
     Window.mainloop()
 
-def files_thumbnails_load_button():
+def files_thumbnails_load_button(): # it is called from Ui so we use global state to store objects.
     Prg = PrgGlobal
     files_thumbnails_load(Prg, Prg["Tkinter"]["FrameSourcePages"])
 
