@@ -51,19 +51,23 @@ def window_main(Prg):
     Tkinter.Label(FrameOnePage, text="2222").grid(row=1, column=1)
 
     Prg["Tkinter"]["FrameSourcePages"] = FrameSourcePages
-    Tkinter.Button(FrameSourcePages, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"), command=files_thumbnails_load_button).pack()
+    Tkinter.Button(FrameSourcePages, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"), command=files_thumbnails_load_button_cmd).pack()
 
     Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
 
     Window.mainloop()
 
-def files_thumbnails_load_button(): # it is called from Ui so we use global state to store objects.
+def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global state to store objects.
     Prg = PrgGlobal
-    files_thumbnails_load(Prg, Prg["Tkinter"]["FrameSourcePages"])
+    Parent = Prg["Tkinter"]["FrameSourcePages"]
 
-def files_thumbnails_load(Prg, Parent):
     for FileSelected in files_selector(Prg):
         ImgId = img_generate_id_for_loaded_list(Prg, "thumbnalis")
+
+        # FIXME: FileSelected is the original file.
+        # HERE WE HAVE TO CREATE A THUMBNAIL into TMP dir and load that one
+        # AND SAVE INTO Thumbnail's original_source attribute the original path
+
         Img = image_file_load_to_tk(Prg, FileSelected)
         if Img:
             Img.ImgId = ImgId # all image knows his own id, if you want to remove them, delete them from loaded image list
@@ -75,7 +79,7 @@ def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
     print(Dir)
     return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
-    filetypes=( ("png files", "*.png"), ("jpeg files", "*.jpg"),("all files", "*.*")))
+                                       filetypes=( ("png files", "*.png"), ("jpeg files", "*.jpg"),("all files", "*.*")))
 
 def img_generate_id_for_loaded_list(Prg, IdPlusText):
     NumOfLoadedPics = len(Prg["Tkinter"]["images_loaded"].keys())
