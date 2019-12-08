@@ -31,8 +31,6 @@ def window_main(Prg):
     MainHeight = 800
     SourceWidth = 300
     SourceHeight = MainHeight
-    SourceFrameWidth = SourceWidth
-    SourceFrameHeight = SourceHeight
     OnePageWidth = 600
 
     Window = window_new(Prg, "window.main.title")
@@ -48,22 +46,22 @@ def window_main(Prg):
         Canvas.configure(scrollregion=ScrollRegion)
 
     ############# SCROLLBAR ###################
-    container = frame_new(Prg, Window,  SourceWidth, SourceHeight, bg="blue")
-    container.grid(row=0, column=0)
+    ContainerLeft = Tkinter.Frame(Window, bg="blue")
+    ContainerLeft.grid(row=0, column=0)
     # # https://stackoverflow.com/questions/16188420/tkinter-scrollbar-for-frame
-    CanvasForScrollBar = Tkinter.Canvas(container, width=SourceWidth-30, height=MainHeight-20, bg="red")
-    CanvasForScrollBar.pack()
+    CanvasForScrollBar = Tkinter.Canvas(ContainerLeft, bg="red", width=SourceWidth, height=SourceHeight)
+    CanvasForScrollBar.pack(side="left")
     Prg["Tkinter"]["CanvasForScrollBar"] = CanvasForScrollBar
     # Tkinter.Label(CanvasForScrollBar, text="canvas").pack()
 
-    FrameThumbnails = frame_new(Prg, CanvasForScrollBar,  SourceWidth-40, SourceHeight/3, bg="purple")
+    FrameThumbnails = Tkinter.Frame(CanvasForScrollBar, bg="purple")
     Prg["Tkinter"]["FrameThumbnails"] = FrameThumbnails
 
-    Scrollbar = Tkinter.Scrollbar(container, orient="vertical", command=CanvasForScrollBar.yview)
+    Scrollbar = Tkinter.Scrollbar(ContainerLeft, orient="vertical", command=CanvasForScrollBar.yview)
     CanvasForScrollBar.configure(yscrollcommand=Scrollbar.set)
     Scrollbar.pack(side="right", fill="y")
 
-    CanvasForScrollBar.create_window((0, 0), window=FrameThumbnails, anchor='nw')     # OK
+    CanvasForScrollBar.create_window((0, 0), window=FrameThumbnails, anchor='nw')
     FrameThumbnails.bind("<Configure>", lambda Event, Canvas=CanvasForScrollBar: frame_thumbnail_bind(Event, Canvas))
     ############# SCROLLBAR ###################
 
