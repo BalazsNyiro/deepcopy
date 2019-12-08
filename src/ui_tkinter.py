@@ -41,16 +41,18 @@ def window_main(Prg):
     FrameSourcePages = frame_new(Prg, Window, SourceWidth, MainHeight, bg="yellow")
     FrameSourcePages.grid(row=0, column=0, rowspan=3)
 
-    FrameOnePage = frame_new(Prg, Window, OnePageWidth, MainHeight)
-    FrameOnePage.grid(row=0, column=1, rowspan=3)
+    FrameOnePageTextboxSelector = frame_new(Prg, Window, OnePageWidth, MainHeight)
+    FrameOnePageTextboxSelector.grid(row=0, column=1, rowspan=3)
 
     FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
     FrameTextRecognised.grid(row=0, column=2, rowspan=3)
 
-    Tkinter.Label(FrameOnePage, text="Frame One Page").grid(row=0, column=1)
-    Tkinter.Label(FrameOnePage, text="2222").grid(row=1, column=1)
+    Tkinter.Label(FrameOnePageTextboxSelector, text="Frame One Page").grid(row=0, column=1)
+    Tkinter.Label(FrameOnePageTextboxSelector, text="2222").grid(row=1, column=1)
 
+    # FIXME: ?? Maybe we can pass FrameSourcePages with a lambda function, as in   files_thumbnails_load_button_cmd()
     Prg["Tkinter"]["FrameSourcePages"] = FrameSourcePages
+    Prg["Tkinter"]["FrameOnePageTextboxSelector"] = FrameOnePageTextboxSelector
     Tkinter.Button(FrameSourcePages, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"), command=files_thumbnails_load_button_cmd).pack()
 
     Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
@@ -70,11 +72,12 @@ def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global 
             Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
             Panel.pack()
-            Panel.bind("<Button-1>",  lambda Event, File=FileSelected: thumbnail_click(File))
+            Panel.bind("<Button-1>", lambda Event, File=FileSelected: thumbnail_click_left_mouse(File))
             print("loaded images: ", Prg["Tkinter"]["images_loaded"])
 
-def thumbnail_click(ImgPath):
+def thumbnail_click_left_mouse(ImgPath):
     print("Thumbnail click:", ImgPath)
+    # TODO load selected image into the Textbox selector area
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
