@@ -46,11 +46,12 @@ def window_main(Prg):
         Canvas.configure(scrollregion=ScrollRegion)
 
     ############# SCROLLBAR ###################
-    ContainerLeft = Tkinter.Frame(Window, bg="blue")
-    ContainerLeft.grid(row=0, column=0)
+    ContainerLeft = Tkinter.Frame(Window, bg="blue", width=SourceWidth)
+    ContainerLeft.pack(side="left")
     # # https://stackoverflow.com/questions/16188420/tkinter-scrollbar-for-frame
-    CanvasForScrollBar = Tkinter.Canvas(ContainerLeft, bg="red", width=SourceWidth, height=SourceHeight)
-    CanvasForScrollBar.pack(side="left")
+    CanvasForScrollBar = Tkinter.Canvas(ContainerLeft, bg="red", width=SourceWidth, height=9999) # auto fitting in Y direction, until reach this value
+    CanvasForScrollBar.pack(side="left", fill="y",
+                            expand=True)  # IMPORTANT: the canvas FILL, expand settins Modifiy the scrollbar's look!!!!!
     Prg["Tkinter"]["CanvasForScrollBar"] = CanvasForScrollBar
     # Tkinter.Label(CanvasForScrollBar, text="canvas").pack()
 
@@ -68,15 +69,15 @@ def window_main(Prg):
 
 
     FrameOnePageTextboxSelector = frame_new(Prg, Window, OnePageWidth, MainHeight)
-    FrameOnePageTextboxSelector.grid(row=0, column=1)
+    FrameOnePageTextboxSelector.pack()
+    Tkinter.Label(FrameOnePageTextboxSelector, text="ONE BOX").pack()
 
     FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
-    FrameTextRecognised.grid(row=0, column=2)
+    FrameTextRecognised.pack()
 
-    # FIXME: ?? Maybe we can pass Frame with a lambda function, as in   files_thumbnails_load_button_cmd()
-    Tkinter.Button(FrameOnePageTextboxSelector, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"), command=files_thumbnails_load_button_cmd).pack()
+    Tkinter.Button(FrameThumbnails, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"), command=files_thumbnails_load_button_cmd).pack()
 
-    Tkinter.Label(FrameTextRecognised, text="Text Recognised").grid(row=0, column=2)
+    Tkinter.Label(FrameTextRecognised, text="Text Recognised").pack(side="top")
 
     Window.mainloop()
 
