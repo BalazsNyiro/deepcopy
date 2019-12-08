@@ -9,7 +9,7 @@ Prg = {"Os": "",
        "UiLanguage": "eng",
        "UiMessages": "",
        "UiInterface": "ui_tkinter",
-
+       "UiThumbnailSize": (256, 256),
        "DirPrgParent":  os.path.dirname( os.path.realpath(__file__) ),
        "DirsDeleteAfterRun": [],
        "FilesDeleteAfterRun": [],

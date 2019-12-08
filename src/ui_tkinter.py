@@ -62,18 +62,19 @@ def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global 
     Parent = Prg["Tkinter"]["FrameSourcePages"]
 
     for FileSelected in files_selector(Prg):
-        ImgId = img_generate_id_for_loaded_list(Prg, "thumbnalis")
-
-        # FIXME: FileSelected is the original file.
-        # HERE WE HAVE TO CREATE A THUMBNAIL into TMP dir and load that one
-        # AND SAVE INTO Thumbnail's original_source attribute the original path
-        ThumbnailSize = 256, 256
-        ImageTkPhotoImage = image_file_load_to_tk(Prg, FileSelected, ThumbnailSize)
+        ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelected)
+        ImageTkPhotoImage = image_file_load_to_tk(Prg, FileSelected, Prg["UiThumbnailSize"])
         if ImageTkPhotoImage:
             ImageTkPhotoImage.ImgId = ImgId # all image knows his own id, if you want to remove them, delete them from loaded image list
+            ImageTkPhotoImage.File = FileSelected
             Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
             Panel.pack()
+            Panel.bind("<Button-1>",  lambda Event, File=FileSelected: thumbnail_click(File))
+            print("loaded images: ", Prg["Tkinter"]["images_loaded"])
+
+def thumbnail_click(ImgPath):
+    print("Thumbnail click:", ImgPath)
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
@@ -81,9 +82,11 @@ def files_selector(Prg):
     return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
                                        filetypes=( ("png files", "*.png"), ("jpeg files", "*.jpg"),("all files", "*.*")))
 
-def img_generate_id_for_loaded_list(Prg, IdPlusText):
+def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
     NumOfLoadedPics = len(Prg["Tkinter"]["images_loaded"].keys())
-    return "{:d}_{:s}".format(NumOfLoadedPics + 1, IdPlusText)
+    if PreFix: PreFix += "_"
+    if PostFix: PostFix = "_" + PostFix
+    return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
 
 def frame_new(Prg, Parent, Width, Height, bg=""):
     return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height,pady=3)
