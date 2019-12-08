@@ -30,6 +30,9 @@ def window_main(Prg):
     MainWidth = 1200
     MainHeight = 800
     SourceWidth = 300
+    SourceHeight = MainHeight
+    SourceFrameWidth = SourceWidth
+    SourceFrameHeight = SourceHeight
     OnePageWidth = 600
 
     Window = window_new(Prg, "window.main.title")
@@ -38,34 +41,36 @@ def window_main(Prg):
 
     TextRecognisedWidth = MainWidth - SourceWidth - OnePageWidth
 
+
+
     ############# SCROLLBAR ###################
     # # https://stackoverflow.com/questions/16188420/tkinter-scrollbar-for-frame
-    FrameSourcePages = frame_new(Prg, Window, SourceWidth, MainHeight, bg="yellow")
-    FrameSourcePages.grid(row=0, column=0, rowspan=3)
-
-    CanvasForScrollBar = Tkinter.Canvas(FrameSourcePages)
+    CanvasForScrollBar = Tkinter.Canvas(Window, width=SourceWidth, height=MainHeight)
+    CanvasForScrollBar.grid(row=0, column=0)
     Prg["Tkinter"]["CanvasForScrollBar"] = CanvasForScrollBar
-    CanvasForScrollBar.pack()
+    # Tkinter.Label(CanvasForScrollBar, text="canvas").pack()
 
-    FrameInner = frame_new(Prg, CanvasForScrollBar, SourceWidth, MainHeight)
-    Prg["Tkinter"]["FrameInner"] = FrameInner
-    Tkinter.Label(FrameInner, text="222").pack()
-    Tkinter.Label(FrameInner, text="333").pack()
-    FrameInner.pack()
+    FrameThumbnails = frame_new(Prg, CanvasForScrollBar,  SourceWidth, SourceHeight)
+    Prg["Tkinter"]["FrameThumbnails"] = FrameThumbnails
+    FrameThumbnails.pack()
 
-    Scrollbar = Tkinter.Scrollbar(FrameInner, orient="vertical", command=CanvasForScrollBar.yview)
-
+    Scrollbar = Tkinter.Scrollbar(FrameThumbnails, orient="vertical", command=CanvasForScrollBar.yview)
     CanvasForScrollBar.configure(yscrollcommand=Scrollbar.set)
     Scrollbar.pack(side="right", fill="y")
-    CanvasForScrollBar.create_window((0, 0), window=FrameInner, anchor='nw')
-    FrameInner.bind("<Configure>", lambda Event: CanvasForScrollBar.configure(scrollregion=CanvasForScrollBar.bbox("all"),width=200,height=200))
+
+    CanvasForScrollBar.create_window((0, 0), window=FrameThumbnails, anchor='nw')
+    FrameThumbnails.bind("<Configure>", lambda Event:
+        CanvasForScrollBar.configure(scrollregion=CanvasForScrollBar.bbox("all"),width=SourceWidth,height=SourceHeight))
+
     ############# SCROLLBAR ###################
 
+
+
     FrameOnePageTextboxSelector = frame_new(Prg, Window, OnePageWidth, MainHeight)
-    FrameOnePageTextboxSelector.grid(row=0, column=1, rowspan=3)
+    FrameOnePageTextboxSelector.grid(row=0, column=1)
 
     FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
-    FrameTextRecognised.grid(row=0, column=2, rowspan=3)
+    FrameTextRecognised.grid(row=0, column=2)
 
     # FIXME: ?? Maybe we can pass Frame with a lambda function, as in   files_thumbnails_load_button_cmd()
     Tkinter.Button(FrameOnePageTextboxSelector, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"), command=files_thumbnails_load_button_cmd).pack()
@@ -76,7 +81,7 @@ def window_main(Prg):
 
 def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global state to store objects.
     Prg = PrgGlobal
-    Parent = Prg["Tkinter"]["FrameInner"]
+    Parent = Prg["Tkinter"]["FrameThumbnails"]
     Window = Prg["Tkinter"]["Window"]
 
     for FileSelected in files_selector(Prg):
@@ -90,9 +95,9 @@ def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global 
             Panel.pack()
             Panel.bind("<Button-1>", lambda Event, File=FileSelected: thumbnail_click_left_mouse(File))
             print("loaded images: ", Prg["Tkinter"]["images_loaded"])
-            Parent.update_idletasks()
-            Prg["Tkinter"]["CanvasForScrollBar"].update_idletasks()
-            Window.update_idletasks()
+            #Parent.update_idletasks()
+            # Prg["Tkinter"]["CanvasForScrollBar"].update_idletasks()
+            # Window.update_idletasks()
 
 def thumbnail_click_left_mouse(ImgPath):
     print("Thumbnail click:", ImgPath)
