@@ -41,27 +41,30 @@ def window_main(Prg):
 
     TextRecognisedWidth = MainWidth - SourceWidth - OnePageWidth
 
-
+    def frame_thumbnail_bind(Event, Canvas):
+        print("Event:", Event)
+        print("canvas bbox all", Canvas.bbox("all"))
+        ScrollRegion = Canvas.bbox("all")
+        Canvas.configure(scrollregion=ScrollRegion)
 
     ############# SCROLLBAR ###################
+    container = frame_new(Prg, Window,  SourceWidth, SourceHeight, bg="blue")
+    container.grid(row=0, column=0)
     # # https://stackoverflow.com/questions/16188420/tkinter-scrollbar-for-frame
-    CanvasForScrollBar = Tkinter.Canvas(Window, width=SourceWidth, height=MainHeight)
-    CanvasForScrollBar.grid(row=0, column=0)
+    CanvasForScrollBar = Tkinter.Canvas(container, width=SourceWidth-30, height=MainHeight-20, bg="red")
+    CanvasForScrollBar.pack()
     Prg["Tkinter"]["CanvasForScrollBar"] = CanvasForScrollBar
     # Tkinter.Label(CanvasForScrollBar, text="canvas").pack()
 
-    FrameThumbnails = frame_new(Prg, CanvasForScrollBar,  SourceWidth, SourceHeight)
+    FrameThumbnails = frame_new(Prg, CanvasForScrollBar,  SourceWidth-40, SourceHeight/3, bg="purple")
     Prg["Tkinter"]["FrameThumbnails"] = FrameThumbnails
-    FrameThumbnails.pack()
 
-    Scrollbar = Tkinter.Scrollbar(FrameThumbnails, orient="vertical", command=CanvasForScrollBar.yview)
+    Scrollbar = Tkinter.Scrollbar(container, orient="vertical", command=CanvasForScrollBar.yview)
     CanvasForScrollBar.configure(yscrollcommand=Scrollbar.set)
     Scrollbar.pack(side="right", fill="y")
 
-    CanvasForScrollBar.create_window((0, 0), window=FrameThumbnails, anchor='nw')
-    FrameThumbnails.bind("<Configure>", lambda Event:
-        CanvasForScrollBar.configure(scrollregion=CanvasForScrollBar.bbox("all"),width=SourceWidth,height=SourceHeight))
-
+    CanvasForScrollBar.create_window((0, 0), window=FrameThumbnails, anchor='nw')     # OK
+    FrameThumbnails.bind("<Configure>", lambda Event, Canvas=CanvasForScrollBar: frame_thumbnail_bind(Event, Canvas))
     ############# SCROLLBAR ###################
 
 
@@ -116,7 +119,7 @@ def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
     return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
 
 def frame_new(Prg, Parent, Width, Height, bg=""):
-    return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height,pady=3)
+    return Tkinter.Frame(Parent, bg=bg, width=Width, height=Height, pady=3)
 
 def window_new(Prg, TitleKey=""):
     Window = Tkinter.Tk()
