@@ -67,12 +67,12 @@ def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global 
         # FIXME: FileSelected is the original file.
         # HERE WE HAVE TO CREATE A THUMBNAIL into TMP dir and load that one
         # AND SAVE INTO Thumbnail's original_source attribute the original path
-
-        Img = image_file_load_to_tk(Prg, FileSelected)
-        if Img:
-            Img.ImgId = ImgId # all image knows his own id, if you want to remove them, delete them from loaded image list
-            Prg["Tkinter"]["images_loaded"][ImgId] = Img # save reference of Img, otherwise garbace collector remove it
-            Panel = Tkinter.Label(Parent, image=Img)
+        ThumbnailSize = 256, 256
+        ImageTkPhotoImage = image_file_load_to_tk(Prg, FileSelected, ThumbnailSize)
+        if ImageTkPhotoImage:
+            ImageTkPhotoImage.ImgId = ImgId # all image knows his own id, if you want to remove them, delete them from loaded image list
+            Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
+            Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
             Panel.pack()
 
 def files_selector(Prg):
@@ -94,12 +94,17 @@ def window_new(Prg, TitleKey=""):
         Window.title(util.ui_msg(Prg, TitleKey))
     return Window
 
-def image_file_load_to_tk(Prg, Path):
+def img_resize(Prg, Source, Destination):
+    pass
+
+def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
     if not os.path.isfile(Path):
         Msg = util.ui_msg(Prg, "file_operation.file_missing", PrintInTerminal=True)
         Prg["Warning"].append(Msg)
         return False
 
     Load = Image.open(Path)
+    if ThumbnailSize:
+        Load.thumbnail(ThumbnailSize)
     return ImageTk.PhotoImage(Load)
 

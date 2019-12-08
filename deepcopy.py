@@ -19,6 +19,7 @@ Prg = {"Os": "",
 with tempfile.TemporaryDirectory() as TmpDirName:
        Prg["PathTempDir"] = TmpDirName
        Prg["DirsDeleteAfterRun"].append(TmpDirName)
+       print("Tempdir:", TmpDirName)
 
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
 import util, test_all
