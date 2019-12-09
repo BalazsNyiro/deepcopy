@@ -68,9 +68,10 @@ def window_main(Prg):
 
 
 
-    FrameOnePageTextboxSelector = frame_new(Prg, Window, OnePageWidth, MainHeight)
-    FrameOnePageTextboxSelector.pack()
-    Tkinter.Label(FrameOnePageTextboxSelector, text="ONE BOX").pack()
+    FrameOnePage = frame_new(Prg, Window, OnePageWidth, MainHeight)
+    FrameOnePage.pack()
+    Prg["Tkinter"]["OnePage"] = FrameOnePage
+    # Tkinter.Label(FrameOnePage, text="ONE BOX").pack()
 
     FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
     FrameTextRecognised.pack()
@@ -84,7 +85,6 @@ def window_main(Prg):
 def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global state to store objects.
     Prg = PrgGlobal
     Parent = Prg["Tkinter"]["FrameThumbnails"]
-    Window = Prg["Tkinter"]["Window"]
 
     for FileSelected in files_selector(Prg):
         ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelected)
@@ -95,15 +95,19 @@ def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global 
             Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
             Panel.pack()
-            Panel.bind("<Button-1>", lambda Event, File=FileSelected: thumbnail_click_left_mouse(File))
+            Panel.bind("<Button-1>", lambda Event, File=FileSelected: thumbnail_click_left_mouse(File, Prg))
             print("loaded images: ", Prg["Tkinter"]["images_loaded"])
-            #Parent.update_idletasks()
-            # Prg["Tkinter"]["CanvasForScrollBar"].update_idletasks()
-            # Window.update_idletasks()
 
-def thumbnail_click_left_mouse(ImgPath):
+def thumbnail_click_left_mouse(ImgPath, Prg):
     print("Thumbnail click:", ImgPath)
-    # TODO load selected image into the Textbox selector area
+
+    if "OnePage_previous" in Prg["Tkinter"]:
+        Prg["Tkinter"]["OnePage_previous"].destroy()
+
+    ImageTkPhotoImage = image_file_load_to_tk(Prg, ImgPath)
+    Panel = Tkinter.Label(Prg["Tkinter"]["OnePage"], image=ImageTkPhotoImage)
+    Panel.pack()
+    Prg["Tkinter"]["OnePage_previous"] = Label
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
