@@ -79,11 +79,11 @@ def window_main(Prg):
     CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
     CanvasOnePage = Tkinter.Canvas(FrameOnePage, width=CanvasWidth, height=CanvasHeight, bg="#000000")
     CanvasOnePage.pack()
-    # ImgRenderedBubbleSelection = Tkinter.PhotoImage(width=CanvasWidth, height=CanvasHeight)
-    ImgRenderedBubbleSelection = Tkinter.PhotoImage(width=CanvasWidth, height=CanvasHeight)
-    CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImgRenderedBubbleSelection, state="normal")
+    Prg["Tkinter"]["CanvasOnePage"] = CanvasOnePage
+    Prg["Tkinter"]["ImgRenderedBubbleSelection"] = None
 
-    Prg["Tkinter"]["ImgRenderedBubbleSelection"] = ImgRenderedBubbleSelection
+    ImgRenderedBubbleSelection = Tkinter.PhotoImage(width=CanvasWidth, height=CanvasHeight)
+    Prg["Tkinter"]["CanvasOnePageCreatedImage"] = CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImgRenderedBubbleSelection, state="normal")
 
 
 
@@ -132,15 +132,8 @@ def thumbnail_click_left_mouse(ImgPath, Prg):
     ImgOriginal = Image.open(ImgPath)
     ImgWidth, ImgHeight = ImgOriginal.size
 
-    Displayed = Prg["Tkinter"]["ImgRenderedBubbleSelection"]
-    # X = 11
-    # Y = 11
-    # Displayed.put("#ffffff", (X, Y))
-
-    def insert_zero_prefix(Val):
-        if len(Val) < 2:
-            return "0" + Val
-        return Val
+    Displayed = Image.new("RGB", Prg["UiTextBubbleSelectionCanvas"], color=0)
+    Prg["Tkinter"]["ImgRenderedBubbleSelection"] = Displayed
 
     CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
     for X in range(0, CanvasWidth):
@@ -153,11 +146,15 @@ def thumbnail_click_left_mouse(ImgPath, Prg):
                         R, G, B, A = Pixel
                     else:
                         R, G, B = Pixel
-                    R = insert_zero_prefix(hex(R)[2:])
-                    G = insert_zero_prefix(hex(G)[2:])
-                    B = insert_zero_prefix(hex(B)[2:])
-                    HexaColor = "#" + R + G + B
-                    Displayed.put(HexaColor, (X, Y))
+                    Displayed.putpixel((X, Y), (R, G, B))
+
+    CanvasOnePage = Prg["Tkinter"]["CanvasOnePage"]
+    # Prg["Tkinter"]["CanvasOnePageCreatedImage"] = \
+    # CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImageTk.PhotoImage(Displayed))
+    Prg["Tkinter"]["LastDisplayedTextBubble"] = ImageTk.PhotoImage(Displayed)
+    CanvasOnePage.itemconfig(Prg["Tkinter"]["CanvasOnePageCreatedImage"], image=Prg["Tkinter"]["LastDisplayedTextBubble"])
+
+    # Prg["Tkinter"]["CanvasOnePageCreatedImage"].redraw()
 
     # if "OnePage_previous" in Prg["Tkinter"]:
     #     # Prg["Tkinter"]["OnePage_previous"].destroy()
