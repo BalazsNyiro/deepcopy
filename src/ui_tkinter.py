@@ -70,8 +70,16 @@ def window_main(Prg):
 
     FrameOnePage = frame_new(Prg, Window, OnePageWidth, MainHeight)
     FrameOnePage.pack()
-    Prg["Tkinter"]["OnePage"] = FrameOnePage
-    # Tkinter.Label(FrameOnePage, text="ONE BOX").pack()
+
+    CanvasWidth, CanvasHeight = 800, 600
+    CanvasOnePage = Tkinter.Canvas(FrameOnePage, width=CanvasWidth, height=CanvasHeight, bg="#000000")
+    CanvasOnePage.pack()
+    ImgRenderedBubbleSelection = Tkinter.PhotoImage(width=CanvasWidth, height=CanvasHeight)
+    CanvasOnePage.create_image((CanvasWidth/ 2,  CanvasHeight/ 2), image=ImgRenderedBubbleSelection, state="normal")
+
+    Prg["Tkinter"]["ImgRenderedBubbleSelection"] = ImgRenderedBubbleSelection
+
+
 
     FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
     FrameTextRecognised.pack()
@@ -91,23 +99,40 @@ def files_thumbnails_load_button_cmd(): # it is called from Ui so we use global 
         ImageTkPhotoImage = image_file_load_to_tk(Prg, FileSelected, Prg["UiThumbnailSize"])
         if ImageTkPhotoImage:
             ImageTkPhotoImage.ImgId = ImgId # all image knows his own id, if you want to remove them, delete them from loaded image list
-            ImageTkPhotoImage.File = FileSelected
-            Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
+
+            #Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
+            Prg["Tkinter"]["images_loaded"][ImgId] = {
+                            "reference_to_avoid_garbage_collector": ImageTkPhotoImage,
+                            "text_bubbles": [], # here can be lists, with coordinate pairs,
+                            "FilePath_original" : FileSelected
+            }
+
+            #  example      "text_bubbles" : [    one bubble can contain any coordinate pairs
+            #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
+            #                                ]
+
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
             Panel.pack()
-            Panel.bind("<Button-1>", lambda Event, File=FileSelected: thumbnail_click_left_mouse(File, Prg))
+            Panel.bind("<Button-1>", lambda Event: thumbnail_click_left_mouse(FileSelected, Prg))
             print("loaded images: ", Prg["Tkinter"]["images_loaded"])
 
 def thumbnail_click_left_mouse(ImgPath, Prg):
     print("Thumbnail click:", ImgPath)
+    print("Prg", Prg)
 
-    if "OnePage_previous" in Prg["Tkinter"]:
-        Prg["Tkinter"]["OnePage_previous"].destroy()
+    Img = Prg["Tkinter"]["ImgRenderedBubbleSelection"]
+    X = 11
+    Y = 11
+    Img.put("#ffffff", (X, Y))
 
-    ImageTkPhotoImage = image_file_load_to_tk(Prg, ImgPath)
-    Panel = Tkinter.Label(Prg["Tkinter"]["OnePage"], image=ImageTkPhotoImage)
-    Panel.pack()
-    Prg["Tkinter"]["OnePage_previous"] = Label
+    # if "OnePage_previous" in Prg["Tkinter"]:
+    #     # Prg["Tkinter"]["OnePage_previous"].destroy()
+    #     pass
+
+    # ImageTkPhotoImage = image_file_load_to_tk(Prg, ImgPath)
+    # Panel = Tkinter.Label(Prg["Tkinter"]["OnePageCanvas"], image=ImageTkPhotoImage)
+    # Panel.pack()
+    # Prg["Tkinter"]["OnePage_previous"] = Panel
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
