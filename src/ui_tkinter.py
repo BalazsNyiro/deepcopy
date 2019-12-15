@@ -135,19 +135,29 @@ def thumbnail_click_left_mouse(ImgPath, Prg):
     Displayed = Image.new("RGB", Prg["UiTextBubbleSelectionCanvas"], color=0)
     Prg["Tkinter"]["ImgRenderedBubbleSelection"] = Displayed
 
+    TimeStart = time.time()
     CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
+
+    # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
+    PixelSample = ImgOriginal.getpixel((0, 0))
+    PixelSampleLen = len(PixelSample)
+
+    RangeCanvasHeight = range(0, CanvasHeight)
     for X in range(0, CanvasWidth):
         if X < ImgWidth:
-            for Y in range(0, CanvasHeight):
+            for Y in RangeCanvasHeight:
                 if Y < ImgHeight:
-                    Pixel = ImgOriginal.getpixel( (X, Y) )
                     # print(Pixel)
-                    if len(Pixel) == 4:
-                        R, G, B, A = Pixel
+                    XY = (X, Y)
+                    if PixelSampleLen == 4:
+                        # we don't use Alpha value
+                        R, G, B, A = ImgOriginal.getpixel(XY)
+                        Displayed.putpixel(XY, (R, G, B) ) # we can use original tuple with 3 elements
                     else:
-                        R, G, B = Pixel
-                    Displayed.putpixel((X, Y), (R, G, B))
+                        Displayed.putpixel(XY, ImgOriginal.getpixel(XY)) # we can use original tuple with 3 elements
 
+    TimeEnd = time.time() - TimeStart
+    print("render time:", TimeEnd)
     CanvasOnePage = Prg["Tkinter"]["CanvasOnePage"]
     # Prg["Tkinter"]["CanvasOnePageCreatedImage"] = \
     # CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImageTk.PhotoImage(Displayed))
