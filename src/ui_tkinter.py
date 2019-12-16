@@ -107,30 +107,29 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
         ImageTkPhotoImage = image_file_load_to_tk(Prg, FileSelected, Prg["UiThumbnailSize"])
         if ImageTkPhotoImage:
             ImageTkPhotoImage.ImgId = ImgId  # all image knows his own id, if you want to remove them, delete them from loaded image list
-
+            Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelected)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
             # Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
             Prg["Tkinter"]["images_loaded"][ImgId] = {
                 "reference_to_avoid_garbage_collector": ImageTkPhotoImage,
-                "text_bubbles": [],  # here can be lists, with coordinate pairs,
-                "FilePath_original": FileSelected
+                "TextBubbles": [],  # here can be lists, with coordinate pairs,
+                "FilePath_original": FileSelected,
+                "Pixels": Pixels,
+                "PixelDataSize": PixelDataSize,
+                "Width": ImgWidth,
+                "Height": ImgHeight
             }
 
-            #  example      "text_bubbles" : [    one bubble can contain any coordinate pairs
+            #  example      "TextBubbles" : [    one bubble can contain any coordinate pairs
             #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
             #                                ]
 
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
             Panel.pack()
-            Panel.bind("<Button-1>", lambda Event: thumbnail_click_left_mouse(FileSelected, Prg))
-            print("loaded images: ", Prg["Tkinter"]["images_loaded"])
+            Panel.bind("<Button-1>", lambda Event: thumbnail_click_left_mouse(Prg, ImgId))
+            # print("loaded images: ", Prg["Tkinter"]["images_loaded"])
 
 
-def thumbnail_click_left_mouse(ImgPath, Prg):
-    print("Thumbnail click:", ImgPath)
-    print("Prg", Prg)
-
-    ImgOriginal = Image.open(ImgPath)
-    ImgWidth, ImgHeight = ImgOriginal.size
+def thumbnail_click_left_mouse(Prg, ImgId):
 
     Displayed = Image.new("RGB", Prg["UiTextBubbleSelectionCanvas"], color=0)
     Prg["Tkinter"]["ImgRenderedBubbleSelection"] = Displayed
@@ -138,23 +137,19 @@ def thumbnail_click_left_mouse(ImgPath, Prg):
     TimeStart = time.time()
     CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
 
-    # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
-    PixelSample = ImgOriginal.getpixel((0, 0))
-    PixelSampleLen = len(PixelSample)
+    Img = Prg["Tkinter"]["images_loaded"][ImgId]
 
     RangeCanvasHeight = range(0, CanvasHeight)
+    PixelDataSize = Img["PixelDataSize"]
     for X in range(0, CanvasWidth):
-        if X < ImgWidth:
+        if X < Img["Width"]:
             for Y in RangeCanvasHeight:
-                if Y < ImgHeight:
-                    # print(Pixel)
-                    XY = (X, Y)
-                    if PixelSampleLen == 4:
-                        # we don't use Alpha value
-                        R, G, B, A = ImgOriginal.getpixel(XY)
-                        Displayed.putpixel(XY, (R, G, B) ) # we can use original tuple with 3 elements
-                    else:
-                        Displayed.putpixel(XY, ImgOriginal.getpixel(XY)) # we can use original tuple with 3 elements
+                if Y < Img["Height"]:
+                    if PixelDataSize == 3:
+                        Displayed.putpixel((X, Y), Img["Pixels"][X][Y] ) # we can use original tuple with 3 elements
+                    elif PixelDataSize == 4:
+                        R, G, B, _A = Img["Pixels"][X][Y]
+                        Displayed.putpixel((X, Y), (R, G, B))
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
@@ -164,26 +159,8 @@ def thumbnail_click_left_mouse(ImgPath, Prg):
     Prg["Tkinter"]["LastDisplayedTextBubble"] = ImageTk.PhotoImage(Displayed)
     CanvasOnePage.itemconfig(Prg["Tkinter"]["CanvasOnePageCreatedImage"], image=Prg["Tkinter"]["LastDisplayedTextBubble"])
 
-    # Prg["Tkinter"]["CanvasOnePageCreatedImage"].redraw()
-
-    # if "OnePage_previous" in Prg["Tkinter"]:
-    #     # Prg["Tkinter"]["OnePage_previous"].destroy()
-    #     pass
-
-    # ImageTkPhotoImage = image_file_load_to_tk(Prg, ImgPath)
-    # Panel = Tkinter.Label(Prg["Tkinter"]["OnePageCanvas"], image=ImageTkPhotoImage)
-    # Panel.pack()
-    # Prg["Tkinter"]["OnePage_previous"] = Panel
-
-    # dir(ImgOriginal) object:
-
-
-# ['_Image__transformer', '_PngImageFile__idat', '__array_interface__', '__class__', '__copy__', '__del__', '__delattr__',
-# '__dict__', '__dir__', '__doc__', '__enter__', '__eq__', '__exit__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__',
-# '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setstate__', '__sizeof__',
-# '__str__', '__subclasshook__', '__weakref__', '_close_exclusive_fp_after_loading', '_copy', '_crop', '_dump', '_ensure_mutable',
-# '_exclusive_fp', '_expand', '_getexif', '_min_frame', '_new', '_open', '_repr_png_', '_seek_check', '_size',
-# '_text', 'alpha_composite', 'category', 'close', 'convert', 'copy', 'crop', 'custom_mimetype', 'decoderconfig', 'decodermaxblock',
+# dir(ImgOriginal) public atttributes:
+# 'alpha_composite', 'category', 'close', 'convert', 'copy', 'crop', 'custom_mimetype', 'decoderconfig', 'decodermaxblock',
 # 'draft', 'effect_spread', 'entropy', 'filename', 'filter', 'format', 'format_description', 'fp', 'frombytes', 'fromstring',
 # 'get_format_mimetype', 'getbands', 'getbbox', 'getchannel', 'getcolors', 'getdata', 'getexif', 'getextrema', 'getim', 'getpalette',
 # 'getpixel', 'getprojection', 'height', 'histogram', 'im', 'info', 'load', 'load_end', 'load_prepare', 'load_read', 'mode', 'offset', 'palette',
@@ -199,6 +176,22 @@ def files_selector(Prg):
                                        filetypes=(
                                        ("png files", "*.png"), ("jpeg files", "*.jpg"), ("all files", "*.*")))
 
+
+def img_load_pixels(Prg, ImgPath):
+    ImgOriginal = Image.open(ImgPath)
+    ImgWidth, ImgHeight = ImgOriginal.size
+
+    # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
+    PixelSample = ImgOriginal.getpixel((0, 0))
+    PixelDataSize = len(PixelSample)
+    print("Pixel Data size: ", PixelDataSize)
+    Pixels = dict()
+    for X in range(0, ImgWidth):
+        Pixels[X] = dict()
+        for Y in range(0, ImgHeight):
+            # we can have Alpha value here
+            Pixels[X][Y] = ImgOriginal.getpixel((X, Y))
+    return Pixels, PixelDataSize, ImgWidth, ImgHeight
 
 def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
     NumOfLoadedPics = len(Prg["Tkinter"]["images_loaded"].keys())
