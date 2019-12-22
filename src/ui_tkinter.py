@@ -143,18 +143,27 @@ def thumbnail_click_left_mouse(Prg, ImgId):
 
     RangeCanvasHeight = range(0, min(CanvasHeight, ImgLoaded["Height"]))
 
+    print("imt output ")
+    print(dir(ImgLoaded))
     if PixelDataSize == 3:
-        def draw_pixel(ImgOutput, ImgInput, X, Y):
-            ImgOutput.putpixel((X, Y), ImgInput["Pixels"][X, Y])
+        def draw_pixel(ImgOutput, ImgInput, XY):
+            # original, nice working solution:
+            # ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
             # we can use original tuple with 3 elements
+
+            # faster, direct solution, not nice:
+            # but we don't do a lot of checking, it's a 2x faster solution
+            # It was inside ImgOutput.putpixel()
+            ImgOutput.im.putpixel(XY, ImgInput["Pixels"][XY])
+
     elif PixelDataSize == 4:
-        def draw_pixel(ImgOutput, ImgInput, X, Y):
-            R, G, B, _A = ImgInput["Pixels"][X, Y]
-            ImgOutput.putpixel((X, Y), (R, G, B))
+        def draw_pixel(ImgOutput, ImgInput, XY):
+            R, G, B, _A = ImgInput["Pixels"][XY]
+            ImgOutput.putpixel(XY, (R, G, B))
 
     for X in range(0, min(CanvasWidth, ImgLoaded["Width"])):
         for Y in RangeCanvasHeight:
-                    draw_pixel(Displayed, ImgLoaded, X, Y)
+                    draw_pixel(Displayed, ImgLoaded, (X, Y) )
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
