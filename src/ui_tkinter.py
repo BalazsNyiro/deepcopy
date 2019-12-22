@@ -137,19 +137,24 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     TimeStart = time.time()
     CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
 
-    Img = Prg["Tkinter"]["images_loaded"][ImgId]
+    ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
 
-    RangeCanvasHeight = range(0, CanvasHeight)
-    PixelDataSize = Img["PixelDataSize"]
-    for X in range(0, CanvasWidth):
-        if X < Img["Width"]:
-            for Y in RangeCanvasHeight:
-                if Y < Img["Height"]:
-                    if PixelDataSize == 3:
-                        Displayed.putpixel((X, Y), Img["Pixels"][X][Y] ) # we can use original tuple with 3 elements
-                    elif PixelDataSize == 4:
-                        R, G, B, _A = Img["Pixels"][X][Y]
-                        Displayed.putpixel((X, Y), (R, G, B))
+    PixelDataSize = ImgLoaded["PixelDataSize"]
+
+    RangeCanvasHeight = range(0, min(CanvasHeight, ImgLoaded["Height"]))
+
+    if PixelDataSize == 3:
+        def draw_pixel(ImgOutput, ImgInput, X, Y):
+            ImgOutput.putpixel((X, Y), ImgInput["Pixels"][X, Y])
+            # we can use original tuple with 3 elements
+    elif PixelDataSize == 4:
+        def draw_pixel(ImgOutput, ImgInput, X, Y):
+            R, G, B, _A = ImgInput["Pixels"][X, Y]
+            ImgOutput.putpixel((X, Y), (R, G, B))
+
+    for X in range(0, min(CanvasWidth, ImgLoaded["Width"])):
+        for Y in RangeCanvasHeight:
+                    draw_pixel(Displayed, ImgLoaded, X, Y)
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
@@ -159,16 +164,6 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     Prg["Tkinter"]["LastDisplayedTextBubble"] = ImageTk.PhotoImage(Displayed)
     CanvasOnePage.itemconfig(Prg["Tkinter"]["CanvasOnePageCreatedImage"], image=Prg["Tkinter"]["LastDisplayedTextBubble"])
 
-# dir(ImgOriginal) public atttributes:
-# 'alpha_composite', 'category', 'close', 'convert', 'copy', 'crop', 'custom_mimetype', 'decoderconfig', 'decodermaxblock',
-# 'draft', 'effect_spread', 'entropy', 'filename', 'filter', 'format', 'format_description', 'fp', 'frombytes', 'fromstring',
-# 'get_format_mimetype', 'getbands', 'getbbox', 'getchannel', 'getcolors', 'getdata', 'getexif', 'getextrema', 'getim', 'getpalette',
-# 'getpixel', 'getprojection', 'height', 'histogram', 'im', 'info', 'load', 'load_end', 'load_prepare', 'load_read', 'mode', 'offset', 'palette',
-# 'paste', 'png', 'point', 'putalpha', 'putdata', 'putpalette', 'putpixel', 'pyaccess', 'quantize', 'readonly', 'remap_palette', 'resize',
-# 'rotate', 'save', 'seek', 'show', 'size', 'split', 'tell', 'text', 'thumbnail', 'tile', 'tobitmap', 'tobytes', 'toqimage', 'toqpixmap',
-# 'tostring', 'transform', 'transpose', 'verify', 'width']
-
-
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
     print(Dir)
@@ -177,7 +172,7 @@ def files_selector(Prg):
                                        ("png files", "*.png"), ("jpeg files", "*.jpg"), ("all files", "*.*")))
 
 
-def img_load_pixels(Prg, ImgPath):
+def img_load_pixels(Prg, ImgPath, Timer=False):
     ImgOriginal = Image.open(ImgPath)
     ImgWidth, ImgHeight = ImgOriginal.size
 
@@ -185,12 +180,17 @@ def img_load_pixels(Prg, ImgPath):
     PixelSample = ImgOriginal.getpixel((0, 0))
     PixelDataSize = len(PixelSample)
     print("Pixel Data size: ", PixelDataSize)
-    Pixels = dict()
-    for X in range(0, ImgWidth):
-        Pixels[X] = dict()
-        for Y in range(0, ImgHeight):
-            # we can have Alpha value here
-            Pixels[X][Y] = ImgOriginal.getpixel((X, Y))
+
+    # https://pillow.readthedocs.io/en/3.0.x/reference/PixelAccess.html
+    # slow way to load pixels
+    # Pixels = dict()
+    # for X in range(0, ImgWidth):
+    #     Pixels[X] = dict()
+    #     for Y in range(0, ImgHeight):
+    #         # we can have Alpha value here
+    #         Pixels[X][Y] = ImgOriginal.getpixel((X, Y))
+    Pixels = ImgOriginal.load()
+
     return Pixels, PixelDataSize, ImgWidth, ImgHeight
 
 def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
