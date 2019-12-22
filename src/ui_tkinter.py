@@ -73,20 +73,29 @@ def window_main(Prg):
     FrameThumbnails.bind("<Configure>", lambda Event, Canvas=CanvasForScrollBar: frame_thumbnail_bind(Event, Canvas))
     ############# SCROLLBAR ###################
 
-    FrameOnePage = frame_new(Prg, Window, OnePageWidth, MainHeight)
-    FrameOnePage.pack()
 
-    CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
 
-    # original solution with canvas
-    CanvasOnePage = Tkinter.Canvas(FrameOnePage, width=CanvasWidth, height=CanvasHeight, bg="#000000")
-    CanvasOnePage.pack()
 
-    Prg["Tkinter"]["CanvasOnePage"] = CanvasOnePage
-    Prg["Tkinter"]["ImgRenderedBubbleSelection"] = None
+    ##### Text Select Preview #################
+    OnePageFrame = frame_new(Prg, Window, OnePageWidth, MainHeight)
+    OnePageFrame.pack()
+    Prg["Tkinter"]["OnePageFrame"] = OnePageFrame
 
-    ImgRenderedBubbleSelection = Tkinter.PhotoImage(width=CanvasWidth, height=CanvasHeight)
-    Prg["Tkinter"]["CanvasOnePageCreatedImage"] = CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImgRenderedBubbleSelection, state="normal")
+
+
+    PreviewWidth, PreviewHeight = Prg["UiTextSelectPreviewSize"]
+    TextSelectPreviewImg = Image.new("RGB", (PreviewWidth, PreviewHeight))
+    Prg["Tkinter"]["OnePageTextSelectPreviewImg"] = TextSelectPreviewImg
+
+    TextSelectPreviewImg.load()
+
+    ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
+    Label = Tkinter.Label(OnePageFrame, image=ImageTkPhotoImage)
+    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"] = Label
+    Label.pack()
+    ##### Text Select Preview #################
+
+
 
 
 
@@ -134,47 +143,51 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
 
 def thumbnail_click_left_mouse(Prg, ImgId):
 
-    Displayed = Image.new("RGB", Prg["UiTextBubbleSelectionCanvas"], color=0)
-    Prg["Tkinter"]["ImgRenderedBubbleSelection"] = Displayed
+    # Displayed = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color=0)
+    TextSelectPreviewImg = Prg["Tkinter"]["OnePageTextSelectPreviewImg"]
+    print("TextSelectPreviewImg ")
+    print(dir(TextSelectPreviewImg.pyaccess))
 
     TimeStart = time.time()
-    CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
 
     ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
 
     PixelDataSize = ImgLoaded["PixelDataSize"]
 
-    RangeCanvasHeight = range(0, min(CanvasHeight, ImgLoaded["Height"]))
+    PeviewWidth, PreviewHeight = Prg["UiTextSelectPreviewSize"]
+    RangeCanvasHeight = range(0, min(PreviewHeight, ImgLoaded["Height"]))
 
-    print("imt output ")
-    print(dir(ImgLoaded))
     if PixelDataSize == 3:
         def draw_pixel(ImgOutput, ImgInput, XY):
-            # original, nice working solution:
-            ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
-            # we can use original tuple with 3 elements
-
-            # faster, direct solution, not nice:
-            # but we don't do a lot of checking, it's a 2x faster solution
-            # It was inside ImgOutput.putpixel()
-            # ImgOutput.im.putpixel(XY, ImgInput["Pixels"][XY])
+            # original, nice working solution with correct API call
+            if TextSelectPreviewImg.pyaccess: # I don't use python3-cffi, C calling from Python - so it's not used case
+                ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
+                # ImgOutput.pyaccess.(XY, ImgInput["Pixels"][XY])
+            else:
+                # DANGEROUS BUT FAST
+                ImgOutput.im.putpixel(XY, ImgInput["Pixels"][XY])
 
     elif PixelDataSize == 4:
         def draw_pixel(ImgOutput, ImgInput, XY):
             R, G, B, _A = ImgInput["Pixels"][XY]
             ImgOutput.putpixel(XY, (R, G, B))
 
-    for X in range(0, min(CanvasWidth, ImgLoaded["Width"])):
+    for X in range(0, min(PeviewWidth, ImgLoaded["Width"])):
         for Y in RangeCanvasHeight:
-                    draw_pixel(Displayed, ImgLoaded, (X, Y) )
+                    draw_pixel(TextSelectPreviewImg, ImgLoaded, (X, Y) )
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
-    CanvasOnePage = Prg["Tkinter"]["CanvasOnePage"]
+
+    # TODO: display img
+    # CanvasOnePage = Prg["Tkinter"]["CanvasOnePage"]
     # Prg["Tkinter"]["CanvasOnePageCreatedImage"] = \
     # CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImageTk.PhotoImage(Displayed))
-    Prg["Tkinter"]["LastDisplayedTextBubble"] = ImageTk.PhotoImage(Displayed)
-    CanvasOnePage.itemconfig(Prg["Tkinter"]["CanvasOnePageCreatedImage"], image=Prg["Tkinter"]["LastDisplayedTextBubble"])
+    # Prg["Tkinter"]["LastDisplayedTextBubble"] = ImageTk.PhotoImage(Displayed)
+    # CanvasOnePage.itemconfig(Prg["Tkinter"]["CanvasOnePageCreatedImage"], image=Prg["Tkinter"]["LastDisplayedTextBubble"])
+    ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
+    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].configure(image=ImageTkPhotoImage)
+    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].imageSaved=ImageTkPhotoImage
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
@@ -193,14 +206,6 @@ def img_load_pixels(Prg, ImgPath, Timer=False):
     PixelDataSize = len(PixelSample)
     print("Pixel Data size: ", PixelDataSize)
 
-    # https://pillow.readthedocs.io/en/3.0.x/reference/PixelAccess.html
-    # slow way to load pixels
-    # Pixels = dict()
-    # for X in range(0, ImgWidth):
-    #     Pixels[X] = dict()
-    #     for Y in range(0, ImgHeight):
-    #         # we can have Alpha value here
-    #         Pixels[X][Y] = ImgOriginal.getpixel((X, Y))
     Pixels = ImgOriginal.load()
 
     return Pixels, PixelDataSize, ImgWidth, ImgHeight
