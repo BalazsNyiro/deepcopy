@@ -77,8 +77,11 @@ def window_main(Prg):
     FrameOnePage.pack()
 
     CanvasWidth, CanvasHeight = Prg["UiTextBubbleSelectionCanvas"]
+
+    # original solution with canvas
     CanvasOnePage = Tkinter.Canvas(FrameOnePage, width=CanvasWidth, height=CanvasHeight, bg="#000000")
     CanvasOnePage.pack()
+
     Prg["Tkinter"]["CanvasOnePage"] = CanvasOnePage
     Prg["Tkinter"]["ImgRenderedBubbleSelection"] = None
 
@@ -148,13 +151,13 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     if PixelDataSize == 3:
         def draw_pixel(ImgOutput, ImgInput, XY):
             # original, nice working solution:
-            # ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
+            ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
             # we can use original tuple with 3 elements
 
             # faster, direct solution, not nice:
             # but we don't do a lot of checking, it's a 2x faster solution
             # It was inside ImgOutput.putpixel()
-            ImgOutput.im.putpixel(XY, ImgInput["Pixels"][XY])
+            # ImgOutput.im.putpixel(XY, ImgInput["Pixels"][XY])
 
     elif PixelDataSize == 4:
         def draw_pixel(ImgOutput, ImgInput, XY):
