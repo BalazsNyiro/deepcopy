@@ -153,22 +153,20 @@ def thumbnail_click_left_mouse(Prg, ImgId):
 
     img_redraw(ImgLoaded["TextSelectPreviewPixels"],
                TextSelectPreviewImg,
-               ImgSrcWidth = ImgLoaded["TextSelectPreviewPixelsWidth"],
-               ImgSrcHeight= ImgLoaded["TextSelectPreviewPixelsHeight"],
-               ImgTargetWidth= Prg["UiTextSelectPreviewSize"][0],
-               ImgTargetHeight= Prg["UiTextSelectPreviewSize"][1],
-               PixelDataSize=ImgLoaded["PixelDataSize"]
+               ImgSrcWidth     = ImgLoaded["TextSelectPreviewPixelsWidth"],
+               ImgSrcHeight    = ImgLoaded["TextSelectPreviewPixelsHeight"],
+               ImgTargetWidth  = Prg["UiTextSelectPreviewSize"][0],
+               ImgTargetHeight = Prg["UiTextSelectPreviewSize"][1],
+               PixelDataSize   = ImgLoaded["PixelDataSize"],
+               ParentLabelToRefresh = Prg["Tkinter"]["OnePageTextSelectPreviewLabel"]
                )
-    ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
-    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].configure(image=ImageTkPhotoImage)
-    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].imageSaved=ImageTkPhotoImage
 
 def img_redraw(ImgSrc,              ImgTarget,
                ImgTargetWidth=1,    ImgTargetHeight=1,
                ImgSrcWidth=1,       ImgSrcHeight=1,
                Xfrom=0,             Xto=999999,
                Yfrom=0,             Yto=999999,
-               PixelDataSize=3):
+               PixelDataSize=3,     ParentLabelToRefresh=None):
 
     if PixelDataSize == 3:
         def draw_pixel(ImgInput, ImgOutput, XY):
@@ -196,6 +194,11 @@ def img_redraw(ImgSrc,              ImgTarget,
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
+
+    if ParentLabelToRefresh:
+        ImageTkPhotoImage = ImageTk.PhotoImage(ImgTarget)
+        ParentLabelToRefresh.configure(image=ImageTkPhotoImage)
+        ParentLabelToRefresh.imageSaved = ImageTkPhotoImage
 
 
 def files_selector(Prg):
