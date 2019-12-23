@@ -80,7 +80,7 @@ def window_main(Prg):
     OnePageFrame = frame_new(Prg, Window, OnePageWidth, MainHeight)
     OnePageFrame.pack()
 
-    TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"])
+    TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
     Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = None
     Prg["Tkinter"]["OnePageTextSelectPreviewImgRendered"] = TextSelectPreviewImg
 
@@ -148,23 +148,24 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
     Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = ImgLoaded
 
-    TextSelectPreviewImg = Prg["Tkinter"]["OnePageTextSelectPreviewImgRendered"]
+    # start with a new, empty canvas
+    TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
 
     ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
 
-    PixelKey = "TextSelectPreviewPixels"
+    ImgSrc = ImgLoaded["TextSelectPreviewPixels"]
     if ImgLoaded["PixelDataSize"] == 3:
         def draw_pixel(ImgOutput, ImgInput, XY):
             # original, nice working solution with correct API call
             # ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
             # DANGEROUS BUT FAST
-            Val = ImgInput[PixelKey][XY]
+            Val = ImgInput[XY]
             ImgOutput.im.putpixel(XY, Val)
             # ImgOutput.im.putpixel(XY, ImgInput[PixelKey][XY])
 
     elif ImgLoaded["PixelDataSize"] == 4:
         def draw_pixel(ImgOutput, ImgInput, XY):
-            R, G, B, _A = ImgInput[PixelKey][XY]
+            R, G, B, _A = ImgInput[XY]
             # ImgOutput.putpixel(XY, (R, G, B))
             ImgOutput.im.putpixel(XY, (R, G, B))
 
@@ -174,7 +175,7 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     TimeStart = time.time()
     for X in range(0, min(PeviewWidth, ImgLoaded["TextSelectPreviewPixelsWidth"])):
         for Y in RangeCanvasHeight:
-                    draw_pixel(TextSelectPreviewImg, ImgLoaded, (X, Y) )
+            draw_pixel(TextSelectPreviewImg, ImgSrc, (X, Y) )
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
