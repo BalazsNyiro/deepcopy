@@ -79,15 +79,11 @@ def window_main(Prg):
     ##### Text Select Preview #################
     OnePageFrame = frame_new(Prg, Window, OnePageWidth, MainHeight)
     OnePageFrame.pack()
-    Prg["Tkinter"]["OnePageFrame"] = OnePageFrame
 
+    TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"])
+    Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = None
+    Prg["Tkinter"]["OnePageTextSelectPreviewImgRendered"] = TextSelectPreviewImg
 
-
-    PreviewWidth, PreviewHeight = Prg["UiTextSelectPreviewSize"]
-    TextSelectPreviewImg = Image.new("RGB", (PreviewWidth, PreviewHeight))
-    Prg["Tkinter"]["OnePageTextSelectPreviewImg"] = TextSelectPreviewImg
-
-    TextSelectPreviewImg.load()
 
     ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
     Label = Tkinter.Label(OnePageFrame, image=ImageTkPhotoImage)
@@ -116,14 +112,21 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
 
     for FileSelected in files_selector(Prg):
         ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelected)
-        ImageTkPhotoImage = image_file_load_to_tk(Prg, FileSelected, Prg["UiThumbnailSize"])
-        if ImageTkPhotoImage:
-            ImageTkPhotoImage.ImgId = ImgId  # all image knows his own id, if you want to remove them, delete them from loaded image list
+        ImageTkPhotoImageThumbnail = image_file_load_to_tk(Prg, FileSelected, Prg["UiThumbnailSize"])
+
+        PixelsPreviewImg = image_file_load(Prg, FileSelected, Prg["UiTextSelectPreviewSize"])
+        PixelsPreview = PixelsPreviewImg.load()
+
+        if ImageTkPhotoImageThumbnail:
+            ImageTkPhotoImageThumbnail.ImgId = ImgId  # all image knows his own id, if you want to remove them, delete them from loaded image list
             Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelected)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
-            # Prg["Tkinter"]["images_loaded"][ImgId] = ImageTkPhotoImage # save reference of Img, otherwise garbace collector remove it
+
             Prg["Tkinter"]["images_loaded"][ImgId] = {
-                "reference_to_avoid_garbage_collector": ImageTkPhotoImage,
-                "TextBubbles": [],  # here can be lists, with coordinate pairs,
+                "reference_to_avoid_garbage_collector": ImageTkPhotoImageThumbnail,
+                "TextSelectCoords": [],  # here can be lists, with coordinate pairs,
+                "TextSelectPreviewPixels": PixelsPreview,
+                "TextSelectPreviewPixelsWidth": PixelsPreviewImg.size[0],
+                "TextSelectPreviewPixelsHeight": PixelsPreviewImg.size[1],
                 "FilePath_original": FileSelected,
                 "Pixels": Pixels,
                 "PixelDataSize": PixelDataSize,
@@ -131,60 +134,51 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
                 "Height": ImgHeight
             }
 
-            #  example      "TextBubbles" : [    one bubble can contain any coordinate pairs
+            #  example  "TextSelectCoords" : [    one bubble can contain any coordinate pairs
             #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
             #                                ]
 
-            Panel = Tkinter.Label(Parent, image=ImageTkPhotoImage)
+            Panel = Tkinter.Label(Parent, image=ImageTkPhotoImageThumbnail)
             Panel.pack()
             Panel.bind("<Button-1>", lambda Event: thumbnail_click_left_mouse(Prg, ImgId))
             # print("loaded images: ", Prg["Tkinter"]["images_loaded"])
 
 
 def thumbnail_click_left_mouse(Prg, ImgId):
+    ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
+    Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = ImgLoaded
 
-    # Displayed = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color=0)
-    TextSelectPreviewImg = Prg["Tkinter"]["OnePageTextSelectPreviewImg"]
-    print("TextSelectPreviewImg ")
-    print(dir(TextSelectPreviewImg.pyaccess))
-
-    TimeStart = time.time()
+    TextSelectPreviewImg = Prg["Tkinter"]["OnePageTextSelectPreviewImgRendered"]
 
     ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
 
-    PixelDataSize = ImgLoaded["PixelDataSize"]
-
-    PeviewWidth, PreviewHeight = Prg["UiTextSelectPreviewSize"]
-    RangeCanvasHeight = range(0, min(PreviewHeight, ImgLoaded["Height"]))
-
-    if PixelDataSize == 3:
+    PixelKey = "TextSelectPreviewPixels"
+    if ImgLoaded["PixelDataSize"] == 3:
         def draw_pixel(ImgOutput, ImgInput, XY):
             # original, nice working solution with correct API call
-            if TextSelectPreviewImg.pyaccess: # I don't use python3-cffi, C calling from Python - so it's not used case
-                ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
-                # ImgOutput.pyaccess.(XY, ImgInput["Pixels"][XY])
-            else:
-                # DANGEROUS BUT FAST
-                ImgOutput.im.putpixel(XY, ImgInput["Pixels"][XY])
+            # ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
+            # DANGEROUS BUT FAST
+            Val = ImgInput[PixelKey][XY]
+            ImgOutput.im.putpixel(XY, Val)
+            # ImgOutput.im.putpixel(XY, ImgInput[PixelKey][XY])
 
-    elif PixelDataSize == 4:
+    elif ImgLoaded["PixelDataSize"] == 4:
         def draw_pixel(ImgOutput, ImgInput, XY):
-            R, G, B, _A = ImgInput["Pixels"][XY]
-            ImgOutput.putpixel(XY, (R, G, B))
+            R, G, B, _A = ImgInput[PixelKey][XY]
+            # ImgOutput.putpixel(XY, (R, G, B))
+            ImgOutput.im.putpixel(XY, (R, G, B))
 
-    for X in range(0, min(PeviewWidth, ImgLoaded["Width"])):
+    PeviewWidth, PreviewHeight = Prg["UiTextSelectPreviewSize"]
+    RangeCanvasHeight = range(0, min(PreviewHeight, ImgLoaded["TextSelectPreviewPixelsHeight"]))
+
+    TimeStart = time.time()
+    for X in range(0, min(PeviewWidth, ImgLoaded["TextSelectPreviewPixelsWidth"])):
         for Y in RangeCanvasHeight:
                     draw_pixel(TextSelectPreviewImg, ImgLoaded, (X, Y) )
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
 
-    # TODO: display img
-    # CanvasOnePage = Prg["Tkinter"]["CanvasOnePage"]
-    # Prg["Tkinter"]["CanvasOnePageCreatedImage"] = \
-    # CanvasOnePage.create_image((CanvasWidth / 2, CanvasHeight / 2), image=ImageTk.PhotoImage(Displayed))
-    # Prg["Tkinter"]["LastDisplayedTextBubble"] = ImageTk.PhotoImage(Displayed)
-    # CanvasOnePage.itemconfig(Prg["Tkinter"]["CanvasOnePageCreatedImage"], image=Prg["Tkinter"]["LastDisplayedTextBubble"])
     ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
     Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].configure(image=ImageTkPhotoImage)
     Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].imageSaved=ImageTkPhotoImage
@@ -195,7 +189,6 @@ def files_selector(Prg):
     return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
                                        filetypes=(
                                        ("png files", "*.png"), ("jpeg files", "*.jpg"), ("all files", "*.*")))
-
 
 def img_load_pixels(Prg, ImgPath, Timer=False):
     ImgOriginal = Image.open(ImgPath)
@@ -232,13 +225,20 @@ def img_resize(Prg, Source, Destination):
     pass
 
 
-def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
+def image_file_load(Prg, Path, ThumbnailSize=None, PixelReturn=False):
     if not os.path.isfile(Path):
         Msg = util.ui_msg(Prg, "file_operation.file_missing", PrintInTerminal=True)
         Prg["Warning"].append(Msg)
         return False
 
-    Load = Image.open(Path)
+    Img = Image.open(Path)
     if ThumbnailSize:
-        Load.thumbnail(ThumbnailSize)
-    return ImageTk.PhotoImage(Load)
+        Img.thumbnail(ThumbnailSize)
+
+    if PixelReturn:
+        return Img.load()
+
+    return Img
+
+def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
+    return ImageTk.PhotoImage(image_file_load(Prg, Path, ThumbnailSize=ThumbnailSize))
