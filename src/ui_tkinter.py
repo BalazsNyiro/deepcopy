@@ -123,7 +123,7 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
 
             Prg["Tkinter"]["images_loaded"][ImgId] = {
                 "reference_to_avoid_garbage_collector": ImageTkPhotoImageThumbnail,
-                "TextSelectCoords": [],  # here can be lists, with coordinate pairs,
+                "TextSelectCoords": [  [ [10, 10], [10, 50], [50,50], [50, 10]]  ],  # here can be lists, with coordinate pairs,
                 "TextSelectPreviewPixels": PixelsPreview,
                 "TextSelectPreviewPixelsWidth": PixelsPreviewImg.size[0],
                 "TextSelectPreviewPixelsHeight": PixelsPreviewImg.size[1],
@@ -149,17 +149,27 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = ImgLoaded
 
     # start with a new, empty canvas
-    TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
+    ImgTextSelectPreview = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
 
     img_redraw(ImgLoaded["TextSelectPreviewPixels"],
-               TextSelectPreviewImg,
+               ImgTextSelectPreview,
                ImgSrcWidth     = ImgLoaded["TextSelectPreviewPixelsWidth"],
                ImgSrcHeight    = ImgLoaded["TextSelectPreviewPixelsHeight"],
                ImgTargetWidth  = Prg["UiTextSelectPreviewSize"][0],
                ImgTargetHeight = Prg["UiTextSelectPreviewSize"][1],
                PixelDataSize   = ImgLoaded["PixelDataSize"],
-               ParentLabelToRefresh = Prg["Tkinter"]["OnePageTextSelectPreviewLabel"]
                )
+    text_select_preview_coords_draw(Prg, ImgLoaded, ImgTextSelectPreview,
+                                    ParentLabelToRefresh=Prg["Tkinter"]["OnePageTextSelectPreviewLabel"])
+    # TODO: detect mouse position and buttons to add/remove text selection frames
+
+def text_select_preview_coords_draw(Prg, ImgLoaded, ImgTextSelectPreview, ParentLabelToRefresh=None):
+    for Coords in ImgLoaded["TextSelectCoords"]:
+        print(Coords)
+        for Coord in Coords:
+            ImgTextSelectPreview.im.putpixel(Coord, Prg["Color"]["TextSelectFrame"])
+        img_parent_label_refresh(ParentLabelToRefresh, ImgTextSelectPreview)
+
 
 def img_redraw(ImgSrc,              ImgTarget,
                ImgTargetWidth=1,    ImgTargetHeight=1,
@@ -195,11 +205,13 @@ def img_redraw(ImgSrc,              ImgTarget,
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
 
-    if ParentLabelToRefresh:
-        ImageTkPhotoImage = ImageTk.PhotoImage(ImgTarget)
-        ParentLabelToRefresh.configure(image=ImageTkPhotoImage)
-        ParentLabelToRefresh.imageSaved = ImageTkPhotoImage
+    img_parent_label_refresh(ParentLabelToRefresh, ImgTarget)
 
+def img_parent_label_refresh(ParentLabel, Img):
+    if ParentLabel:
+        ImageTkPhotoImage = ImageTk.PhotoImage(Img)
+        ParentLabel.configure(image=ImageTkPhotoImage)
+        ParentLabel.imageSaved = ImageTkPhotoImage
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
