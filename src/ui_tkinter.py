@@ -151,38 +151,52 @@ def thumbnail_click_left_mouse(Prg, ImgId):
     # start with a new, empty canvas
     TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
 
-    ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
+    img_redraw(ImgLoaded["TextSelectPreviewPixels"],
+               TextSelectPreviewImg,
+               ImgSrcWidth = ImgLoaded["TextSelectPreviewPixelsWidth"],
+               ImgSrcHeight= ImgLoaded["TextSelectPreviewPixelsHeight"],
+               ImgTargetWidth= Prg["UiTextSelectPreviewSize"][0],
+               ImgTargetHeight= Prg["UiTextSelectPreviewSize"][1],
+               PixelDataSize=ImgLoaded["PixelDataSize"]
+               )
+    ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
+    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].configure(image=ImageTkPhotoImage)
+    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].imageSaved=ImageTkPhotoImage
 
-    ImgSrc = ImgLoaded["TextSelectPreviewPixels"]
-    if ImgLoaded["PixelDataSize"] == 3:
-        def draw_pixel(ImgOutput, ImgInput, XY):
+def img_redraw(ImgSrc,              ImgTarget,
+               ImgTargetWidth=1,    ImgTargetHeight=1,
+               ImgSrcWidth=1,       ImgSrcHeight=1,
+               Xfrom=0,             Xto=999999,
+               Yfrom=0,             Yto=999999,
+               PixelDataSize=3):
+
+    if PixelDataSize == 3:
+        def draw_pixel(ImgInput, ImgOutput, XY):
             # original, nice working solution with correct API call
             # ImgOutput.putpixel(XY, ImgInput["Pixels"][XY])
             # DANGEROUS BUT FAST
-            Val = ImgInput[XY]
-            ImgOutput.im.putpixel(XY, Val)
+            ImgOutput.im.putpixel(XY, ImgInput[XY])
             # ImgOutput.im.putpixel(XY, ImgInput[PixelKey][XY])
 
-    elif ImgLoaded["PixelDataSize"] == 4:
-        def draw_pixel(ImgOutput, ImgInput, XY):
+    elif PixelDataSize == 4:
+        def draw_pixel(ImgInput, ImgOutput, XY):
             R, G, B, _A = ImgInput[XY]
             # ImgOutput.putpixel(XY, (R, G, B))
             ImgOutput.im.putpixel(XY, (R, G, B))
 
-    PeviewWidth, PreviewHeight = Prg["UiTextSelectPreviewSize"]
-    RangeCanvasHeight = range(0, min(PreviewHeight, ImgLoaded["TextSelectPreviewPixelsHeight"]))
+    Ytop = min(ImgTargetHeight, ImgSrcHeight, Yto)
+    Xtop = min(ImgTargetWidth, ImgSrcWidth, Xto)
+    #print("Ytop:", Ytop, "   Xtop:", Xtop)
+    RangeCanvasHeight = range(Yfrom, Ytop)
 
     TimeStart = time.time()
-    for X in range(0, min(PeviewWidth, ImgLoaded["TextSelectPreviewPixelsWidth"])):
+    for X in range(Xfrom, Xtop):
         for Y in RangeCanvasHeight:
-            draw_pixel(TextSelectPreviewImg, ImgSrc, (X, Y) )
+            draw_pixel(ImgSrc, ImgTarget, (X, Y) )
 
     TimeEnd = time.time() - TimeStart
     print("render time:", TimeEnd)
 
-    ImageTkPhotoImage = ImageTk.PhotoImage(TextSelectPreviewImg)
-    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].configure(image=ImageTkPhotoImage)
-    Prg["Tkinter"]["OnePageTextSelectPreviewLabel"].imageSaved=ImageTkPhotoImage
 
 def files_selector(Prg):
     Dir = Prg["PathDefaultFileSelectDir"]
