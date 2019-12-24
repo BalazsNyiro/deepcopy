@@ -38,6 +38,12 @@
             "eng": "Select file(s)\nto be recognised",
             "hun": "Feldolgozandó\nfájl(ok) kijelölése"
         }
+    },
+    "ocr": {
+        "page_current_analyse": {
+            "eng": "Analyse current page",
+            "hun": "Az aktuális oldal elemzése"
+        }
     }
 
 }

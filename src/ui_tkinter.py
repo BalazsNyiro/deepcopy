@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import util, os, time
+import util, os, time, ocr
 
 PrgGlobal = None
 ErrorsLocal = []
@@ -80,6 +80,9 @@ def window_main(Prg):
     OnePageFrame = frame_new(Prg, Window, OnePageWidth, MainHeight)
     OnePageFrame.pack()
 
+    Tkinter.Button(OnePageFrame, text=util.ui_msg(Prg, "ocr.page_current_analyse"),
+                   command=ocr_page_analyse).pack()
+
     TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
     Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = None
     Prg["Tkinter"]["OnePageTextSelectPreviewImgRendered"] = TextSelectPreviewImg
@@ -93,15 +96,8 @@ def window_main(Prg):
 
 
 
-
-
-    FrameTextRecognised = frame_new(Prg, Window, TextRecognisedWidth, MainHeight, bg="green")
-    FrameTextRecognised.pack()
-
     Tkinter.Button(FrameThumbnails, text=util.ui_msg(Prg, "file_operation.file_load_into_thumbnail_list"),
                    command=files_thumbnails_load_button_cmd).pack()
-
-    Tkinter.Label(FrameTextRecognised, text="Text Recognised").pack(side="top")
 
     Window.mainloop()
 
@@ -272,3 +268,7 @@ def image_file_load(Prg, Path, ThumbnailSize=None, PixelReturn=False):
 
 def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
     return ImageTk.PhotoImage(image_file_load(Prg, Path, ThumbnailSize=ThumbnailSize))
+
+
+def ocr_page_analyse():
+    ocr.page_analyse()
