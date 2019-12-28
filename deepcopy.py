@@ -16,7 +16,11 @@ Prg = {"Os": "",
        "FilesDeleteAfterRun": [],
        "PathDefaultFileSelectDir": os.path.abspath(__file__),
        "PathPrgExec" : os.path.realpath(__file__),
-       "Color": {"TextSelectFrame": (255, 0, 0)}
+       "Color": {"TextSelectFrame": (255, 0, 0)},
+
+       "ImagesLoaded": {},
+       "ImageIdSelected": ""
+
        }
 with tempfile.TemporaryDirectory() as TmpDirName:
        Prg["PathTempDir"] = TmpDirName

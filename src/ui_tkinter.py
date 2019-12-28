@@ -32,7 +32,7 @@ def window_main(Prg):
     global PrgGlobal
     PrgGlobal = Prg
 
-    Prg["Tkinter"] = {"images_loaded": {}}
+    Prg["Tkinter"] = {}
 
     MainWidth = 1200
     MainHeight = 800
@@ -42,8 +42,6 @@ def window_main(Prg):
     Window = window_new(Prg, "window.main.title")
     Window.geometry('{}x{}'.format(MainWidth, MainHeight))
     Prg["Tkinter"]["Window"] = Window
-
-    TextRecognisedWidth = MainWidth - SourceWidth - OnePageWidth
 
     def frame_thumbnail_bind(Event, Canvas):
         print("Event:", Event)
@@ -117,13 +115,13 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
             ImageTkPhotoImageThumbnail.ImgId = ImgId  # all image knows his own id, if you want to remove them, delete them from loaded image list
             Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelected)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
 
-            Prg["Tkinter"]["images_loaded"][ImgId] = {
-                "reference_to_avoid_garbage_collector": ImageTkPhotoImageThumbnail,
+            Prg["ImagesLoaded"][ImgId] = {
+                "Reference2avoidGarbageCollector": ImageTkPhotoImageThumbnail,
                 "TextSelectCoords": [  [ [10, 10], [10, 50], [50,50], [50, 10]]  ],  # here can be lists, with coordinate pairs,
                 "TextSelectPreviewPixels": PixelsPreview,
                 "TextSelectPreviewPixelsWidth": PixelsPreviewImg.size[0],
                 "TextSelectPreviewPixelsHeight": PixelsPreviewImg.size[1],
-                "FilePath_original": FileSelected,
+                "FilePathOriginal": FileSelected,
                 "Pixels": Pixels,
                 "PixelDataSize": PixelDataSize,
                 "Width": ImgWidth,
@@ -137,12 +135,11 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImageThumbnail)
             Panel.pack()
             Panel.bind("<Button-1>", lambda Event: thumbnail_click_left_mouse(Prg, ImgId))
-            # print("loaded images: ", Prg["Tkinter"]["images_loaded"])
-
 
 def thumbnail_click_left_mouse(Prg, ImgId):
-    ImgLoaded = Prg["Tkinter"]["images_loaded"][ImgId]
+    ImgLoaded = Prg["ImagesLoaded"][ImgId]
     Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = ImgLoaded
+    Prg["ImageIdSelected"] = ImgId
 
     # start with a new, empty canvas
     ImgTextSelectPreview = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
@@ -230,7 +227,7 @@ def img_load_pixels(Prg, ImgPath, Timer=False):
     return Pixels, PixelDataSize, ImgWidth, ImgHeight
 
 def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
-    NumOfLoadedPics = len(Prg["Tkinter"]["images_loaded"].keys())
+    NumOfLoadedPics = len(Prg["ImagesLoaded"].keys())
     if PreFix: PreFix += "_"
     if PostFix: PostFix = "_" + PostFix
     return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
@@ -245,10 +242,6 @@ def window_new(Prg, TitleKey=""):
     if TitleKey:
         Window.title(util.ui_msg(Prg, TitleKey))
     return Window
-
-
-def img_resize(Prg, Source, Destination):
-    pass
 
 
 def image_file_load(Prg, Path, ThumbnailSize=None, PixelReturn=False):
@@ -271,4 +264,8 @@ def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
 
 
 def ocr_page_analyse():
-    ocr.page_analyse()
+    Prg = PrgGlobal
+    # first we implement a naive algorithm:
+    # Simple paragraphs on white paper
+    # without any different text blocks backgrounds
+    ocr.text_block_analyse(Prg)
