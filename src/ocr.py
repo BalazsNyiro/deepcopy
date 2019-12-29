@@ -1,7 +1,7 @@
 import util, sys
 
 def text_block_analyse(Prg,
-                       PositionStart=(0,0),
+                       PositionStart=(0, 0),
                        ColorBlockBackgroundRgb=(255, 255, 255),
                        ColorBlockBackgroundRgbDelta=(30, 30, 30),
                        ColorBlockBackgroundGray=30,
@@ -14,6 +14,17 @@ def text_block_analyse(Prg,
     print("Selected Image Id", Prg["ImageIdSelected"])
     Img = Prg["ImagesLoaded"][Prg["ImageIdSelected"]]
     print("Img width, height: ", Img["Width"], Img["Height"])
+
+    Marks = mark_collect(Prg, Img)
+    print("Num of Marks:", len(Marks.keys()))
+    mark_display_on_console(Marks[1])
+
+def mark_collect(Prg, Img,
+                       ColorBlockBackgroundRgb=(255, 255, 255),
+                       ColorBlockBackgroundRgbDelta=(30, 30, 30),
+                       ColorBlockBackgroundGray=30,
+                       ColorBlockBackgroundGrayDelta=30,
+                       ):
 
     CoordsMarkPixels_and_parent_MarkId = dict()
 
@@ -104,11 +115,7 @@ def text_block_analyse(Prg,
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
     print("total / mark pixel ratio: ", X*Y / len(CoordsMarkPixels_and_parent_MarkId))
 
-    print("Num of Marks:", len(Marks.keys()))
-
-    mark_display_on_console(Marks[1])
     return Marks
-
 
 def mark_display_on_console(Mark):
     print(Mark)
