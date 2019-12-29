@@ -43,6 +43,10 @@
         "page_current_analyse": {
             "eng": "Analyse current page",
             "hun": "Az aktuális oldal elemzése"
+        },
+        "pixel_data_size_unknown": {
+            "eng": "Unknown Pixel data size during text block analyse: num of color channels are unknown",
+            "hun": "Ismeretlen az egy pixelhez tartozo adatmeret, nem RGB/Grayscale kep"
         }
     }
 
