@@ -15,7 +15,8 @@ def text_block_analyse(Prg,
     Img = Prg["ImagesLoaded"][Prg["ImageIdSelected"]]
     print("Img width, height: ", Img["Width"], Img["Height"])
 
-    CoordsMaybeMarks = []
+    CoordsMarkPixels_and_parent_MarkId = dict()
+
     DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
     BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
 
@@ -56,4 +57,58 @@ def text_block_analyse(Prg,
 
             if PixelIsMark:
                 print(PixelNowCoords, ">>>", Img["Pixels"][(X, Y)])
+                CoordsMarkPixels_and_parent_MarkId[(X,Y)] = None
+                # MarkId is unknown by default
 
+    Marks = dict()
+    for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
+        X, Y = Coord
+        print("Active coords", Coord)
+        if not MarkId:
+
+            # if a neighbour elem has MarkId, use the same.
+            # in Python 3.8 you can assign (X-1, Y)  to a variable
+            if   (X-1, Y) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y)]
+
+            elif (X-1, Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]
+
+            elif (X,   Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X,   Y-1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X,   Y-1)]
+
+            elif (X+1, Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X+1, Y-1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X+1, Y-1)]
+
+            elif (X+1, Y  ) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X+1, Y  )]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X+1, Y  )]
+
+            elif (X+1, Y+1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X+1, Y+1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X+1, Y+1)]
+
+            elif (X,   Y+1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X,   Y+1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X,   Y+1)]
+
+            elif (X-1, Y+1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y+1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y+1)]
+
+            elif (X-1, Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]:
+                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]
+
+            else:
+                MarkId = len(Marks.keys())+1
+
+            Marks[MarkId] = {Coord: True}
+            CoordsMarkPixels_and_parent_MarkId[Coord] = MarkId
+
+    print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
+    print("total / mark pixel ratio: ", X*Y / len(CoordsMarkPixels_and_parent_MarkId))
+
+    print("Num of Marks:", len(Marks.keys()))
+
+    mark_display_on_console(Marks[1])
+    return Marks
+
+
+def mark_display_on_console(Mark):
+    print(Mark)
