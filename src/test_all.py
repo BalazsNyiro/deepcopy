@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import unittest, util, os
-
+import unittest, util, os, ocr
 
 
 class TestMethods(unittest.TestCase):
@@ -72,7 +71,20 @@ class TestMethods(unittest.TestCase):
         self.assertTrue(util.file_test(Path))
 
     def test_ocr_mark_collect___word_the(self):
-        Path = os.path.join(Prg["DirPrgParent"], "test", "test_mark_finding_word_the__font_ubuntu_24pt.png")
+        FilePath = os.path.join(Prg["DirPrgParent"], "test", "test_mark_finding_word_the__font_ubuntu_24pt.png")
+        ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePath)
+        util.img_load_into_prg_structure(Prg, FilePath, ImgId)
+        Img = Prg["ImagesLoaded"][ImgId]
+        Marks = ocr.mark_collect(Prg, Img)
+        print("Test, Num of Marks:", len(Marks.keys()))
+
+        for Key in Marks.keys():
+            print(Key)
+            ocr.mark_display_on_console(Marks[Key])
+
+        # ocr.mark_display_on_console(Marks[1])
+
+        util.error_display(Prg)
 
 
 def run_all_tests(P):

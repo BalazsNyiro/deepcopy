@@ -108,14 +108,12 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
         ImageTkPhotoImageThumbnail = image_file_load_to_tk(Prg, FileSelectedPath, Prg["UiThumbnailSize"])
 
         if ImageTkPhotoImageThumbnail:
-            ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelectedPath)
 
             PixelsPreviewImg = image_file_load(Prg, FileSelectedPath, Prg["UiTextSelectPreviewSize"])
             PixelsPreview = PixelsPreviewImg.load()
 
-            Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelectedPath)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
-
-            util.img_load_into_prg_structure(Prg, FileSelectedPath, ImgId, ImgWidth, ImgHeight, Pixels, PixelDataSize,
+            ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelectedPath)
+            util.img_load_into_prg_structure(Prg, FileSelectedPath, ImgId,
                                              PixelsPreview = PixelsPreview,
                                              PixelsPreviewImg=PixelsPreviewImg,
                                              ImageTkPhotoImageThumbnail = ImageTkPhotoImageThumbnail
@@ -201,25 +199,6 @@ def files_selector(Prg):
     return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
                                        filetypes=(
                                        ("png files", "*.png"), ("jpeg files", "*.jpg"), ("all files", "*.*")))
-
-def img_load_pixels(Prg, ImgPath, Timer=False):
-    ImgOriginal = Image.open(ImgPath)
-    ImgWidth, ImgHeight = ImgOriginal.size
-
-    # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
-    PixelSample = ImgOriginal.getpixel((0, 0))
-    PixelDataSize = len(PixelSample)
-    print("Pixel Data size: ", PixelDataSize)
-
-    Pixels = ImgOriginal.load()
-
-    return Pixels, PixelDataSize, ImgWidth, ImgHeight
-
-def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
-    NumOfLoadedPics = len(Prg["ImagesLoaded"].keys())
-    if PreFix: PreFix += "_"
-    if PostFix: PostFix = "_" + PostFix
-    return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
 
 
 def frame_new(Prg, Parent, Width, Height, bg=""):

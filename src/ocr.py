@@ -16,12 +16,12 @@ def text_block_analyse(Prg,
     print("Num of Marks:", len(Marks.keys()))
     mark_display_on_console(Marks[1])
 
-def mark_collect(Prg, Img,
-                       ColorBlockBackgroundRgb=(255, 255, 255),
-                       ColorBlockBackgroundRgbDelta=(30, 30, 30),
-                       ColorBlockBackgroundGray=30,
-                       ColorBlockBackgroundGrayDelta=30,
-                       ):
+def mark_collect(  Prg, Img,
+                   ColorBlockBackgroundRgb=(255, 255, 255),
+                   ColorBlockBackgroundRgbDelta=(30, 30, 30),
+                   ColorBlockBackgroundGray=30,
+                   ColorBlockBackgroundGrayDelta=30,
+                   ):
 
     CoordsMarkPixels_and_parent_MarkId = dict()
 
@@ -64,18 +64,22 @@ def mark_collect(Prg, Img,
                 sys.exit(1)
 
             if PixelIsMark:
-                print(PixelNowCoords, ">>>", Img["Pixels"][(X, Y)])
+                print(PixelNowCoords, " -- MARK --> ", Img["Pixels"][(X, Y)])
                 CoordsMarkPixels_and_parent_MarkId[(X,Y)] = None
                 # MarkId is unknown by default
 
     Marks = dict()
     for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
         X, Y = Coord
-        print("Active coords", Coord)
+        # print("Active coords", Coord)
         if not MarkId:
 
             # if a neighbour elem has MarkId, use the same.
             # in Python 3.8 you can assign (X-1, Y)  to a variable
+
+            # IMPORTANT: HERE I can't use dict.get(key, default)  solution.
+            # because in that case I have to read all 8 neighbour pixel and it's slow, if we find a neighbour
+            # with MarkId we use the first match to save CPU
             if   (X-1, Y) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y)]:
                 MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y)]
 
@@ -106,7 +110,10 @@ def mark_collect(Prg, Img,
             else:
                 MarkId = len(Marks.keys())+1
 
-            Marks[MarkId] = {Coord: True}
+            if MarkId not in Marks:
+                Marks[MarkId] = dict()
+            Marks[MarkId][Coord] = True
+
             CoordsMarkPixels_and_parent_MarkId[Coord] = MarkId
 
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
@@ -115,4 +122,38 @@ def mark_collect(Prg, Img,
     return Marks
 
 def mark_display_on_console(Mark):
-    print(Mark)
+    Xmin = None
+    Ymin = None
+    Xmax = None
+    Ymax = None
+    # Determine Xmin, Ymin
+    for Coord in Mark:
+        X, Y = Coord
+        if Xmin is None:
+            Xmin = X
+            Ymin = Y
+            Xmax = X
+            Ymax = Y
+        if X < Xmin: Xmin = X
+        if Y < Ymin: Ymin = Y
+        if X > Xmax: Xmax = X
+        if Y > Ymax: Ymax = Y
+
+    # print("Xmin, Ymin, Xmax, Ymax", Xmin, Ymin, Xmax, Ymax)
+    RowNum = Ymax - Ymin + 1
+    ColumnNum = Xmax - Xmin + 1
+    OneRowTemplate = "." * ColumnNum + "\n"
+    Rows = (OneRowTemplate * RowNum).split()
+    #print("\n".join(Rows))
+
+    #print("RowNum:", RowNum)
+    #print("ColumnNum:", ColumnNum)
+
+    for Coord in Mark:
+        X, Y = Coord
+        Xrelative = X - Xmin
+        Yrelative = Y - Ymin
+        Rows[Yrelative] = Rows[Yrelative][:Xrelative] + "O" + Rows[Yrelative][Xrelative+1:]
+        # print(Xrelative, Yrelative)
+
+    print("\n".join(Rows) + "\n")

@@ -2,6 +2,7 @@
 
 import platform, sys, json, os, importlib
 
+
 def installed_environment_detect(Prg):
     Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
 
@@ -133,22 +134,31 @@ def file_test(Fn="", MsgErr="", ErrExit=False, PrintHardExit=False, MsgOk=""):
     return Ret
 
 def img_load_into_prg_structure(Prg, FileSelectedPath,
-                                ImgId, ImgWidth, ImgHeight,
-                                Pixels, PixelDataSize,
+                                ImgId,
                                 PixelsPreview = None,
-                                PixelsPreviewImg = {"size":[0,0]},
+                                PixelsPreviewImg = None,
                                 ImageTkPhotoImageThumbnail = None,
                                 ):
+
+    Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelectedPath)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
+    if Prg["Errors"]: return
+
     #  example  "TextSelectCoords" : [    one bubble can contain any coordinate pairs
     #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
     #                                ]
+    TextSelectPreviewPixelsWidth = 0
+    TextSelectPreviewPixelsHeight = 0
+    if PixelsPreviewImg:
+        TextSelectPreviewPixelsWidth = PixelsPreviewImg.size[0]
+        TextSelectPreviewPixelsHeight = PixelsPreviewImg.size[1]
+
     Prg["ImagesLoaded"][ImgId] = {
         "Reference2avoidGarbageCollector": ImageTkPhotoImageThumbnail,
         # TODO: use empty TextSelectCoords by default
         "TextSelectCoords": [  [[10, 10], [10, 50], [50, 50], [50, 10]]   ],  # here can be lists, with coordinate pairs,
         "TextSelectPreviewPixels": PixelsPreview,
-        "TextSelectPreviewPixelsWidth": PixelsPreviewImg.size[0],
-        "TextSelectPreviewPixelsHeight": PixelsPreviewImg.size[1],
+        "TextSelectPreviewPixelsWidth": TextSelectPreviewPixelsWidth,
+        "TextSelectPreviewPixelsHeight": TextSelectPreviewPixelsHeight,
         "FilePathOriginal": FileSelectedPath,
         "Pixels": Pixels,
         "PixelDataSize": PixelDataSize,
@@ -156,4 +166,29 @@ def img_load_into_prg_structure(Prg, FileSelectedPath,
         "Height": ImgHeight
     }
 
+
+def img_load_pixels(Prg, ImgPath, Timer=False):
+    try:
+        from PIL import Image
+    except ImportError:
+        Prg["Errors"].append("install.missing.module_pillow")
+        return
+
+    ImgOriginal = Image.open(ImgPath)
+    ImgWidth, ImgHeight = ImgOriginal.size
+
+    # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
+    PixelSample = ImgOriginal.getpixel((0, 0))
+    PixelDataSize = len(PixelSample)
+    print("Pixel Data size: ", PixelDataSize)
+
+    Pixels = ImgOriginal.load()
+
+    return Pixels, PixelDataSize, ImgWidth, ImgHeight
+
+def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
+    NumOfLoadedPics = len(Prg["ImagesLoaded"].keys())
+    if PreFix: PreFix += "_"
+    if PostFix: PostFix = "_" + PostFix
+    return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
 
