@@ -2,13 +2,10 @@ import util, sys
 
 def text_block_analyse(Prg,
                        PositionStart=(0, 0),
-                       ColorBlockBackgroundRgb=(255, 255, 255),
-                       ColorBlockBackgroundRgbDelta=(30, 30, 30),
-                       ColorBlockBackgroundGray=30,
-                       ColorBlockBackgroundGrayDelta=30,
                        ScanDirectionHorizontal="from_left_to_righ",
                        ScanDirectionVertical="from_top_to_bottom"
                        ):
+
     # I want to handle RGB or Grayscale images only,
     # so I handle 3 or 1 color channels
     print("Selected Image Id", Prg["ImageIdSelected"])

@@ -104,33 +104,22 @@ def files_thumbnails_load_button_cmd():  # it is called from Ui so we use global
     Prg = PrgGlobal
     Parent = Prg["Tkinter"]["FrameThumbnails"]
 
-    for FileSelected in files_selector(Prg):
-        ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelected)
-        ImageTkPhotoImageThumbnail = image_file_load_to_tk(Prg, FileSelected, Prg["UiThumbnailSize"])
-
-        PixelsPreviewImg = image_file_load(Prg, FileSelected, Prg["UiTextSelectPreviewSize"])
-        PixelsPreview = PixelsPreviewImg.load()
+    for FileSelectedPath in files_selector(Prg):
+        ImageTkPhotoImageThumbnail = image_file_load_to_tk(Prg, FileSelectedPath, Prg["UiThumbnailSize"])
 
         if ImageTkPhotoImageThumbnail:
-            ImageTkPhotoImageThumbnail.ImgId = ImgId  # all image knows his own id, if you want to remove them, delete them from loaded image list
-            Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelected)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
+            ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FileSelectedPath)
 
-            Prg["ImagesLoaded"][ImgId] = {
-                "Reference2avoidGarbageCollector": ImageTkPhotoImageThumbnail,
-                "TextSelectCoords": [  [ [10, 10], [10, 50], [50,50], [50, 10]]  ],  # here can be lists, with coordinate pairs,
-                "TextSelectPreviewPixels": PixelsPreview,
-                "TextSelectPreviewPixelsWidth": PixelsPreviewImg.size[0],
-                "TextSelectPreviewPixelsHeight": PixelsPreviewImg.size[1],
-                "FilePathOriginal": FileSelected,
-                "Pixels": Pixels,
-                "PixelDataSize": PixelDataSize,
-                "Width": ImgWidth,
-                "Height": ImgHeight
-            }
+            PixelsPreviewImg = image_file_load(Prg, FileSelectedPath, Prg["UiTextSelectPreviewSize"])
+            PixelsPreview = PixelsPreviewImg.load()
 
-            #  example  "TextSelectCoords" : [    one bubble can contain any coordinate pairs
-            #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
-            #                                ]
+            Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelectedPath)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
+
+            util.img_load_into_prg_structure(Prg, FileSelectedPath, ImgId, ImgWidth, ImgHeight, Pixels, PixelDataSize,
+                                             PixelsPreview = PixelsPreview,
+                                             PixelsPreviewImg=PixelsPreviewImg,
+                                             ImageTkPhotoImageThumbnail = ImageTkPhotoImageThumbnail
+            )
 
             Panel = Tkinter.Label(Parent, image=ImageTkPhotoImageThumbnail)
             Panel.pack()

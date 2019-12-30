@@ -132,3 +132,28 @@ def file_test(Fn="", MsgErr="", ErrExit=False, PrintHardExit=False, MsgOk=""):
 
     return Ret
 
+def img_load_into_prg_structure(Prg, FileSelectedPath,
+                                ImgId, ImgWidth, ImgHeight,
+                                Pixels, PixelDataSize,
+                                PixelsPreview = None,
+                                PixelsPreviewImg = {"size":[0,0]},
+                                ImageTkPhotoImageThumbnail = None,
+                                ):
+    #  example  "TextSelectCoords" : [    one bubble can contain any coordinate pairs
+    #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
+    #                                ]
+    Prg["ImagesLoaded"][ImgId] = {
+        "Reference2avoidGarbageCollector": ImageTkPhotoImageThumbnail,
+        # TODO: use empty TextSelectCoords by default
+        "TextSelectCoords": [  [[10, 10], [10, 50], [50, 50], [50, 10]]   ],  # here can be lists, with coordinate pairs,
+        "TextSelectPreviewPixels": PixelsPreview,
+        "TextSelectPreviewPixelsWidth": PixelsPreviewImg.size[0],
+        "TextSelectPreviewPixelsHeight": PixelsPreviewImg.size[1],
+        "FilePathOriginal": FileSelectedPath,
+        "Pixels": Pixels,
+        "PixelDataSize": PixelDataSize,
+        "Width": ImgWidth,
+        "Height": ImgHeight
+    }
+
+

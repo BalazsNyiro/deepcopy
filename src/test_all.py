@@ -71,6 +71,10 @@ class TestMethods(unittest.TestCase):
         Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
         self.assertTrue(util.file_test(Path))
 
+    def test_ocr_mark_collect___word_the(self):
+        Path = os.path.join(Prg["DirPrgParent"], "test", "test_mark_finding_word_the__font_ubuntu_24pt.png")
+
+
 def run_all_tests(P):
     print("run all tests")
     global Prg
