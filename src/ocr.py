@@ -72,11 +72,12 @@ def mark_collect(  Prg, Img,
 
     def markid_detect_possible_neighbour(Coord, MarkIdsPossible):
         MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
-        if MarkIdNeighbour: MarkIdsPossible.append(MarkIdNeighbour)
+        # same MarkId can be in more than one neighbour
+        if MarkIdNeighbour and MarkIdNeighbour not in MarkIdsPossible:
+            MarkIdsPossible.append(MarkIdNeighbour)
 
     for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
         X, Y = Coord
-        # print("Active coords", Coord)
         if not MarkId:
             MarkIdsPossible = []
 
@@ -98,18 +99,37 @@ def mark_collect(  Prg, Img,
 
             MarkId = MarkIdsPossible[0]
 
+            print("Active coords", Coord, MarkId, MarkIdsPossible)
             if len(MarkIdsPossible) > 1:
+                print("  MarkId moving")
                 # we can connect more MarkIds into One.
                 # Move all pixels into the first markId
+
+                # in this example we move id_1 to id_1, in this case don't move  the id
+                #   (2, 11) 1  id moving ->  1
+                #   (3, 11) 1  id moving ->  1
+                #   (4, 11) 1  id moving ->  1
+                #   (5, 6) 2  id moving ->  1
+                #   (5, 7) 2  id moving ->  1
+                #   (5, 8) 2  id moving ->  1
+                #   (5, 9) 2  id moving ->  1
                 for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
-                    if MarkIdBeforeMoving in MarkIdsPossible:
+                    if MarkIdBeforeMoving in MarkIdsPossible and MarkIdBeforeMoving != MarkId:
+                        print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
                         CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkId
+                        Marks[MarkId][CoordMaybeMoved] = True
+
+                    else:
+                        print(" ", CoordMaybeMoved, MarkIdBeforeMoving)
+                for MarkIdNotMoreUsed in MarkIdsPossible[1:]:
+                    del Marks[MarkIdNotMoreUsed]
 
             if MarkId not in Marks:
                 Marks[MarkId] = dict()
             Marks[MarkId][Coord] = True
 
             CoordsMarkPixels_and_parent_MarkId[Coord] = MarkId
+
 
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
     print("total / mark pixel ratio: ", X*Y / len(CoordsMarkPixels_and_parent_MarkId))
