@@ -69,46 +69,41 @@ def mark_collect(  Prg, Img,
                 # MarkId is unknown by default
 
     Marks = dict()
+
+    def markid_detect_possible_neighbour(Coord, MarkIdsPossible):
+        MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
+        if MarkIdNeighbour: MarkIdsPossible.append(MarkIdNeighbour)
+
     for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
         X, Y = Coord
         # print("Active coords", Coord)
         if not MarkId:
+            MarkIdsPossible = []
 
-            # if a neighbour elem has MarkId, use the same.
-            # in Python 3.8 you can assign (X-1, Y)  to a variable
+            CoordLeftUp  = (X-1, Y-1); CoordLeft  = (X-1, Y); CoordLeftDown = (X-1, Y+1)
+            CoordRightUp = (X+1, Y-1); CoordRight = (X+1, Y); CoordRightDown = (X+1, Y+1)
 
-            # IMPORTANT: HERE I can't use dict.get(key, default)  solution.
-            # because in that case I have to read all 8 neighbour pixel and it's slow, if we find a neighbour
-            # with MarkId we use the first match to save CPU
-            if   (X-1, Y) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y)]
+            CoordUp = (X, Y-1); CoordDown = (X, Y+1)
 
-            elif (X-1, Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]
+            markid_detect_possible_neighbour(CoordLeftUp,    MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordLeft,      MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordLeftDown,  MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordRightUp,   MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordRight,     MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordRightDown, MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordUp,        MarkIdsPossible)
+            markid_detect_possible_neighbour(CoordDown,      MarkIdsPossible)
+            if not MarkIdsPossible:
+                MarkIdsPossible.append(len(Marks.keys())+1)
 
-            elif (X,   Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X,   Y-1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X,   Y-1)]
+            MarkId = MarkIdsPossible[0]
 
-            elif (X+1, Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X+1, Y-1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X+1, Y-1)]
-
-            elif (X+1, Y  ) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X+1, Y  )]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X+1, Y  )]
-
-            elif (X+1, Y+1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X+1, Y+1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X+1, Y+1)]
-
-            elif (X,   Y+1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X,   Y+1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X,   Y+1)]
-
-            elif (X-1, Y+1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y+1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y+1)]
-
-            elif (X-1, Y-1) in CoordsMarkPixels_and_parent_MarkId and CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]:
-                MarkId = CoordsMarkPixels_and_parent_MarkId[(X-1, Y-1)]
-
-            else:
-                MarkId = len(Marks.keys())+1
+            if len(MarkIdsPossible) > 1:
+                # we can connect more MarkIds into One.
+                # Move all pixels into the first markId
+                for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
+                    if MarkIdBeforeMoving in MarkIdsPossible:
+                        CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkId
 
             if MarkId not in Marks:
                 Marks[MarkId] = dict()
