@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import platform, sys, json, os, importlib
+import platform, sys, json, os, importlib, gzip
 
 
 def installed_environment_detect(Prg):
@@ -95,7 +95,9 @@ def file_read_all(Fname="", Mode="r"): # if you want read binary, write "rb"
     return Content
 
 def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
-    if Prg["Errors"]: return
+    if Prg["Errors"]:
+        print("file_read_lines, Return because errors")
+        return
 
     if isinstance(Fname, list):
         Files = Fname
@@ -107,12 +109,13 @@ def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
     if file_test(Fname):
         with open(Fname, 'r') as F:
             if Strip:
-                return [L.strip() for L in f.readlines()]
+                return [L.strip() for L in F.readlines()]
             else:
-                return f.readlines()
+                return F.readlines()
 
     elif ErrMsgNoFile:
         Prg["Errors"].append(ErrMsgNoFile)
+        print(ErrMsgNoFile)
         if ErrExit:
             sys.exit(1)
     return []
@@ -132,6 +135,40 @@ def file_test(Fn="", MsgErr="", ErrExit=False, PrintHardExit=False, MsgOk=""):
             print(MsgOk)
 
     return Ret
+
+
+def file_append(Prg, Fname="", Content="",
+                Mode="a"):  # you can append in binary mode, too
+    file_write(Prg, Fname=Fname, Content=Content, Mode=Mode)
+
+
+def file_write(Prg, Fname="", Content="", Mode="w", Gzipped=False, CompressLevel=9):
+    if not Fname:
+        Prg["Errors"].append("file_write error: not fname")
+        return
+    print("writing:", Fname)
+    # if we received a list of string, convert it to string:
+    if isinstance(Content, list):
+        Content = '\n'.join(Content)
+
+    if Gzipped:
+        if not "b" in Mode:
+            Mode = Mode + "b"
+        OutputBytes = bytes(Content, 'utf-8')
+        Content = gzip.compress(OutputBytes, CompressLevel)
+
+    try:
+        f = open(Fname, Mode)
+        f.write(Content)
+        f.close()
+        return True
+    except:
+        Prg["Errors"].append("file_write error: " + Fname)
+        return False
+
+def dir_create_if_necessary(Prg, Path):
+    if not os.path.isdir(Path):
+        os.mkdir(Path)
 
 def img_load_into_prg_structure(Prg, FileSelectedPath,
                                 ImgId,

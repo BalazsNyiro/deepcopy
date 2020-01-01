@@ -95,7 +95,7 @@ def mark_collect(  Prg, Img,
             markid_detect_possible_neighbour(CoordUp,        MarkIdsPossible)
             markid_detect_possible_neighbour(CoordDown,      MarkIdsPossible)
             if not MarkIdsPossible:
-                MarkIdsPossible.append(len(Marks.keys())+1)
+                MarkIdsPossible.append(len(Marks.keys()))
 
             MarkId = MarkIdsPossible[0]
 
@@ -171,4 +171,4 @@ def mark_display_on_console(Mark):
         Rows[Yrelative] = Rows[Yrelative][:Xrelative] + "O" + Rows[Yrelative][Xrelative+1:]
         # print(Xrelative, Yrelative)
 
-    print("\n".join(Rows) + "\n")
+    return "\n".join(Rows) + "\n"
