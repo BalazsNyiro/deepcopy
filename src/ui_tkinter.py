@@ -8,25 +8,20 @@ try:
     import tkinter as Tkinter
     import tkinter.filedialog as FileDialog
 except ImportError:
-    ErrorsLocal.append("install.missing.module_tkinter")
+    util.error_display("install.missing.module_tkinter - search this key from ui_messages.json", "ui_tkinter, tkinter/filedialog import")
 
 try:
     from PIL import Image
 except ImportError:
-    ErrorsLocal.append("install.missing.module_pillow")
+    util.error_display("install.missing.module_pillow - search this key from ui_messages.json", "ui_tkinter, Image import")
 
 try:
     from PIL import ImageTk
 except ImportError:
-    ErrorsLocal.append("install.missing.package_ImageTk")
+    util.error_display("install.missing.package_ImageTk - search this key from ui_messages.json", "ui_tkinter, ImageTk import")
 
 
 def window_main(Prg):
-    for ErrTxtKey in ErrorsLocal:
-        Prg["Errors"].append(util.ui_msg(Prg, ErrTxtKey))
-
-    if Prg["Errors"]: return
-
     # store passed Prg as a global variable, too, because Tkinter buttons need a state
     # I collect the msg NOT in the if because if one of them is missing, it causes Error
     global PrgGlobal

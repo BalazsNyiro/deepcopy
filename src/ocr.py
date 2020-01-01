@@ -18,8 +18,6 @@ def text_block_analyse(Prg,
 
 # the root dir is the program's parent dir
 def mark_collect_from_img_file(Prg, FilePathElems):
-    if Prg["Errors"]: return
-
     FilePathImg = os.path.join(Prg["DirPrgParent"], *FilePathElems)
     ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
     util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
@@ -150,8 +148,6 @@ def mark_collect_from_img_object(Prg, Img,
     return Marks
 
 def mark_display_on_console(Prg, Mark):
-    if Prg["Errors"]: return
-
     Xmin = None
     Ymin = None
     Xmax = None

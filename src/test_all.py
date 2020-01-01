@@ -6,7 +6,7 @@ import unittest, util, os, ocr
 
 class TestMethods(unittest.TestCase):
     def PrgEmpty(self):
-        return {"Errors":[]}
+        return {}
 
     def test_module_available(self):
         self.assertFalse(util.module_available(self.PrgEmpty(), "unknown_module", "please install unknown module :-)"))
@@ -14,8 +14,6 @@ class TestMethods(unittest.TestCase):
 
     def test_ui_msg(self):
         Prg = {"Os": "Linux",
-               "Errors": [],
-               "Warnings": [],
                "UiLanguage": "hun",
                "UiMessages": {
                    "Menu" : {
@@ -75,7 +73,6 @@ class TestMethods(unittest.TestCase):
         FileWantedResult = ["test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
         Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
         difference_display(Prg, self, Marks, TestWantedResults)
-        util.error_display(Prg)
 
 # if you want to execute only the tests:
 # ./deepcopy.py testonly
@@ -90,8 +87,6 @@ if __name__ == '__main__':
 
 # TODO: a more general diff display in console without linux vimdiff
 def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults):
-    if Prg["Errors"]: return
-
     for Key in MarksNowDetected.keys():
         MarkDetected = ocr.mark_display_on_console(Prg, MarksNowDetected[Key])
         MarkWanted = TestWantedResults[Key]
@@ -108,16 +103,12 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults):
 
 
 def marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult):
-    if Prg["Errors"]: return
-
     Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)
     print("Test, Num of Marks:", len(Marks.keys()))
     TestWantedResults = test_results_load_from_mark_detection(Prg, FileWantedResult)
     return Marks, TestWantedResults
 
 def test_results_load_from_mark_detection(Prg, FileResultPathElems):
-    if Prg["Errors"]: return
-
     Marks = dict()
     MarkId = 0
     MarkLines = []

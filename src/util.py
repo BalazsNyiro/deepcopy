@@ -7,10 +7,10 @@ def installed_environment_detect(Prg):
     Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
 
     if Major < 3:
-        Prg["Errors"].append("Please use deepcopy with minimum Python 3.7!")
+        warning_display("Please use deepcopy with minimum Python 3.7!")
 
     if Major == 3 and Minor < 7:
-        Prg["Warnings"].append("Tested with Python 3.7. Maybe it works with older versions.")
+        warning_display("Tested with Python 3.7. Maybe it works with older versions.")
 
 # def module_import_
 
@@ -18,7 +18,7 @@ def installed_environment_detect(Prg):
 # so module_available is not totally enough to successful import.
 def module_available(Prg, ModuleName, Msg):
     if not importlib.util.find_spec(ModuleName):
-        Prg["Errors"].append(Msg)
+        warning_display(Msg)
         return False
     return True
 
@@ -26,9 +26,9 @@ def os_detect(Prg):
     Os = Prg["Os"] = platform.system() 
     print(ui_msg(Prg, "os_detect.detected").format(Os))
     if Os != "Linux" and Os != "Windows":
-        Prg["Errors"].append("Not supported Os detected: {:s}".format(Os))
+        warning_display("Not supported Os detected: {:s}".format(Os))
         if Os == "Darwin": 
-            Prg["Warnings"].append("Theoretically DeepCopy can run on Mac if the necessary external commands are available, TODO in the future")
+            warning_display("Theoretically DeepCopy can run on Mac if the necessary external commands are available, TODO in the future")
 
 def ui_msg_init(Prg):
     Txt = file_read_all( os.path.join(Prg["DirPrgParent"], "resources", "ui_messages.json"))
@@ -37,7 +37,7 @@ def ui_msg_init(Prg):
 # MsgPath example: os_detect.detected
 # if we process an error message and later the program can be broken,
 # we print the message immediately
-def ui_msg(Prg, MsgPath, PrintInTerminal=False):
+def ui_msg(Prg, MsgPath):
 
     # it can handle one path or list of paths
     if isinstance(MsgPath, list):
@@ -52,15 +52,13 @@ def ui_msg(Prg, MsgPath, PrintInTerminal=False):
             Container = Container[Key]
         else:
             Msg = "Ui message key is unknown: " + Prg["UiLanguage"] + " - " + MsgPath
-            Prg["Errors"].append(Msg)
-            if PrintInTerminal: print(Msg)
+            warning_display(Msg)
             return Msg
 
     # check: eng msg always has to be defined
     if "eng" not in Container:
         Msg = "Ui message, default eng translation is missing: " + MsgPath
-        Prg["Errors"].append(Msg)
-        if PrintInTerminal: print(Msg)
+        warning_display(Msg)
         return Msg
 
     # here we get one lang block, for example: {"eng": "menu", "hun":"menü"}
@@ -68,17 +66,16 @@ def ui_msg(Prg, MsgPath, PrintInTerminal=False):
         return Container[Prg["UiLanguage"]]
     else:
         if "eng" in Container:
-            Prg["Warnings"].append("Ui message is unknown: " + Prg["UiLanguage"] + " - " + MsgPath)
+            warning_display("Ui message is unknown: " + Prg["UiLanguage"] + " - " + MsgPath)
             return Container["eng"]
 
 
-def warning_display(Prg):
-    list_display(Prg["Warnings"], "Warnings:")
-def error_display(Prg):
-    list_display(Prg["Errors"], "Errors:")
-    if Prg["Errors"]:
-        print("\nBecause of these errors DeepCopy exists:")
-        sys.exit(1)
+def warning_display(Msg):
+    print("Warning: ", Msg)
+def error_display(Msg, Caller):
+    print("Error:", Msg, " ("+Caller+")")
+    sys.exit(1)
+
 def list_display(List, Title):
     if not List:
         return
@@ -95,10 +92,6 @@ def file_read_all(Fname="", Mode="r"): # if you want read binary, write "rb"
     return Content
 
 def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
-    if Prg["Errors"]:
-        print("file_read_lines, Return because errors")
-        return
-
     if isinstance(Fname, list):
         Files = Fname
         Out = []
@@ -114,8 +107,7 @@ def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
                 return F.readlines()
 
     elif ErrMsgNoFile:
-        Prg["Errors"].append(ErrMsgNoFile)
-        print(ErrMsgNoFile)
+        error_display(ErrMsgNoFile, "file_read_lines nofile")
         if ErrExit:
             sys.exit(1)
     return []
@@ -143,10 +135,8 @@ def file_append(Prg, Fname="", Content="",
 
 
 def file_write(Prg, Fname="", Content="", Mode="w", Gzipped=False, CompressLevel=9):
-    if Prg["Errors"]: return
-
     if not Fname:
-        Prg["Errors"].append("file_write error: not fname")
+        warning_display("file_write error: not fname")
         return
     print("writing:", Fname)
     # if we received a list of string, convert it to string:
@@ -165,7 +155,7 @@ def file_write(Prg, Fname="", Content="", Mode="w", Gzipped=False, CompressLevel
         f.close()
         return True
     except:
-        Prg["Errors"].append("file_write error: " + Fname)
+        warning_display("file_write error: " + Fname)
         return False
 
 def dir_create_if_necessary(Prg, Path):
@@ -180,7 +170,6 @@ def img_load_into_prg_structure(Prg, FileSelectedPath,
                                 ):
 
     Pixels, PixelDataSize, ImgWidth, ImgHeight = img_load_pixels(Prg, FileSelectedPath)  # RGB has 3 integers, RGBA has 4, Grayscale has 1 integer
-    if Prg["Errors"]: return
 
     #  example  "TextSelectCoords" : [    one bubble can contain any coordinate pairs
     #                                     [ [5,10], [256, 10], [256, 612], [5, 612] ]
@@ -210,8 +199,7 @@ def img_load_pixels(Prg, ImgPath, Timer=False):
     try:
         from PIL import Image
     except ImportError:
-        Prg["Errors"].append("install.missing.module_pillow")
-        return
+        error_display(ui_msg("install.missing.module_pillow"), "util.py PIL import")
 
     ImgOriginal = Image.open(ImgPath)
     ImgWidth, ImgHeight = ImgOriginal.size

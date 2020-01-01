@@ -5,8 +5,6 @@ import os, sys, importlib, tempfile
 
 DirPrgParent = os.path.dirname(os.path.realpath(__file__))
 Prg = {"Os": "",
-       "Errors": [],
-       "Warnings": [],
        "UiLanguage": "eng",
        "UiMessages": "",
        "UiInterface": "ui_tkinter",
@@ -46,8 +44,5 @@ if TestOnly:
 
 UiInterface = importlib.import_module(Prg["UiInterface"])
 UiInterface.window_main(Prg)
-
-util.warning_display(Prg)
-util.error_display(Prg)
 
 # TODO: clean temporary dir after execute
