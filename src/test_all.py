@@ -73,24 +73,8 @@ class TestMethods(unittest.TestCase):
     def test_ocr_mark_collect___word_the(self):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
-        Marks, TestWantedResults = load_marks_and_wanted_test_results(Prg, FilePathImg, FileWantedResult)
-
-        for Key in Marks.keys():
-            MarkDetected = ocr.mark_display_on_console(Marks[Key])
-            MarkWanted = TestWantedResults[Key]
-
-            if MarkDetected != MarkWanted:
-                PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
-                PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
-                util.file_write(Prg, PathDetected, MarkDetected)
-                util.file_write(Prg, PathWanted, MarkWanted)
-                # theoretically all tests has been ok in released versions, this case happens only in dev time
-                print("Dev message: test comparing with vimdiff:")
-                os.system("vimdiff " + PathDetected + " " + PathWanted)
-            self.assertEqual(MarkDetected, MarkWanted)
-
-        # ocr.mark_display_on_console(Marks[1])
-
+        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        difference_display(Prg, self, Marks, TestWantedResults)
         util.error_display(Prg)
 
 # if you want to execute only the tests:
@@ -104,16 +88,36 @@ def run_all_tests(P):
 if __name__ == '__main__':
     run_all_tests({})
 
-def load_marks_and_wanted_test_results(Prg, FilePathImg, FileWantedResult):
+# TODO: a more general diff display in console without linux vimdiff
+def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults):
+    if Prg["Errors"]: return
+
+    for Key in MarksNowDetected.keys():
+        MarkDetected = ocr.mark_display_on_console(Prg, MarksNowDetected[Key])
+        MarkWanted = TestWantedResults[Key]
+
+        if MarkDetected != MarkWanted:
+            PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
+            PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
+            util.file_write(Prg, PathDetected, MarkDetected)
+            util.file_write(Prg, PathWanted, MarkWanted)
+            # theoretically all tests has been ok in released versions, this case happens only in dev time
+            print("Dev message: test comparing with vimdiff:")
+            os.system("vimdiff " + PathDetected + " " + PathWanted)
+        SelfObj.assertEqual(MarkDetected, MarkWanted)
+
+
+def marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult):
+    if Prg["Errors"]: return
+
     Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)
     print("Test, Num of Marks:", len(Marks.keys()))
-    TestWantedResults = load_test_result_from_mark_detection(Prg, FileWantedResult)
-    if Prg["Errors"]:
-        print(Prg["Errors"])
-        sys.exit(1)
+    TestWantedResults = test_results_load_from_mark_detection(Prg, FileWantedResult)
     return Marks, TestWantedResults
 
-def load_test_result_from_mark_detection(Prg, FileResultPathElems):
+def test_results_load_from_mark_detection(Prg, FileResultPathElems):
+    if Prg["Errors"]: return
+
     Marks = dict()
     MarkId = 0
     MarkLines = []

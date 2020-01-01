@@ -143,6 +143,8 @@ def file_append(Prg, Fname="", Content="",
 
 
 def file_write(Prg, Fname="", Content="", Mode="w", Gzipped=False, CompressLevel=9):
+    if Prg["Errors"]: return
+
     if not Fname:
         Prg["Errors"].append("file_write error: not fname")
         return
