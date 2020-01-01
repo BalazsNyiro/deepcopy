@@ -64,21 +64,23 @@ def mark_collect(  Prg, Img,
                 sys.exit(1)
 
             if PixelIsMark:
-                print(PixelNowCoords, " -- MARK --> ", Img["Pixels"][(X, Y)])
+                # print(PixelNowCoords, " -- MARK --> ", Img["Pixels"][(X, Y)])
                 CoordsMarkPixels_and_parent_MarkId[(X,Y)] = None
                 # MarkId is unknown by default
 
     Marks = dict()
 
     def markid_detect_possible_neighbour(Coord, MarkIdsPossible):
+        # print("  possible? ", Coord)
         MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
         # same MarkId can be in more than one neighbour
-        if MarkIdNeighbour and MarkIdNeighbour not in MarkIdsPossible:
+        if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
             MarkIdsPossible.append(MarkIdNeighbour)
 
     for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
         X, Y = Coord
-        if not MarkId:
+        if MarkId is None:
+            # print("\n\nCoord now: ", Coord)
             MarkIdsPossible = []
 
             CoordLeftUp  = (X-1, Y-1); CoordLeft  = (X-1, Y); CoordLeftDown = (X-1, Y+1)
@@ -99,9 +101,10 @@ def mark_collect(  Prg, Img,
 
             MarkId = MarkIdsPossible[0]
 
-            print("Active coords", Coord, MarkId, MarkIdsPossible)
+            # print("Active coords", Coord, MarkId, MarkIdsPossible)
             if len(MarkIdsPossible) > 1:
-                print("  MarkId moving")
+                # print("  MarkId moving")
+
                 # we can connect more MarkIds into One.
                 # Move all pixels into the first markId
 
@@ -115,12 +118,10 @@ def mark_collect(  Prg, Img,
                 #   (5, 9) 2  id moving ->  1
                 for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
                     if MarkIdBeforeMoving in MarkIdsPossible and MarkIdBeforeMoving != MarkId:
-                        print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
+                        # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
                         CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkId
                         Marks[MarkId][CoordMaybeMoved] = True
 
-                    else:
-                        print(" ", CoordMaybeMoved, MarkIdBeforeMoving)
                 for MarkIdNotMoreUsed in MarkIdsPossible[1:]:
                     del Marks[MarkIdNotMoreUsed]
 
@@ -171,4 +172,4 @@ def mark_display_on_console(Mark):
         Rows[Yrelative] = Rows[Yrelative][:Xrelative] + "O" + Rows[Yrelative][Xrelative+1:]
         # print(Xrelative, Yrelative)
 
-    return "\n".join(Rows) + "\n"
+    return "\n".join(Rows)

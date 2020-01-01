@@ -83,23 +83,21 @@ class TestMethods(unittest.TestCase):
         TestWantedResults = load_test_result_mark_detection(Prg, FilePathMarkDetect_the)
         if Prg["Errors"]: return
 
-        for ResultKey, ResultTxt in TestWantedResults.items():
-            print("ResultKey:", ResultKey)
-            print(ResultTxt)
-
         for Key in Marks.keys():
             MarkDetected = ocr.mark_display_on_console(Marks[Key])
             MarkWanted = TestWantedResults[Key]
-            PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
-            PathWanted   = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
-            util.file_write(Prg, PathDetected, MarkDetected)
-            util.file_write(Prg, PathWanted, MarkWanted)
+
             if Prg["Errors"]:
                 print(Prg["Errors"])
             else:
-                # theoretically all tests has been ok in released versions, this case happens only in dev time
-                print("Dev message: test comparing with vimdiff:")
-                os.system("vimdiff " + PathDetected + " " + PathWanted)
+                if MarkDetected != MarkWanted:
+                    PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
+                    PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
+                    util.file_write(Prg, PathDetected, MarkDetected)
+                    util.file_write(Prg, PathWanted, MarkWanted)
+                    # theoretically all tests has been ok in released versions, this case happens only in dev time
+                    print("Dev message: test comparing with vimdiff:")
+                    os.system("vimdiff " + PathDetected + " " + PathWanted)
             self.assertEqual(MarkDetected, MarkWanted)
 
         # ocr.mark_display_on_console(Marks[1])
