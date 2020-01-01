@@ -1,4 +1,4 @@
-import util, sys
+import util, sys, os
 
 def text_block_analyse(Prg,
                        PositionStart=(0, 0),
@@ -12,16 +12,26 @@ def text_block_analyse(Prg,
     Img = Prg["ImagesLoaded"][Prg["ImageIdSelected"]]
     print("Img width, height: ", Img["Width"], Img["Height"])
 
-    Marks = mark_collect(Prg, Img)
+    Marks = mark_collect_from_img_object(Prg, Img)
     print("Num of Marks:", len(Marks.keys()))
     mark_display_on_console(Marks[1])
 
-def mark_collect(  Prg, Img,
-                   ColorBlockBackgroundRgb=(255, 255, 255),
-                   ColorBlockBackgroundRgbDelta=(30, 30, 30),
-                   ColorBlockBackgroundGray=30,
-                   ColorBlockBackgroundGrayDelta=30,
-                   ):
+# the root dir is the program's parent dir
+def mark_collect_from_img_file(Prg, FilePathElems):
+    FilePathImg = os.path.join(Prg["DirPrgParent"], *FilePathElems)
+    ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
+    util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
+    Img = Prg["ImagesLoaded"][ImgId]
+    Marks = mark_collect_from_img_object(Prg, Img)
+    return Marks
+
+
+def mark_collect_from_img_object(Prg, Img,
+                                 ColorBlockBackgroundRgb=(255, 255, 255),
+                                 ColorBlockBackgroundRgbDelta=(30, 30, 30),
+                                 ColorBlockBackgroundGray=30,
+                                 ColorBlockBackgroundGrayDelta=30,
+                                 ):
 
     CoordsMarkPixels_and_parent_MarkId = dict()
 

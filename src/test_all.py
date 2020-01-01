@@ -71,33 +71,28 @@ class TestMethods(unittest.TestCase):
         self.assertTrue(util.file_test(Path))
 
     def test_ocr_mark_collect___word_the(self):
-        FilePathImg = os.path.join(Prg["DirPrgParent"], "test", "test_mark_finding_word_the__font_ubuntu_24pt.png")
-        ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
-        util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
-        Img = Prg["ImagesLoaded"][ImgId]
-        Marks = ocr.mark_collect(Prg, Img)
+        FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
+        Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)
         print("Test, Num of Marks:", len(Marks.keys()))
 
-
-        FilePathMarkDetect_the = os.path.join(Prg["DirPrgParent"], "test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt")
-        TestWantedResults = load_test_result_mark_detection(Prg, FilePathMarkDetect_the)
-        if Prg["Errors"]: return
+        FileWantedResult = ["test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
+        TestWantedResults = load_test_result_mark_detection(Prg, FileWantedResult)
+        if Prg["Errors"]:
+            print(Prg["Errors"])
+            sys.exit(1)
 
         for Key in Marks.keys():
             MarkDetected = ocr.mark_display_on_console(Marks[Key])
             MarkWanted = TestWantedResults[Key]
 
-            if Prg["Errors"]:
-                print(Prg["Errors"])
-            else:
-                if MarkDetected != MarkWanted:
-                    PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
-                    PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
-                    util.file_write(Prg, PathDetected, MarkDetected)
-                    util.file_write(Prg, PathWanted, MarkWanted)
-                    # theoretically all tests has been ok in released versions, this case happens only in dev time
-                    print("Dev message: test comparing with vimdiff:")
-                    os.system("vimdiff " + PathDetected + " " + PathWanted)
+            if MarkDetected != MarkWanted:
+                PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
+                PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
+                util.file_write(Prg, PathDetected, MarkDetected)
+                util.file_write(Prg, PathWanted, MarkWanted)
+                # theoretically all tests has been ok in released versions, this case happens only in dev time
+                print("Dev message: test comparing with vimdiff:")
+                os.system("vimdiff " + PathDetected + " " + PathWanted)
             self.assertEqual(MarkDetected, MarkWanted)
 
         # ocr.mark_display_on_console(Marks[1])
@@ -115,11 +110,12 @@ def run_all_tests(P):
 if __name__ == '__main__':
     run_all_tests({})
 
-def load_test_result_mark_detection(Prg, FileResultPath):
+def load_test_result_mark_detection(Prg, FileResultPathElems):
     Marks = dict()
     MarkId = 0
     MarkLines = []
-
+    FileResultPath =os.path.join(Prg["DirPrgParent"], *FileResultPathElems)
+    [Prg["DirPrgParent"], "test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
     print(FileResultPath)
     for Line in util.file_read_lines(Prg, Fname=FileResultPath):
         Line = Line.strip()
@@ -131,5 +127,4 @@ def load_test_result_mark_detection(Prg, FileResultPath):
         else:
             MarkLines.append(Line)
     return Marks
-
 
