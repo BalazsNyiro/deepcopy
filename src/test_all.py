@@ -72,14 +72,8 @@ class TestMethods(unittest.TestCase):
 
     def test_ocr_mark_collect___word_the(self):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
-        Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)
-        print("Test, Num of Marks:", len(Marks.keys()))
-
         FileWantedResult = ["test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
-        TestWantedResults = load_test_result_mark_detection(Prg, FileWantedResult)
-        if Prg["Errors"]:
-            print(Prg["Errors"])
-            sys.exit(1)
+        Marks, TestWantedResults = load_marks_and_wanted_test_results(Prg, FilePathImg, FileWantedResult)
 
         for Key in Marks.keys():
             MarkDetected = ocr.mark_display_on_console(Marks[Key])
@@ -110,7 +104,16 @@ def run_all_tests(P):
 if __name__ == '__main__':
     run_all_tests({})
 
-def load_test_result_mark_detection(Prg, FileResultPathElems):
+def load_marks_and_wanted_test_results(Prg, FilePathImg, FileWantedResult):
+    Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)
+    print("Test, Num of Marks:", len(Marks.keys()))
+    TestWantedResults = load_test_result_from_mark_detection(Prg, FileWantedResult)
+    if Prg["Errors"]:
+        print(Prg["Errors"])
+        sys.exit(1)
+    return Marks, TestWantedResults
+
+def load_test_result_from_mark_detection(Prg, FileResultPathElems):
     Marks = dict()
     MarkId = 0
     MarkLines = []
