@@ -148,7 +148,13 @@ def mark_collect_from_img_object(Prg, Img,
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
     print("total / mark pixel ratio: ", X*Y / len(CoordsMarkPixels_and_parent_MarkId))
 
-    return Marks
+    # the keys can be missing: [0, 2, 3]
+    MarkReturn = dict()
+    Id = 0
+    for Val in Marks.values(): # here the keys will be re-setted: 0, 1, 2
+        MarkReturn[Id] = Val
+        Id += 1
+    return MarkReturn
 
 def mark_display_on_console(Prg, Mark):
     Xmin = None

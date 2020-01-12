@@ -4,14 +4,11 @@
 import unittest, util, os, ocr
 
 class TestMethodsAnalysed(unittest.TestCase):
-    def test_ocr_mark_collect___base_abc_ubuntu(self):
-
-        FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
-        FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
-
-        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        # difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
-        difference_display(Prg, self, MarksNowDetected, TestWantedResults)
+    def test_ocr_mark_collect___word_the(self):
+        FilePathImg      = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
+        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        difference_display(Prg, self, Marks, TestWantedResults)
 
 
 class TestMethods(unittest.TestCase):
@@ -77,11 +74,14 @@ class TestMethods(unittest.TestCase):
         Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
         self.assertTrue(util.file_test(Prg, Path))
 
-    def test_ocr_mark_collect___word_the(self):
-        FilePathImg      = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
-        FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
-        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        difference_display(Prg, self, Marks, TestWantedResults, FileWantedResult)
+    def test_ocr_mark_collect___base_abc_ubuntu(self):
+
+        FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
+
+        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        # difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
+        difference_display(Prg, self, MarksNowDetected, TestWantedResults)
 
 # if you want to execute only the tests:
 # ./deepcopy.py testonly
@@ -99,8 +99,8 @@ if __name__ == '__main__':
 
 # TODO: a more general diff display in console without linux vimdiff
 def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=None):
-    print("Num of Marks now detected: ", len(MarksNowDetected.keys()))
-    print("Num of wanted results: ", len( TestWantedResults))
+    print("Num of Marks now detected: ", len(MarksNowDetected.keys()), MarksNowDetected.keys())
+    print("Num of wanted results: ", len( TestWantedResults), TestWantedResults.keys())
     for Key in MarksNowDetected.keys():
         MarkDetected = ocr.mark_display_on_console(Prg, MarksNowDetected[Key])
 
@@ -111,8 +111,8 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, Append
             if AppendToFileIfDifference:
                 util.file_append(Prg, os.path.join(*AppendToFileIfDifference), "\n\n" + MarkDetected)
             else:
-                PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
-                PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
+                PathDetected = os.path.join(Prg["PathTempDir"], "test_detected_"+str(Key)+".txt")
+                PathWanted   = os.path.join(Prg["PathTempDir"], "test_wanted_"+str(Key)+".txt")
                 util.file_write(Prg, PathDetected, MarkDetected)
                 util.file_write(Prg, PathWanted, MarkWanted)
                 # theoretically all tests has been ok in released versions, this case happens only in dev time
@@ -132,8 +132,8 @@ def test_results_load_from_mark_detection(Prg, FileResultPathElems):
     MarkId = 0
     MarkLines = []
     FileResultPath =os.path.join(Prg["DirPrgParent"], *FileResultPathElems)
-    [Prg["DirPrgParent"], "test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
-    print(FileResultPath)
+
+    print("File result path:", FileResultPath)
     for Line in util.file_read_lines(Prg, Fname=FileResultPath):
         Line = Line.strip()
         if "." not in Line and "O" not in Line:
@@ -143,5 +143,12 @@ def test_results_load_from_mark_detection(Prg, FileResultPathElems):
                 MarkId += 1
         else:
             MarkLines.append(Line)
+            # print("Line: ", Line)
+
+    if MarkLines:
+        Marks[MarkId] = "\n".join(MarkLines)
+
+    # for Key in Marks:
+    #     print(Marks[Key])
     return Marks
 
