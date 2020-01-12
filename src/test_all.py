@@ -44,10 +44,10 @@ class TestMethods(unittest.TestCase):
         self.assertEqual("Load", Export)
 
         # key is unknown:
-        self.assertEqual("Ui message key is unknown: hun - Menu.File.UnknownKey",
+        self.assertEqual("Ui message key is unknown in container: hun - Menu.File.UnknownKey",
                          util.ui_msg(Prg, "Menu.File.UnknownKey", TestCase=True))
 
-        # key exists, language==hun, but only default eng element exists in transations
+        # key exists, language==hun, but only default eng element exists in translations
         self.assertEqual("Load", util.ui_msg(Prg, "Menu.File.Load", TestCase=True))
 
         # key hasn't got default eng value:

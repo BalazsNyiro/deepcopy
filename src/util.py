@@ -50,7 +50,7 @@ def ui_msg(Prg, MsgPath, TestCase=False):
         if Key in Container:
             Container = Container[Key]
         else:
-            Msg = "Ui message key is unknown: " + Prg["UiLanguage"] + " - " + MsgPath
+            Msg = "Ui message key is unknown in container: " + Prg["UiLanguage"] + " - " + MsgPath
             if not TestCase: # no messages from test execution
                 warning_display(Msg, "util:ui_msg, key is unknown")
             return Msg
