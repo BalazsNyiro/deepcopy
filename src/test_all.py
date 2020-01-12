@@ -6,11 +6,12 @@ import unittest, util, os, ocr
 class TestMethodsAnalysed(unittest.TestCase):
     def test_ocr_mark_collect___base_abc_ubuntu(self):
 
-        FilePathImg = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
+        FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
 
         MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
+        # difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
+        difference_display(Prg, self, MarksNowDetected, TestWantedResults)
 
 
 class TestMethods(unittest.TestCase):
@@ -107,7 +108,6 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, Append
         if MarkDetected != MarkWanted:
 
             if AppendToFileIfDifference:
-
                 util.file_append(Prg, os.path.join(*AppendToFileIfDifference), "\n\n" + MarkDetected)
             else:
                 PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")

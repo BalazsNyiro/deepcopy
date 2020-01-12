@@ -49,6 +49,7 @@ def mark_collect_from_img_object(Prg, Img,
     GrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
     # find marks and remove backgrounds
+    # print("Mark detection, Img dimensions:", Img["Width"], Img["Height"])
     for X in range(0, Img["Width"]):
         for Y in range(0, Img["Height"]):
 
@@ -75,7 +76,7 @@ def mark_collect_from_img_object(Prg, Img,
 
             if PixelIsMark:
                 # print(PixelNowCoords, " -- MARK --> ", Img["Pixels"][(X, Y)])
-                CoordsMarkPixels_and_parent_MarkId[(X,Y)] = None
+                CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
                 # MarkId is unknown by default
 
     Marks = dict()
@@ -87,6 +88,7 @@ def mark_collect_from_img_object(Prg, Img,
         if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
             MarkIdsPossible.append(MarkIdNeighbour)
 
+    MarkIdNext = 0
     for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
         X, Y = Coord
         if MarkId is None:
@@ -107,7 +109,8 @@ def mark_collect_from_img_object(Prg, Img,
             markid_detect_possible_neighbour(CoordUp,        MarkIdsPossible)
             markid_detect_possible_neighbour(CoordDown,      MarkIdsPossible)
             if not MarkIdsPossible:
-                MarkIdsPossible.append(len(Marks.keys()))
+                MarkIdsPossible.append(MarkIdNext)
+                MarkIdNext += 1
 
             MarkId = MarkIdsPossible[0]
 
