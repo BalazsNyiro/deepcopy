@@ -78,10 +78,10 @@ class TestMethods(unittest.TestCase):
         self.assertTrue(util.file_test(Prg, Path))
 
     def test_ocr_mark_collect___word_the(self):
-        FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
-        FileWantedResult = ["test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
+        FilePathImg      = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
         Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        difference_display(Prg, self, Marks, TestWantedResults)
+        difference_display(Prg, self, Marks, TestWantedResults, FileWantedResult)
 
 # if you want to execute only the tests:
 # ./deepcopy.py testonly
@@ -89,8 +89,9 @@ def run_all_tests(P):
     print("run all tests")
     global Prg
     Prg = P
-    # exec all test: unittest.main(module="test_all", verbosity=2, exit=False)
-    unittest.main(TestMethodsAnalysed())
+    # exec all test:
+    unittest.main(module="test_all", verbosity=2, exit=False)
+    # unittest.main(TestMethodsAnalysed())
 
 
 if __name__ == '__main__':
