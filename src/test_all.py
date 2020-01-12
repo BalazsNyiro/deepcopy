@@ -3,7 +3,6 @@
 
 import unittest, util, os, ocr
 
-
 class TestMethods(unittest.TestCase):
     def PrgEmpty(self):
         return {}
@@ -37,40 +36,48 @@ class TestMethods(unittest.TestCase):
                }
         }
         # happy path:
-        self.assertEqual("Mentés másként", util.ui_msg(Prg, "Menu.File.SaveAs"))
+        self.assertEqual("Mentés másként", util.ui_msg(Prg, "Menu.File.SaveAs", TestCase=True))
 
         # handle multiple value in one request:
-        TxtSaveAs, Export = util.ui_msg(Prg, ["Menu.File.SaveAs", "Menu.File.Load"])
+        TxtSaveAs, Export = util.ui_msg(Prg, ["Menu.File.SaveAs", "Menu.File.Load"], TestCase=True)
         self.assertEqual("Mentés másként", TxtSaveAs)
         self.assertEqual("Load", Export)
 
         # key is unknown:
         self.assertEqual("Ui message key is unknown: hun - Menu.File.UnknownKey",
-                         util.ui_msg(Prg, "Menu.File.UnknownKey"))
+                         util.ui_msg(Prg, "Menu.File.UnknownKey", TestCase=True))
 
         # key exists, language==hun, but only default eng element exists in transations
-        self.assertEqual("Load", util.ui_msg(Prg, "Menu.File.Load"))
+        self.assertEqual("Load", util.ui_msg(Prg, "Menu.File.Load", TestCase=True))
 
         # key hasn't got default eng value:
         self.assertEqual("Ui message, default eng translation is missing: Menu.File.Export",
-                         util.ui_msg(Prg, "Menu.File.Export"))
+                         util.ui_msg(Prg, "Menu.File.Export", TestCase=True))
 
         # text with formatting:
-        self.assertEqual("Fájl: /tmp/file.txt", util.ui_msg(Prg, "Text_formatted").format("/tmp/file.txt"))
+        self.assertEqual("Fájl: /tmp/file.txt", util.ui_msg(Prg, "Text_formatted", TestCase=True).format("/tmp/file.txt"))
 
     def test_file_read_all(self):
         TxtRaw = "  Test Line 1\n\n  Test Line 3"
         Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
-        self.assertEqual(TxtRaw, util.file_read_all(Path))
+        self.assertEqual(TxtRaw, util.file_read_all(Prg, Path))
 
     def test_file_funcs(self):
-        self.assertFalse(util.file_test("unknown_file"))
+        self.assertFalse(util.file_test(Prg, "unknown_file"))
         Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
-        self.assertTrue(util.file_test(Path))
+        self.assertTrue(util.file_test(Prg, Path))
 
     def test_ocr_mark_collect___word_the(self):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_word_the___font_ubuntu_24pt_result.txt"]
+        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        difference_display(Prg, self, Marks, TestWantedResults)
+
+    def test_ocr_mark_collect___base_abc_ubuntu(self):
+
+        FilePathImg = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_abc_basic.txt"]
+
         Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
         difference_display(Prg, self, Marks, TestWantedResults)
 
@@ -87,6 +94,8 @@ if __name__ == '__main__':
 
 # TODO: a more general diff display in console without linux vimdiff
 def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults):
+    print("Num of Marks now detected: ", len(MarksNowDetected.keys()))
+    print("Num of wanted results: ", len( TestWantedResults))
     for Key in MarksNowDetected.keys():
         MarkDetected = ocr.mark_display_on_console(Prg, MarksNowDetected[Key])
         MarkWanted = TestWantedResults[Key]

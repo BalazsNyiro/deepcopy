@@ -45,4 +45,5 @@ if TestOnly:
 UiInterface = importlib.import_module(Prg["UiInterface"])
 UiInterface.window_main(Prg)
 
+print("test only: ./deepcopy.py testonly")
 # TODO: clean temporary dir after execute
