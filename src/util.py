@@ -42,7 +42,7 @@ def ui_msg(Prg, MsgPath, TestCase=False):
     if isinstance(MsgPath, list):
         Texts = []
         for Path in MsgPath:
-            Texts.append(ui_msg(Prg, Path))
+            Texts.append(ui_msg(Prg, Path, TestCase=TestCase))
         return Texts
 
     Container = Prg["UiMessages"]

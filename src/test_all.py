@@ -3,13 +3,22 @@
 
 import unittest, util, os, ocr
 
+class TestMethodsAnalysed(unittest.TestCase):
+    def test_ocr_mark_collect___base_abc_ubuntu(self):
+
+        FilePathImg = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
+
+        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
+
+
 class TestMethods(unittest.TestCase):
-    def PrgEmpty(self):
-        return {}
 
     def test_module_available(self):
-        self.assertFalse(util.module_available(self.PrgEmpty(), "unknown_module", "please install unknown module :-)"))
-        self.assertTrue(util.module_available(self.PrgEmpty(), "os", "Please install os module if you want to reach files"))
+        PrgEmpty = {}
+        self.assertFalse(util.module_available(PrgEmpty, "unknown_module", "please install unknown module :-)"))
+        self.assertTrue(util.module_available(PrgEmpty, "os", "Please install os module if you want to reach files"))
 
     def test_ui_msg(self):
         Prg = {"Os": "Linux",
@@ -73,43 +82,43 @@ class TestMethods(unittest.TestCase):
         Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
         difference_display(Prg, self, Marks, TestWantedResults)
 
-    def test_ocr_mark_collect___base_abc_ubuntu(self):
-
-        FilePathImg = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
-        FileWantedResult = ["test", "test_abc_basic.txt"]
-
-        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        difference_display(Prg, self, Marks, TestWantedResults)
-
 # if you want to execute only the tests:
 # ./deepcopy.py testonly
 def run_all_tests(P):
     print("run all tests")
     global Prg
     Prg = P
-    unittest.main(module="test_all", verbosity=2, exit=False)
+    # exec all test: unittest.main(module="test_all", verbosity=2, exit=False)
+    unittest.main(TestMethodsAnalysed())
+
 
 if __name__ == '__main__':
     run_all_tests({})
 
 # TODO: a more general diff display in console without linux vimdiff
-def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults):
+def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=None):
     print("Num of Marks now detected: ", len(MarksNowDetected.keys()))
     print("Num of wanted results: ", len( TestWantedResults))
     for Key in MarksNowDetected.keys():
         MarkDetected = ocr.mark_display_on_console(Prg, MarksNowDetected[Key])
-        MarkWanted = TestWantedResults[Key]
+
+        MarkWanted = TestWantedResults.get(Key, "Key not in Wanted results: " + str(Key))
 
         if MarkDetected != MarkWanted:
-            PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
-            PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
-            util.file_write(Prg, PathDetected, MarkDetected)
-            util.file_write(Prg, PathWanted, MarkWanted)
-            # theoretically all tests has been ok in released versions, this case happens only in dev time
-            print("Dev message: test comparing with vimdiff:")
-            os.system("vimdiff " + PathDetected + " " + PathWanted)
-        SelfObj.assertEqual(MarkDetected, MarkWanted)
 
+            if AppendToFileIfDifference:
+
+                util.file_append(Prg, os.path.join(*AppendToFileIfDifference), "\n\n" + MarkDetected)
+            else:
+                PathDetected = os.path.join(Prg["PathTempDir"], "test_detected.txt")
+                PathWanted = os.path.join(Prg["PathTempDir"], "test_wanted.txt")
+                util.file_write(Prg, PathDetected, MarkDetected)
+                util.file_write(Prg, PathWanted, MarkWanted)
+                # theoretically all tests has been ok in released versions, this case happens only in dev time
+                print("Dev message: test comparing with vimdiff:")
+                os.system("vimdiff " + PathDetected + " " + PathWanted)
+
+                SelfObj.assertEqual(MarkDetected, MarkWanted)
 
 def marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult):
     Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)

@@ -55,7 +55,7 @@ def mark_collect_from_img_object(Prg, Img,
             PixelIsMark = False
             PixelNowCoords = (-1, -1)
 
-            if Img["PixelDataSize"] == 3: # if RGB
+            if is_rgb(Img):
                 R, G, B = Img["Pixels"][(X, Y)]
 
                 if R < RedMin or R > RedMax:
@@ -64,7 +64,7 @@ def mark_collect_from_img_object(Prg, Img,
                             PixelIsMark = True
                             PixelNowCoords = (X, Y)
 
-            elif Img["PixelDataSize"] == 1:  # if grayscale
+            elif is_grayscale(Img):
                 GrayLevel = Img["Pixels"][(X, Y)]
                 if GrayLevel < GrayMin or GrayLevel > GrayMax:
                     PixelIsMark = True
@@ -183,3 +183,13 @@ def mark_display_on_console(Prg, Mark):
         # print(Xrelative, Yrelative)
 
     return "\n".join(Rows)
+
+def is_rgb(Img):
+    if Img["PixelDataSize"] == 3:
+        return True
+    return False
+
+def is_grayscale(Img):
+    if Img["PixelDataSize"] == 1:
+        return True
+    return False
