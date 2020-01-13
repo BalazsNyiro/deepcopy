@@ -32,21 +32,21 @@ def mark_collect_from_img_object(Prg, Img,
                                  ColorBlockBackgroundGray=30,
                                  ColorBlockBackgroundGrayDelta=30,
                                  ):
+    if True: # block, you can close it :-)
+        CoordsMarkPixels_and_parent_MarkId = dict()
 
-    CoordsMarkPixels_and_parent_MarkId = dict()
+        DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
+        BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
 
-    DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
-    BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
+        BgRedMax = BackgroundR + DeltaR
+        BgRedMin = BackgroundR - DeltaR
+        BgGreenMax = BackgroundG + DeltaG
+        BgGreenMin = BackgroundG - DeltaG
+        BgBlueMax = BackgroundB + DeltaB
+        BgBlueMin = BackgroundB - DeltaB
 
-    BgRedMax = BackgroundR + DeltaR
-    BgRedMin = BackgroundR - DeltaR
-    BgGreenMax = BackgroundG + DeltaG
-    BgGreenMin = BackgroundG - DeltaG
-    BgBlueMax = BackgroundB + DeltaB
-    BgBlueMin = BackgroundB - DeltaB
-
-    BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
-    BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
+        BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
+        BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
     # find marks and remove backgrounds
     # print("Mark detection, Img dimensions:", Img["Width"], Img["Height"])
@@ -69,28 +69,27 @@ def mark_collect_from_img_object(Prg, Img,
                 # MarkId is unknown by default
 
     Marks = dict()
-
-    def markid_detect_possible_neighbour(Coord, MarkIdsPossible):
-        # print("  possible? ", Coord)
-        MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
-        # same MarkId can be in more than one neighbour
-        if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
-            MarkIdsPossible.append(MarkIdNeighbour)
-
     MarkIdNext = 0
+
     for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
         if MarkIdCurrentPixel is None:
             # print("\n\nCoord now: ", Coord)
             MarkIdsPossible = []
 
             for CoordNeighbour in util.coords_neighbours(Coord):
-                markid_detect_possible_neighbour(CoordNeighbour, MarkIdsPossible)
+                markid_detect_possible_neighbour(CoordNeighbour, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId)
 
             if not MarkIdsPossible:
                 MarkIdsPossible.append(MarkIdNext)
                 MarkIdNext += 1
 
             MarkIdCurrentPixel = MarkIdsPossible[0]
+
+
+
+
+            #################################################
+            # TODO: REFACTOR: MERGE different marks into one
             # print("Active coords", Coord, MarkId, MarkIdsPossible)
             if len(MarkIdsPossible) > 1:
                 # we can connect more MarkIds into One.
@@ -105,6 +104,10 @@ def mark_collect_from_img_object(Prg, Img,
 
                 for MarkIdNotMoreUsed in MarkIdsPossible[1:]:
                     del Marks[MarkIdNotMoreUsed]
+            # TODO: REFACTOR: MERGE different marks into one
+            #################################################
+
+
 
             if MarkIdCurrentPixel not in Marks:
                 Marks[MarkIdCurrentPixel] = dict()
@@ -161,6 +164,14 @@ def mark_display_on_console(Prg, Mark):
     return "\n".join(Rows)
 
 # TODO: write test for all func in ocr
+def markid_detect_possible_neighbour(Coord, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId):
+    # print("  possible? ", Coord)
+    MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
+    # same MarkId can be in more than one neighbour
+    if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
+        MarkIdsPossible.append(MarkIdNeighbour)
+
+
 def is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
     GrayLevel = Img["Pixels"][(X, Y)]
     if GrayLevel < BgGrayMin or GrayLevel > BgGrayMax:
