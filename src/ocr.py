@@ -38,38 +38,33 @@ def mark_collect_from_img_object(Prg, Img,
     DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
     BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
 
-    RedMax = BackgroundR + DeltaR
-    RedMin = BackgroundR - DeltaR
-    GreenMax = BackgroundG + DeltaG
-    GreenMin = BackgroundG - DeltaG
-    BlueMax = BackgroundB + DeltaB
-    BlueMin = BackgroundB - DeltaB
+    BgRedMax = BackgroundR + DeltaR
+    BgRedMin = BackgroundR - DeltaR
+    BgGreenMax = BackgroundG + DeltaG
+    BgGreenMin = BackgroundG - DeltaG
+    BgBlueMax = BackgroundB + DeltaB
+    BgBlueMin = BackgroundB - DeltaB
 
-    GrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
-    GrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
+    BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
+    BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
     # find marks and remove backgrounds
     # print("Mark detection, Img dimensions:", Img["Width"], Img["Height"])
     for X in range(0, Img["Width"]):
         for Y in range(0, Img["Height"]):
-
             PixelIsMark = False
-            PixelNowCoords = (-1, -1)
 
             if is_rgb(Img):
                 R, G, B = Img["Pixels"][(X, Y)]
-
-                if R < RedMin or R > RedMax:
-                    if G < GreenMin or G > GreenMax:
-                        if B < BlueMin or B > BlueMax:
+                if R < BgRedMin or R > BgRedMax:
+                    if G < BgGreenMin or G > BgGreenMax:
+                        if B < BgBlueMin or B > BgBlueMax:
                             PixelIsMark = True
-                            PixelNowCoords = (X, Y)
 
             elif is_grayscale(Img):
                 GrayLevel = Img["Pixels"][(X, Y)]
-                if GrayLevel < GrayMin or GrayLevel > GrayMax:
+                if GrayLevel < BgGrayMin or GrayLevel > BgGrayMax:
                     PixelIsMark = True
-                    PixelNowCoords = (X, Y)
             else:
                 print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
                 sys.exit(1)
@@ -89,9 +84,9 @@ def mark_collect_from_img_object(Prg, Img,
             MarkIdsPossible.append(MarkIdNeighbour)
 
     MarkIdNext = 0
-    for Coord, MarkId in CoordsMarkPixels_and_parent_MarkId.items():
+    for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
         X, Y = Coord
-        if MarkId is None:
+        if MarkIdCurrentPixel is None:
             # print("\n\nCoord now: ", Coord)
             MarkIdsPossible = []
 
@@ -108,11 +103,12 @@ def mark_collect_from_img_object(Prg, Img,
             markid_detect_possible_neighbour(CoordRightDown, MarkIdsPossible)
             markid_detect_possible_neighbour(CoordUp,        MarkIdsPossible)
             markid_detect_possible_neighbour(CoordDown,      MarkIdsPossible)
+
             if not MarkIdsPossible:
                 MarkIdsPossible.append(MarkIdNext)
                 MarkIdNext += 1
 
-            MarkId = MarkIdsPossible[0]
+            MarkIdCurrentPixel = MarkIdsPossible[0]
 
             # print("Active coords", Coord, MarkId, MarkIdsPossible)
             if len(MarkIdsPossible) > 1:
@@ -130,19 +126,20 @@ def mark_collect_from_img_object(Prg, Img,
                 #   (5, 8) 2  id moving ->  1
                 #   (5, 9) 2  id moving ->  1
                 for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
-                    if MarkIdBeforeMoving in MarkIdsPossible and MarkIdBeforeMoving != MarkId:
-                        # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
-                        CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkId
-                        Marks[MarkId][CoordMaybeMoved] = True
+                    if MarkIdBeforeMoving is not None:
+                        if MarkIdBeforeMoving in MarkIdsPossible and MarkIdBeforeMoving != MarkIdCurrentPixel:
+                            # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
+                            CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
+                            Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
 
                 for MarkIdNotMoreUsed in MarkIdsPossible[1:]:
                     del Marks[MarkIdNotMoreUsed]
 
-            if MarkId not in Marks:
-                Marks[MarkId] = dict()
-            Marks[MarkId][Coord] = True
+            if MarkIdCurrentPixel not in Marks:
+                Marks[MarkIdCurrentPixel] = dict()
+            Marks[MarkIdCurrentPixel][Coord] = True
 
-            CoordsMarkPixels_and_parent_MarkId[Coord] = MarkId
+            CoordsMarkPixels_and_parent_MarkId[Coord] = MarkIdCurrentPixel
 
 
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
