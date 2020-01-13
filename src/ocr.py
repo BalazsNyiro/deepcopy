@@ -54,18 +54,11 @@ def mark_collect_from_img_object(Prg, Img,
     for X in range(0, Img["Width"]):
         for Y in RangeY:
             PixelIsMark = False
-
             if is_rgb(Img):
-                R, G, B = Img["Pixels"][(X, Y)]
-                if R < BgRedMin or R > BgRedMax:
-                    if G < BgGreenMin or G > BgGreenMax:
-                        if B < BgBlueMin or B > BgBlueMax:
-                            PixelIsMark = True
+                PixelIsMark = is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax)
 
             elif is_grayscale(Img):
-                GrayLevel = Img["Pixels"][(X, Y)]
-                if GrayLevel < BgGrayMin or GrayLevel > BgGrayMax:
-                    PixelIsMark = True
+                PixelIsMark = is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax)
             else:
                 print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
                 sys.exit(1)
@@ -166,6 +159,21 @@ def mark_display_on_console(Prg, Mark):
         # print(Xrelative, Yrelative)
 
     return "\n".join(Rows)
+
+# TODO: write test for all func in ocr
+def is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
+    GrayLevel = Img["Pixels"][(X, Y)]
+    if GrayLevel < BgGrayMin or GrayLevel > BgGrayMax:
+        return True
+    return False
+
+def is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
+    R, G, B = Img["Pixels"][(X, Y)]
+    if R < BgRedMin or R > BgRedMax:
+        if G < BgGreenMin or G > BgGreenMax:
+            if B < BgBlueMin or B > BgBlueMax:
+                return True
+    return False
 
 def is_rgb(Img):
     if Img["PixelDataSize"] == 3:
