@@ -4,12 +4,14 @@
 import unittest, util, os, ocr
 
 class TestMethodsAnalysed(unittest.TestCase):
-    def test_ocr_mark_collect___word_the(self):
-        FilePathImg      = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
-        FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
-        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        difference_display(Prg, self, Marks, TestWantedResults)
+    def test_ocr_mark_collect___base_abc_ubuntu(self):
 
+        FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
+
+        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        #difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
+        difference_display(Prg, self, MarksNowDetected, TestWantedResults)
 
 class TestMethods(unittest.TestCase):
 
@@ -74,14 +76,12 @@ class TestMethods(unittest.TestCase):
         Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
         self.assertTrue(util.file_test(Prg, Path))
 
-    def test_ocr_mark_collect___base_abc_ubuntu(self):
+    def test_ocr_mark_collect___word_the(self):
+        FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
+        FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
+        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
+        difference_display(Prg, self, Marks, TestWantedResults)
 
-        FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
-        FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
-
-        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        # difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
-        difference_display(Prg, self, MarksNowDetected, TestWantedResults)
 
 # if you want to execute only the tests:
 # ./deepcopy.py testonly

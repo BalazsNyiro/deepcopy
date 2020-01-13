@@ -50,8 +50,9 @@ def mark_collect_from_img_object(Prg, Img,
 
     # find marks and remove backgrounds
     # print("Mark detection, Img dimensions:", Img["Width"], Img["Height"])
+    RangeY = range(0, Img["Height"]) # create range only once
     for X in range(0, Img["Width"]):
-        for Y in range(0, Img["Height"]):
+        for Y in RangeY:
             PixelIsMark = False
 
             if is_rgb(Img):
@@ -85,46 +86,23 @@ def mark_collect_from_img_object(Prg, Img,
 
     MarkIdNext = 0
     for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
-        X, Y = Coord
         if MarkIdCurrentPixel is None:
             # print("\n\nCoord now: ", Coord)
             MarkIdsPossible = []
 
-            CoordLeftUp  = (X-1, Y-1); CoordLeft  = (X-1, Y); CoordLeftDown = (X-1, Y+1)
-            CoordRightUp = (X+1, Y-1); CoordRight = (X+1, Y); CoordRightDown = (X+1, Y+1)
-
-            CoordUp = (X, Y-1); CoordDown = (X, Y+1)
-
-            markid_detect_possible_neighbour(CoordLeftUp,    MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordLeft,      MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordLeftDown,  MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordRightUp,   MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordRight,     MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordRightDown, MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordUp,        MarkIdsPossible)
-            markid_detect_possible_neighbour(CoordDown,      MarkIdsPossible)
+            for CoordNeighbour in util.coords_neighbours(Coord):
+                markid_detect_possible_neighbour(CoordNeighbour, MarkIdsPossible)
 
             if not MarkIdsPossible:
                 MarkIdsPossible.append(MarkIdNext)
                 MarkIdNext += 1
 
             MarkIdCurrentPixel = MarkIdsPossible[0]
-
             # print("Active coords", Coord, MarkId, MarkIdsPossible)
             if len(MarkIdsPossible) > 1:
-                # print("  MarkId moving")
-
                 # we can connect more MarkIds into One.
                 # Move all pixels into the first markId
 
-                # in this example we move id_1 to id_1, in this case don't move  the id
-                #   (2, 11) 1  id moving ->  1
-                #   (3, 11) 1  id moving ->  1
-                #   (4, 11) 1  id moving ->  1
-                #   (5, 6) 2  id moving ->  1
-                #   (5, 7) 2  id moving ->  1
-                #   (5, 8) 2  id moving ->  1
-                #   (5, 9) 2  id moving ->  1
                 for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
                     if MarkIdBeforeMoving is not None:
                         if MarkIdBeforeMoving in MarkIdsPossible and MarkIdBeforeMoving != MarkIdCurrentPixel:
@@ -143,7 +121,6 @@ def mark_collect_from_img_object(Prg, Img,
 
 
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
-    print("total / mark pixel ratio: ", X*Y / len(CoordsMarkPixels_and_parent_MarkId))
 
     # the keys can be missing: [0, 2, 3]
     MarkReturn = dict()
