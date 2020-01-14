@@ -84,26 +84,25 @@ def mark_collect_from_img_object(Prg, Img,
                 MarkIdsPossible.append(MarkIdNext)
                 MarkIdNext += 1
 
-            MarkIdCurrentPixel = MarkIdsPossible[0]
-
-
 
 
             #################################################
             # TODO: REFACTOR: MERGE different marks into one
             # print("Active coords", Coord, MarkId, MarkIdsPossible)
-            if len(MarkIdsPossible) > 1:
+
+            MarkIdCurrentPixel = MarkIdsPossible.pop(0)
+            if MarkIdsPossible:
                 # we can connect more MarkIds into One.
                 # Move all pixels into the first markId
 
                 for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
                     if MarkIdBeforeMoving is not None:
-                        if MarkIdBeforeMoving in MarkIdsPossible and MarkIdBeforeMoving != MarkIdCurrentPixel:
+                        if MarkIdBeforeMoving in MarkIdsPossible:
                             # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
                             CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
                             Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
 
-                for MarkIdNotMoreUsed in MarkIdsPossible[1:]:
+                for MarkIdNotMoreUsed in MarkIdsPossible:
                     del Marks[MarkIdNotMoreUsed]
             # TODO: REFACTOR: MERGE different marks into one
             #################################################
