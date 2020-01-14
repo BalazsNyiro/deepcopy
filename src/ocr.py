@@ -14,9 +14,10 @@ def text_block_analyse(Prg,
 
     Marks = mark_collect_from_img_object(Prg, Img)
     print("Num of Marks:", len(Marks.keys()))
-    mark_display_on_console(Prg, Marks[1])
+    mark_to_string(Prg, Marks[1])
 
 # the root dir is the program's parent dir
+# TESTED
 def mark_collect_from_img_file(Prg, FilePathElems):
     FilePathImg = os.path.join(Prg["DirPrgParent"], *FilePathElems)
     ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
@@ -126,7 +127,8 @@ def mark_collect_from_img_object(Prg, Img,
         Id += 1
     return MarkReturn
 
-def mark_display_on_console(Prg, Mark):
+# display func, tested with usage
+def mark_to_string(Prg, Mark):
     Xmin = None
     Ymin = None
     Xmax = None
@@ -163,7 +165,8 @@ def mark_display_on_console(Prg, Mark):
 
     return "\n".join(Rows)
 
-# TODO: write test for all func in ocr
+
+# TODO: write test
 def markid_detect_possible_neighbour(Coord, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId):
     # print("  possible? ", Coord)
     MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
@@ -172,12 +175,16 @@ def markid_detect_possible_neighbour(Coord, MarkIdsPossible, CoordsMarkPixels_an
         MarkIdsPossible.append(MarkIdNeighbour)
 
 
+# TODO: write test
+# where we call it, we know that it is a grayscale img
 def is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
     GrayLevel = Img["Pixels"][(X, Y)]
     if GrayLevel < BgGrayMin or GrayLevel > BgGrayMax:
         return True
     return False
 
+# TODO: write test
+# where we call it, we know that it is an rgb image
 def is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
     R, G, B = Img["Pixels"][(X, Y)]
     if R < BgRedMin or R > BgRedMax:
@@ -186,12 +193,16 @@ def is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin
                 return True
     return False
 
+# TESTED
 def is_rgb(Img):
-    if Img["PixelDataSize"] == 3:
+    Size = Img.get("PixelDataSize", -1)
+    if Size == 3:
         return True
     return False
 
+# TESTED
 def is_grayscale(Img):
-    if Img["PixelDataSize"] == 1:
+    Size = Img.get("PixelDataSize", -1)
+    if Size == 1:
         return True
     return False

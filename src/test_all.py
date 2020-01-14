@@ -3,6 +3,36 @@
 
 import unittest, util, os, ocr
 
+
+class Ocr(unittest.TestCase):
+    def test_is_rgb_pixel_datasize_field_missing(self):
+        Img = dict()
+        self.assertEqual(ocr.is_rgb(Img), False)
+
+    def test_is_rgb_pixel_datasize_field_is_zero(self):
+        Img = dict()
+        Img["PixelDataSize"] = 0
+        self.assertEqual(ocr.is_rgb(Img), False)
+
+    def test_is_rgb_pixel_datasize_field_is_one(self):
+        Img = dict()
+        Img["PixelDataSize"] = 3
+        self.assertEqual(ocr.is_rgb(Img), True)
+
+    def test_is_grayscale_pixel_datasize_field_missing(self):
+        Img = dict()
+        self.assertEqual(ocr.is_grayscale(Img), False)
+
+    def test_is_grayscale_pixel_datasize_field_is_zero(self):
+        Img = dict()
+        Img["PixelDataSize"] = 0
+        self.assertEqual(ocr.is_grayscale(Img), False)
+
+    def test_is_grayscale_pixel_datasize_field_is_one(self):
+        Img = dict()
+        Img["PixelDataSize"] = 1
+        self.assertEqual(ocr.is_grayscale(Img), True)
+
 class TestMethodsAnalysed(unittest.TestCase):
     def test_ocr_mark_collect___base_abc_ubuntu(self):
 
@@ -99,10 +129,10 @@ if __name__ == '__main__':
 
 # TODO: a more general diff display in console without linux vimdiff
 def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=None):
-    print("Num of Marks now detected: ", len(MarksNowDetected.keys()), MarksNowDetected.keys())
-    print("Num of wanted results: ", len( TestWantedResults), TestWantedResults.keys())
+    print("Num of Marks now detected: ", len(MarksNowDetected.keys()))
+    print("Num of wanted results: ", len( TestWantedResults))
     for Key in MarksNowDetected.keys():
-        MarkDetected = ocr.mark_display_on_console(Prg, MarksNowDetected[Key])
+        MarkDetected = ocr.mark_to_string(Prg, MarksNowDetected[Key])
 
         MarkWanted = TestWantedResults.get(Key, "Key not in Wanted results: " + str(Key))
 
