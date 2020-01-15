@@ -174,9 +174,13 @@ def markid_detect_possible_neighbour(Coord, MarkIdsPossible, CoordsMarkPixels_an
         MarkIdsPossible.append(MarkIdNeighbour)
 
 
-# TODO: write test
+# TESTED
 # where we call it, we know that it is a grayscale img
 def is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
+    # We have a Background Color, Delta pairs -> Min, Max
+    # are calculate from the color+delta, color-delta values
+    # if something between the range, it belongs to background colors
+    # if a value is out of range of background color, it's a foreground color
     GrayLevel = Img["Pixels"][(X, Y)]
     if GrayLevel < BgGrayMin or GrayLevel > BgGrayMax:
         return True

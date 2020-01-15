@@ -6,22 +6,25 @@ import unittest, util, os, ocr
 
 class Ocr(unittest.TestCase):
     def test_is_mark_grayscale(self):
-        FilePathImg      = ["test", "test_img_grayscale_color_levels.png"]
+        FilePathImg = os.path.join("test", "test_img_grayscale_color_levels.png")
+        ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
+        util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
+        Img = Prg["ImagesLoaded"][ImgId]
 
-        Img = dict()
-        Img["PixelDataSize"] = 1
-        X = 1
-        Y = 2
-        Img["Pixels"] = dict()
-        Img["Pixels"][(1, 1)] = 1
-        Img["Pixels"][(2, 1)] = 128
-        Img["Pixels"][(3, 1)] = 250
-        GrayMin = 10
-        GrayMax = 240
+        ColorBackgroundGrayMin = 10
+        ColorBackgroundGrayMax = 240
 
-        self.assertEqual(ocr.is_mark_grayscale(Img, 1, 1, GrayMin, GrayMax), True)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 2, 1, GrayMin, GrayMax), False)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 3, 1, GrayMin, GrayMax), True)
+        self.assertEqual(ocr.is_grayscale(Img), True)
+        self.assertEqual(ocr.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
+        self.assertEqual(ocr.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(ocr.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
+
+        ColorBackgroundGrayMin = 1
+        ColorBackgroundGrayMax = 255
+
+        self.assertEqual(ocr.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(ocr.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(ocr.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
 
     def test_is_rgb_pixel_datasize_field_missing(self):
         Img = dict()
