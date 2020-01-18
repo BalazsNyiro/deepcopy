@@ -5,6 +5,54 @@ import unittest, util, os, ocr
 
 
 class Ocr(unittest.TestCase):
+    def test_is_mark_rgb(self):
+        FilePathImg = os.path.join("test", "test_img_rgb_color_levels.png")
+        ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
+        util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
+        Img = Prg["ImagesLoaded"][ImgId]
+
+        self.assertEqual(ocr.is_rgb(Img), True)
+        # Bg == Background
+
+        ColorBgRMin = 0
+        ColorBgGMin = 0
+        ColorBgBMin = 0
+
+        ColorBgGMax = 40
+        ColorBgRMax = 40
+        ColorBgBMax = 40
+
+        IsMarkRgb_0_0 = ocr.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                               ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_1_0 = ocr.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_2_0 = ocr.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        self.assertEqual(IsMarkRgb_0_0, False)
+        self.assertEqual(IsMarkRgb_1_0, True)
+        self.assertEqual(IsMarkRgb_2_0, True)
+
+        # The light colors have higher values in RGB. so it can be
+        # the definition of white paper
+        ColorBgRMin = 110
+        ColorBgGMin = 110
+        ColorBgBMin = 110
+
+        ColorBgGMax = 255
+        ColorBgRMax = 255
+        ColorBgBMax = 255
+
+        IsMarkRgb_0_0 = ocr.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_1_0 = ocr.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_2_0 = ocr.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        self.assertEqual(IsMarkRgb_0_0, True)
+        self.assertEqual(IsMarkRgb_1_0, False)
+        self.assertEqual(IsMarkRgb_2_0, False)
+
+
     def test_is_mark_grayscale(self):
         FilePathImg = os.path.join("test", "test_img_grayscale_color_levels.png")
         ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)

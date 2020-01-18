@@ -186,14 +186,30 @@ def is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
         return True
     return False
 
-# TODO: write test
+
+
 # where we call it, we know that it is an rgb image
-def is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
+# if the pixel in BG range the it's a background color
+# it handles ONE Background colour. on a scanned page where
+# theoretically the background is white and the printed letters
+# are black, it's enough.
+
+# If you have more than one background color, you have to
+# call it more than once to check all color range
+# Tested
+def is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax, PrintRgb=False, PrintRetVal=False):
     R, G, B = Img["Pixels"][(X, Y)]
+    if PrintRgb:
+        print("is mark rgb: ", R, G, B)
     if R < BgRedMin or R > BgRedMax:
         if G < BgGreenMin or G > BgGreenMax:
             if B < BgBlueMin or B > BgBlueMax:
+                if PrintRetVal:
+                    print("is_mark_rgb ret val: True")
                 return True
+
+    if PrintRetVal:
+        print("is_mark_rgb ret val: False")
     return False
 
 # TESTED
