@@ -97,9 +97,9 @@ def mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
     MarkIdsInNeighbourhood = []  # if in the neighbours are a known mark, connect the current pixel into that mark
 
     for CoordNeighbour in util.coords_neighbours(Coord):
-        markid_detect_possible_neighbour_marks(CoordNeighbour,
-                                               MarkIdsInNeighbourhood,
-                                               InkPixelCoords_and_MarkId)
+        markid_of_coord_append_if_unknown(CoordNeighbour,
+                                          MarkIdsInNeighbourhood,
+                                          InkPixelCoords_and_MarkId)
     if not MarkIdsInNeighbourhood:
         MarkIdsInNeighbourhood.append(MarkIdDefault)
         MarkIdDefault += 1
@@ -186,13 +186,12 @@ def mark_to_string(Prg, Mark):
     return "\n".join(Rows)
 
 # TESTED, here we know that CoordNeighbour is next to our current pixel
-def markid_detect_possible_neighbour_marks(CoordNeighbour, MarkIdsPossible,
-                                           InkPixelCoords_and_MarkId):
+def markid_of_coord_append_if_unknown(Coord, MarkIds, PixelCoords_and_MarkId):
     # print("  possible? ", Coord)
-    MarkIdNeighbour = InkPixelCoords_and_MarkId.get(CoordNeighbour, None)
+    MarkIdNeighbour = PixelCoords_and_MarkId.get(Coord, None)
     # same MarkId can be in more than one neighbour
-    if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
-        MarkIdsPossible.append(MarkIdNeighbour)
+    if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIds:
+        MarkIds.append(MarkIdNeighbour)
 
 
 # TESTED
