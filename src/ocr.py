@@ -131,19 +131,22 @@ def mark_pixels_select_from_img(Img,
     BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
     BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
-    RangeX = range(0, Img["Width"])
-    RangeY = range(0, Img["Height"])
     if is_rgb(Img):
-        for X in RangeX:
-            for Y in RangeY:
-                if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
-                    InkPixels_and_MarkId[(X, Y)] = None
+        def is_mark(Img, X, Y):
+            if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
+                return True
+            return False
 
     if is_grayscale(Img):
-        for X in RangeX:
-            for Y in RangeY:
-                if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
-                    InkPixels_and_MarkId[(X, Y)] = None
+        def is_mark(Img, X, Y):
+            if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
+                return True
+            return False
+
+    for X in range(0, Img["Width"]):
+        for Y in range(0, Img["Height"]):
+            if is_mark(Img, X, Y):
+                InkPixels_and_MarkId[(X, Y)] = None
 
     return InkPixels_and_MarkId
 
