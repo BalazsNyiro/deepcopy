@@ -41,9 +41,9 @@ def mark_collect_from_img_object(Prg, Img,
     MarkIdNext = 0
 
     for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
-        if MarkIdCurrentPixel is None:
-            # print("\n\nCoord now: ", Coord)
-            MarkIdsPossible = []
+        if MarkIdCurrentPixel is None: # MarkId can be 0!!! so check with is-None
+
+            MarkIdsPossible = [] # if in the neighbours are a known mark, connect the current pixel into that mark
 
             for CoordNeighbour in util.coords_neighbours(Coord):
                 markid_detect_possible_neighbour_marks(CoordNeighbour, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId)
@@ -51,12 +51,6 @@ def mark_collect_from_img_object(Prg, Img,
             if not MarkIdsPossible:
                 MarkIdsPossible.append(MarkIdNext)
                 MarkIdNext += 1
-
-
-
-            #################################################
-            # TODO: REFACTOR: MERGE different marks into one
-            # print("Active coords", Coord, MarkId, MarkIdsPossible)
 
             MarkIdCurrentPixel = MarkIdsPossible.pop(0)
             if MarkIdsPossible:
@@ -72,10 +66,6 @@ def mark_collect_from_img_object(Prg, Img,
 
                 for MarkIdNotMoreUsed in MarkIdsPossible:
                     del Marks[MarkIdNotMoreUsed]
-            # TODO: REFACTOR: MERGE different marks into one
-            #################################################
-
-
 
             if MarkIdCurrentPixel not in Marks:
                 Marks[MarkIdCurrentPixel] = dict()
