@@ -26,14 +26,14 @@ def mark_collect_from_img_file(Prg, FilePathElems):
     Marks = mark_collect_from_img_object(Prg, Img)
     return Marks
 
-
+# TESTED with mark_collect_from_img_file
 def mark_collect_from_img_object(Prg, Img,
                                  ColorBlockBackgroundRgb=(255, 255, 255),
                                  ColorBlockBackgroundRgbDelta=(30, 30, 30),
                                  ColorBlockBackgroundGray=30,
                                  ColorBlockBackgroundGrayDelta=30,
                                  ):
-    if True: # block, you can close it :-)
+    if "define base variables": # block, you can close it in ide - comment is hided, but string constans are not! :-)
         CoordsMarkPixels_and_parent_MarkId = dict()
 
         DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
@@ -49,25 +49,25 @@ def mark_collect_from_img_object(Prg, Img,
         BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
         BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
+    if not is_rgb(Img) and not is_grayscale(Img):
+        print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
+        sys.exit(1)
+
     # find marks and remove backgrounds
     # print("Mark detection, Img dimensions:", Img["Width"], Img["Height"])
-    RangeY = range(0, Img["Height"]) # create range only once
-    for X in range(0, Img["Width"]):
-        for Y in RangeY:
-            PixelIsMark = False
-            if is_rgb(Img):
-                PixelIsMark = is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax)
+    RangeX = range(0, Img["Width"])
+    RangeY = range(0, Img["Height"])
+    if is_rgb(Img):
+        for X in RangeX:
+            for Y in RangeY:
+                if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
+                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
 
-            elif is_grayscale(Img):
-                PixelIsMark = is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax)
-            else:
-                print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
-                sys.exit(1)
-
-            if PixelIsMark:
-                # print(PixelNowCoords, " -- MARK --> ", Img["Pixels"][(X, Y)])
-                CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
-                # MarkId is unknown by default
+    if is_grayscale(Img):
+        for X in RangeX:
+            for Y in RangeY:
+                if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
+                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
 
     Marks = dict()
     MarkIdNext = 0
@@ -78,7 +78,7 @@ def mark_collect_from_img_object(Prg, Img,
             MarkIdsPossible = []
 
             for CoordNeighbour in util.coords_neighbours(Coord):
-                markid_detect_possible_neighbour(CoordNeighbour, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId)
+                markid_detect_possible_neighbour_marks(CoordNeighbour, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId)
 
             if not MarkIdsPossible:
                 MarkIdsPossible.append(MarkIdNext)
@@ -166,7 +166,7 @@ def mark_to_string(Prg, Mark):
 
 
 # TODO: write test
-def markid_detect_possible_neighbour(Coord, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId):
+def markid_detect_possible_neighbour_marks(Coord, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId):
     # print("  possible? ", Coord)
     MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
     # same MarkId can be in more than one neighbour

@@ -45,8 +45,8 @@
             "hun": "Az aktuális oldal elemzése"
         },
         "pixel_data_size_unknown": {
-            "eng": "Unknown Pixel data size during text block analyse: num of color channels are unknown",
-            "hun": "Ismeretlen az egy pixelhez tartozo adatmeret, nem RGB/Grayscale kep"
+            "eng": "Unknown Pixel data size during text block analyse: num of color channels are unknown, not RGB/Grayscale image. (maybe RGBA?)",
+            "hun": "Ismeretlen az egy pixelhez tartozo adatmeret, nem RGB/Grayscale kep, talan RGBA?"
         }
     }
 
