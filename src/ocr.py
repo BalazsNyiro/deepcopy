@@ -36,41 +36,41 @@ def mark_collect_from_img_object(Prg, Img,
 
     # Ink Pixel: a pixel that is not in background: wanted/detected foreground pixel
     # Ink is shorter name than Foreground so I chose that
-    InkPixels_and_parent_MarkId = mark_pixels_select_from_img(Img,
-                                                              ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
-                                                              ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
-    Marks = dict()
+    InkPixelCoords_and_MarkId = mark_pixels_select_from_img(Img,
+                                                       ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
+                                                       ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
+    Marks_and_Coords = dict()
     MarkIdDefault = 0
 
-    for Coord, MarkIdCurrentPixel in InkPixels_and_parent_MarkId.items():
+    for Coord, MarkIdCurrentPixel in InkPixelCoords_and_MarkId.items():
         if MarkIdCurrentPixel is None: # MarkId can be 0!!! so check with is-None
 
             MarkIdsInNeighbourhood, MarkIdDefault = \
                 mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
-                                                    InkPixels_and_parent_MarkId)
+                                                    InkPixelCoords_and_MarkId)
 
             MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
 
             # we can connect more than one MarkIds from the neighbourhood
             # so this pixel merge more separated marks into one new
             if MarkIdsInNeighbourhood:
-                mark_ids_merge(Marks, MarkIdCurrentPixel,
-                               InkPixels_and_parent_MarkId,
+                mark_ids_merge(Marks_and_Coords, MarkIdCurrentPixel,
+                               InkPixelCoords_and_MarkId,
                                MarkIdsInNeighbourhood)
 
-            if MarkIdCurrentPixel not in Marks:
-                Marks[MarkIdCurrentPixel] = dict()
+            if MarkIdCurrentPixel not in Marks_and_Coords:
+                Marks_and_Coords[MarkIdCurrentPixel] = dict()
 
-            Marks[MarkIdCurrentPixel][Coord] = True
+            Marks_and_Coords[MarkIdCurrentPixel][Coord] = True
 
-            InkPixels_and_parent_MarkId[Coord] = MarkIdCurrentPixel
+            InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
-    print("num of Mark pixels: ", len(InkPixels_and_parent_MarkId) )
+    print("num of Mark pixels: ", len(InkPixelCoords_and_MarkId) )
 
     # the keys can be missing: [0, 2, 3]
     MarkReturn = dict()
     Id = 0
-    for Val in Marks.values(): # here the keys will be re-setted: 0, 1, 2
+    for Val in Marks_and_Coords.values(): # here the keys will be re-setted: 0, 1, 2
         MarkReturn[Id] = Val
         Id += 1
     return MarkReturn
@@ -93,13 +93,13 @@ def mark_ids_merge(Marks, MarkIdCurrentPixel,
 # return with new MarkIdNext if it used the original one
 # TODO: TEST IT
 def mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
-                                        CoordsMarkPixels_and_parent_MarkId):
+                                        InkPixelCoords_and_MarkId):
     MarkIdsInNeighbourhood = []  # if in the neighbours are a known mark, connect the current pixel into that mark
 
     for CoordNeighbour in util.coords_neighbours(Coord):
         markid_detect_possible_neighbour_marks(CoordNeighbour,
                                                MarkIdsInNeighbourhood,
-                                               CoordsMarkPixels_and_parent_MarkId)
+                                               InkPixelCoords_and_MarkId)
     if not MarkIdsInNeighbourhood:
         MarkIdsInNeighbourhood.append(MarkIdDefault)
         MarkIdDefault += 1
@@ -187,9 +187,9 @@ def mark_to_string(Prg, Mark):
 
 
 # TODO: write test
-def markid_detect_possible_neighbour_marks(Coord, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId):
+def markid_detect_possible_neighbour_marks(Coord, MarkIdsPossible, InkPixelCoords_and_MarkId):
     # print("  possible? ", Coord)
-    MarkIdNeighbour = CoordsMarkPixels_and_parent_MarkId.get(Coord, None)
+    MarkIdNeighbour = InkPixelCoords_and_MarkId.get(Coord, None)
     # same MarkId can be in more than one neighbour
     if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
         MarkIdsPossible.append(MarkIdNeighbour)
