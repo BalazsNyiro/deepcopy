@@ -43,27 +43,26 @@ def mark_collect_from_img_object(Prg, Img,
     MarkIdDefault = 0
 
     for Coord, MarkIdCurrentPixel in InkPixelCoords_and_MarkId.items():
-        if MarkIdCurrentPixel is None: # MarkId can be 0!!! so check with is-None
 
-            MarkIdsInNeighbourhood, MarkIdDefault = \
-                mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
-                                                    InkPixelCoords_and_MarkId)
+        MarkIdsInNeighbourhood, MarkIdDefault = \
+            mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
+                                                InkPixelCoords_and_MarkId)
 
-            MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
+        MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
 
-            # we can connect more than one MarkIds from the neighbourhood
-            # so this pixel merge more separated marks into one new
-            if MarkIdsInNeighbourhood:
-                mark_ids_merge(Marks_and_Coords, MarkIdCurrentPixel,
-                               InkPixelCoords_and_MarkId,
-                               MarkIdsInNeighbourhood)
+        # we can connect more than one MarkIds from the neighbourhood
+        # so this pixel merge more separated marks into one new
+        if MarkIdsInNeighbourhood:
+            mark_ids_merge(Marks_and_Coords, MarkIdCurrentPixel,
+                           InkPixelCoords_and_MarkId,
+                           MarkIdsInNeighbourhood)
 
-            if MarkIdCurrentPixel not in Marks_and_Coords:
-                Marks_and_Coords[MarkIdCurrentPixel] = dict()
+        if MarkIdCurrentPixel not in Marks_and_Coords:
+            Marks_and_Coords[MarkIdCurrentPixel] = dict()
 
-            Marks_and_Coords[MarkIdCurrentPixel][Coord] = True
+        Marks_and_Coords[MarkIdCurrentPixel][Coord] = True
 
-            InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
+        InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
     print("num of Mark pixels: ", len(InkPixelCoords_and_MarkId) )
 
@@ -75,15 +74,16 @@ def mark_collect_from_img_object(Prg, Img,
         Id += 1
     return MarkReturn
 
+# TODO: TEST IT
 def mark_ids_merge(Marks, MarkIdCurrentPixel,
-                   CoordsMarkPixels_and_parent_MarkId,
+                   InkPixelCoords_and_MarkId,
                    MarkIdsInNeighbourhood):
 
-    for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
+    for CoordMaybeMoved, MarkIdBeforeMoving in InkPixelCoords_and_MarkId.items():
         if MarkIdBeforeMoving is not None:
             if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
                 # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
-                CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
+                InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
                 Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
 
     for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
