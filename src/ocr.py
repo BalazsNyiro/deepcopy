@@ -34,7 +34,7 @@ def mark_collect_from_img_object(Prg, Img,
                                  ColorBlockBackgroundGrayDelta=30,
                                  ):
 
-    CoordsMarkPixels_and_parent_MarkId = select_mark_pixels_from_img(Img,
+    CoordsMarkPixels_and_parent_MarkId = mark_pixels_select_from_img(Img,
                                                                      ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
                                                                      ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
     Marks = dict()
@@ -43,17 +43,12 @@ def mark_collect_from_img_object(Prg, Img,
     for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
         if MarkIdCurrentPixel is None: # MarkId can be 0!!! so check with is-None
 
-            MarkIdsPossible = [] # if in the neighbours are a known mark, connect the current pixel into that mark
-
-            for CoordNeighbour in util.coords_neighbours(Coord):
-                markid_detect_possible_neighbour_marks(CoordNeighbour, MarkIdsPossible, CoordsMarkPixels_and_parent_MarkId)
-
-            if not MarkIdsPossible:
-                MarkIdsPossible.append(MarkIdNext)
-                MarkIdNext += 1
+            MarkIdsPossible, MarkIdNext = \
+                mark_ids_collect_from_neighbourhood(Coord, MarkIdNext,
+                                                    CoordsMarkPixels_and_parent_MarkId)
 
             MarkIdCurrentPixel = MarkIdsPossible.pop(0)
-            if MarkIdsPossible:
+            if MarkIdsPossible: # if there are more than the selected one possible Id:
                 # we can connect more MarkIds into One.
                 # Move all pixels into the first markId
 
@@ -73,7 +68,6 @@ def mark_collect_from_img_object(Prg, Img,
 
             CoordsMarkPixels_and_parent_MarkId[Coord] = MarkIdCurrentPixel
 
-
     print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
 
     # the keys can be missing: [0, 2, 3]
@@ -85,8 +79,23 @@ def mark_collect_from_img_object(Prg, Img,
     return MarkReturn
 
 
+# return with new MarkIdNext if it used the original one
+def mark_ids_collect_from_neighbourhood(Coord, MarkIdNext,
+                                        CoordsMarkPixels_and_parent_MarkId):
+    MarkIdsPossible = []  # if in the neighbours are a known mark, connect the current pixel into that mark
+
+    for CoordNeighbour in util.coords_neighbours(Coord):
+        markid_detect_possible_neighbour_marks(CoordNeighbour,
+                                               MarkIdsPossible,
+                                               CoordsMarkPixels_and_parent_MarkId)
+    if not MarkIdsPossible:
+        MarkIdsPossible.append(MarkIdNext)
+        MarkIdNext += 1
+
+    return MarkIdsPossible, MarkIdNext
+
 # TODO: create separated test
-def select_mark_pixels_from_img(Img,
+def mark_pixels_select_from_img(Img,
                                 ColorBlockBackgroundRgbDelta,
                                 ColorBlockBackgroundRgb,
                                 ColorBlockBackgroundGray,
