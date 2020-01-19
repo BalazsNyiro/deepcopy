@@ -49,22 +49,16 @@ def mark_collect_from_img_object(Prg, Img,
 
             MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
 
-            if MarkIdsInNeighbourhood: # if there are more than the selected one possible Id:
-                # we can connect more MarkIds into One.
-                # Move all pixels into the first markId
-
-                for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
-                    if MarkIdBeforeMoving is not None:
-                        if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
-                            # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
-                            CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
-                            Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
-
-                for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
-                    del Marks[MarkIdNotMoreUsed]
+            # we can connect more than one MarkIds from the neighbourhood
+            # so this pixel merge more separated marks into one new
+            if MarkIdsInNeighbourhood:
+                mark_ids_merge(Marks, MarkIdCurrentPixel,
+                               CoordsMarkPixels_and_parent_MarkId,
+                               MarkIdsInNeighbourhood)
 
             if MarkIdCurrentPixel not in Marks:
                 Marks[MarkIdCurrentPixel] = dict()
+
             Marks[MarkIdCurrentPixel][Coord] = True
 
             CoordsMarkPixels_and_parent_MarkId[Coord] = MarkIdCurrentPixel
@@ -78,6 +72,20 @@ def mark_collect_from_img_object(Prg, Img,
         MarkReturn[Id] = Val
         Id += 1
     return MarkReturn
+
+def mark_ids_merge(Marks, MarkIdCurrentPixel,
+                   CoordsMarkPixels_and_parent_MarkId,
+                   MarkIdsInNeighbourhood):
+
+    for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
+        if MarkIdBeforeMoving is not None:
+            if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
+                # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
+                CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
+                Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
+
+    for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
+        del Marks[MarkIdNotMoreUsed]
 
 
 # return with new MarkIdNext if it used the original one
