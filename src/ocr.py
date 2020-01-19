@@ -34,18 +34,20 @@ def mark_collect_from_img_object(Prg, Img,
                                  ColorBlockBackgroundGrayDelta=30,
                                  ):
 
-    CoordsMarkPixels_and_parent_MarkId = mark_pixels_select_from_img(Img,
-                                                                     ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
-                                                                     ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
+    # Ink Pixel: a pixel that is not in background: wanted/detected foreground pixel
+    # Ink is shorter name than Foreground so I chose that
+    InkPixels_and_parent_MarkId = mark_pixels_select_from_img(Img,
+                                                              ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
+                                                              ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
     Marks = dict()
     MarkIdDefault = 0
 
-    for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
+    for Coord, MarkIdCurrentPixel in InkPixels_and_parent_MarkId.items():
         if MarkIdCurrentPixel is None: # MarkId can be 0!!! so check with is-None
 
             MarkIdsInNeighbourhood, MarkIdDefault = \
                 mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
-                                                    CoordsMarkPixels_and_parent_MarkId)
+                                                    InkPixels_and_parent_MarkId)
 
             MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
 
@@ -53,7 +55,7 @@ def mark_collect_from_img_object(Prg, Img,
             # so this pixel merge more separated marks into one new
             if MarkIdsInNeighbourhood:
                 mark_ids_merge(Marks, MarkIdCurrentPixel,
-                               CoordsMarkPixels_and_parent_MarkId,
+                               InkPixels_and_parent_MarkId,
                                MarkIdsInNeighbourhood)
 
             if MarkIdCurrentPixel not in Marks:
@@ -61,9 +63,9 @@ def mark_collect_from_img_object(Prg, Img,
 
             Marks[MarkIdCurrentPixel][Coord] = True
 
-            CoordsMarkPixels_and_parent_MarkId[Coord] = MarkIdCurrentPixel
+            InkPixels_and_parent_MarkId[Coord] = MarkIdCurrentPixel
 
-    print("num of Mark pixels: ", len(CoordsMarkPixels_and_parent_MarkId) )
+    print("num of Mark pixels: ", len(InkPixels_and_parent_MarkId) )
 
     # the keys can be missing: [0, 2, 3]
     MarkReturn = dict()
@@ -115,7 +117,7 @@ def mark_pixels_select_from_img(Img,
         print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
         sys.exit(1)
 
-    CoordsMarkPixels_and_parent_MarkId = dict()
+    InkPixels_and_ParentMarkId = dict()
     DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
     BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
 
@@ -135,15 +137,15 @@ def mark_pixels_select_from_img(Img,
         for X in RangeX:
             for Y in RangeY:
                 if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
-                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
+                    InkPixels_and_ParentMarkId[(X, Y)] = None
 
     if is_grayscale(Img):
         for X in RangeX:
             for Y in RangeY:
                 if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
-                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
+                    InkPixels_and_ParentMarkId[(X, Y)] = None
 
-    return CoordsMarkPixels_and_parent_MarkId
+    return InkPixels_and_ParentMarkId
 
 # display func, tested with usage
 def mark_to_string(Prg, Mark):
