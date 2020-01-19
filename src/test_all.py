@@ -3,6 +3,21 @@
 
 import unittest, util, os, ocr
 
+class OcrBusinessFuncs(unittest.TestCase):
+    def test_markid_detect_possible_neighbour_marks(self):
+
+        InkPixelCoords_and_MarkId = dict()
+        InkPixelCoords_and_MarkId[(1, 1)] = 1
+        InkPixelCoords_and_MarkId[(2, 2)] = 2
+        MarkIdsPossible = [2] # this is a possible Id, as a theoretical start state
+
+        ocr.markid_detect_possible_neighbour_marks((1, 1), MarkIdsPossible, InkPixelCoords_and_MarkId)
+        # 2 is in the Possible id's list, so the func doesn't insert it again
+        ocr.markid_detect_possible_neighbour_marks((2, 2), MarkIdsPossible, InkPixelCoords_and_MarkId)
+
+        for MarkIdWanted in [1,2]:
+            self.assertEqual(MarkIdWanted in MarkIdsPossible, True)
+
 
 class Ocr(unittest.TestCase):
     def test_is_mark_rgb(self):

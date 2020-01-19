@@ -117,7 +117,7 @@ def mark_pixels_select_from_img(Img,
         print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
         sys.exit(1)
 
-    InkPixels_and_ParentMarkId = dict()
+    InkPixels_and_MarkId = dict()
     DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
     BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
 
@@ -137,15 +137,15 @@ def mark_pixels_select_from_img(Img,
         for X in RangeX:
             for Y in RangeY:
                 if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
-                    InkPixels_and_ParentMarkId[(X, Y)] = None
+                    InkPixels_and_MarkId[(X, Y)] = None
 
     if is_grayscale(Img):
         for X in RangeX:
             for Y in RangeY:
                 if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
-                    InkPixels_and_ParentMarkId[(X, Y)] = None
+                    InkPixels_and_MarkId[(X, Y)] = None
 
-    return InkPixels_and_ParentMarkId
+    return InkPixels_and_MarkId
 
 # display func, tested with usage
 def mark_to_string(Prg, Mark):
@@ -185,11 +185,11 @@ def mark_to_string(Prg, Mark):
 
     return "\n".join(Rows)
 
-
-# TODO: write test
-def markid_detect_possible_neighbour_marks(Coord, MarkIdsPossible, InkPixelCoords_and_MarkId):
+# TESTED, here we know that CoordNeighbour is next to our current pixel
+def markid_detect_possible_neighbour_marks(CoordNeighbour, MarkIdsPossible,
+                                           InkPixelCoords_and_MarkId):
     # print("  possible? ", Coord)
-    MarkIdNeighbour = InkPixelCoords_and_MarkId.get(Coord, None)
+    MarkIdNeighbour = InkPixelCoords_and_MarkId.get(CoordNeighbour, None)
     # same MarkId can be in more than one neighbour
     if MarkIdNeighbour is not None and MarkIdNeighbour not in MarkIdsPossible:
         MarkIdsPossible.append(MarkIdNeighbour)
