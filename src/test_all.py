@@ -23,11 +23,11 @@ class Ocr(unittest.TestCase):
         ColorBgBMax = 40
 
         IsMarkRgb_0_0 = ocr.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                               ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+                                               ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
         IsMarkRgb_1_0 = ocr.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
         IsMarkRgb_2_0 = ocr.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
         self.assertEqual(IsMarkRgb_0_0, False)
         self.assertEqual(IsMarkRgb_1_0, True)
         self.assertEqual(IsMarkRgb_2_0, True)

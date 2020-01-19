@@ -33,42 +33,10 @@ def mark_collect_from_img_object(Prg, Img,
                                  ColorBlockBackgroundGray=30,
                                  ColorBlockBackgroundGrayDelta=30,
                                  ):
-    if "define base variables": # block, you can close it in ide - comment is hided, but string constans are not! :-)
-        CoordsMarkPixels_and_parent_MarkId = dict()
 
-        DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
-        BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
-
-        BgRedMax = BackgroundR + DeltaR
-        BgRedMin = BackgroundR - DeltaR
-        BgGreenMax = BackgroundG + DeltaG
-        BgGreenMin = BackgroundG - DeltaG
-        BgBlueMax = BackgroundB + DeltaB
-        BgBlueMin = BackgroundB - DeltaB
-
-        BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
-        BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
-
-    if not is_rgb(Img) and not is_grayscale(Img):
-        print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
-        sys.exit(1)
-
-    # find marks and remove backgrounds
-    # print("Mark detection, Img dimensions:", Img["Width"], Img["Height"])
-    RangeX = range(0, Img["Width"])
-    RangeY = range(0, Img["Height"])
-    if is_rgb(Img):
-        for X in RangeX:
-            for Y in RangeY:
-                if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
-                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
-
-    if is_grayscale(Img):
-        for X in RangeX:
-            for Y in RangeY:
-                if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
-                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
-
+    CoordsMarkPixels_and_parent_MarkId = select_mark_pixels_from_img(Img,
+                                                                     ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
+                                                                     ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
     Marks = dict()
     MarkIdNext = 0
 
@@ -125,6 +93,48 @@ def mark_collect_from_img_object(Prg, Img,
         MarkReturn[Id] = Val
         Id += 1
     return MarkReturn
+
+
+# TODO: create separated test
+def select_mark_pixels_from_img(Img,
+                                ColorBlockBackgroundRgbDelta,
+                                ColorBlockBackgroundRgb,
+                                ColorBlockBackgroundGray,
+                                ColorBlockBackgroundGrayDelta):
+
+    if not is_rgb(Img) and not is_grayscale(Img):
+        print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
+        sys.exit(1)
+
+    CoordsMarkPixels_and_parent_MarkId = dict()
+    DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta
+    BackgroundR, BackgroundG, BackgroundB = ColorBlockBackgroundRgb
+
+    BgRedMax = BackgroundR + DeltaR
+    BgRedMin = BackgroundR - DeltaR
+    BgGreenMax = BackgroundG + DeltaG
+    BgGreenMin = BackgroundG - DeltaG
+    BgBlueMax = BackgroundB + DeltaB
+    BgBlueMin = BackgroundB - DeltaB
+
+    BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
+    BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
+
+    RangeX = range(0, Img["Width"])
+    RangeY = range(0, Img["Height"])
+    if is_rgb(Img):
+        for X in RangeX:
+            for Y in RangeY:
+                if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
+                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
+
+    if is_grayscale(Img):
+        for X in RangeX:
+            for Y in RangeY:
+                if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
+                    CoordsMarkPixels_and_parent_MarkId[(X, Y)] = None
+
+    return CoordsMarkPixels_and_parent_MarkId
 
 # display func, tested with usage
 def mark_to_string(Prg, Mark):
