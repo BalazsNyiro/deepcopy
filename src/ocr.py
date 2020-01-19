@@ -38,28 +38,29 @@ def mark_collect_from_img_object(Prg, Img,
                                                                      ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
                                                                      ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
     Marks = dict()
-    MarkIdNext = 0
+    MarkIdDefault = 0
 
     for Coord, MarkIdCurrentPixel in CoordsMarkPixels_and_parent_MarkId.items():
         if MarkIdCurrentPixel is None: # MarkId can be 0!!! so check with is-None
 
-            MarkIdsPossible, MarkIdNext = \
-                mark_ids_collect_from_neighbourhood(Coord, MarkIdNext,
+            MarkIdsInNeighbourhood, MarkIdDefault = \
+                mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
                                                     CoordsMarkPixels_and_parent_MarkId)
 
-            MarkIdCurrentPixel = MarkIdsPossible.pop(0)
-            if MarkIdsPossible: # if there are more than the selected one possible Id:
+            MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
+
+            if MarkIdsInNeighbourhood: # if there are more than the selected one possible Id:
                 # we can connect more MarkIds into One.
                 # Move all pixels into the first markId
 
                 for CoordMaybeMoved, MarkIdBeforeMoving in CoordsMarkPixels_and_parent_MarkId.items():
                     if MarkIdBeforeMoving is not None:
-                        if MarkIdBeforeMoving in MarkIdsPossible:
+                        if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
                             # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
                             CoordsMarkPixels_and_parent_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
                             Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
 
-                for MarkIdNotMoreUsed in MarkIdsPossible:
+                for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
                     del Marks[MarkIdNotMoreUsed]
 
             if MarkIdCurrentPixel not in Marks:
@@ -80,21 +81,22 @@ def mark_collect_from_img_object(Prg, Img,
 
 
 # return with new MarkIdNext if it used the original one
-def mark_ids_collect_from_neighbourhood(Coord, MarkIdNext,
+# TODO: TEST IT
+def mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
                                         CoordsMarkPixels_and_parent_MarkId):
-    MarkIdsPossible = []  # if in the neighbours are a known mark, connect the current pixel into that mark
+    MarkIdsInNeighbourhood = []  # if in the neighbours are a known mark, connect the current pixel into that mark
 
     for CoordNeighbour in util.coords_neighbours(Coord):
         markid_detect_possible_neighbour_marks(CoordNeighbour,
-                                               MarkIdsPossible,
+                                               MarkIdsInNeighbourhood,
                                                CoordsMarkPixels_and_parent_MarkId)
-    if not MarkIdsPossible:
-        MarkIdsPossible.append(MarkIdNext)
-        MarkIdNext += 1
+    if not MarkIdsInNeighbourhood:
+        MarkIdsInNeighbourhood.append(MarkIdDefault)
+        MarkIdDefault += 1
 
-    return MarkIdsPossible, MarkIdNext
+    return MarkIdsInNeighbourhood, MarkIdDefault
 
-# TODO: create separated test
+# TODO: TEST IT
 def mark_pixels_select_from_img(Img,
                                 ColorBlockBackgroundRgbDelta,
                                 ColorBlockBackgroundRgb,
