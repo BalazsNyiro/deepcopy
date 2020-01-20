@@ -230,6 +230,11 @@ def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
     if PostFix: PostFix = "_" + PostFix
     return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
 
+
+# TESTED, neighbour coord order:
+#   CDE
+#   B F
+#   AHG
 def coords_neighbours(Coord):
     X, Y = Coord
     return [

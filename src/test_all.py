@@ -3,6 +3,15 @@
 
 import unittest, util, os, ocr
 
+class UtilFuncs(unittest.TestCase):
+    def test_coords_neighbours(self):
+        #   neighbour coord order:
+        #   CDE
+        #   B F
+        #   AHG
+        PossibleNeighbours = [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2)]
+        self.assertEqual(util.coords_neighbours((1, 1)), PossibleNeighbours)
+
 class OcrBusinessFuncs(unittest.TestCase):
     def test_markid_of_coord_append_if_unknown(self):
 

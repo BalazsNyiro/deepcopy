@@ -60,7 +60,8 @@ def mark_collect_from_img_object(Prg, Img,
         if MarkIdCurrentPixel not in Marks_and_Coords:
             Marks_and_Coords[MarkIdCurrentPixel] = dict()
 
-        Marks_and_Coords[MarkIdCurrentPixel][Coord] = True
+        # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
+        Marks_and_Coords[MarkIdCurrentPixel][Coord] = Img["Pixels"][Coord]
 
         InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
