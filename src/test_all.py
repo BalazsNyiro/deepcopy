@@ -13,6 +13,25 @@ class UtilFuncs(unittest.TestCase):
         self.assertEqual(util.coords_neighbours((1, 1)), PossibleNeighbours)
 
 class OcrBusinessFuncs(unittest.TestCase):
+    def test_mark_pixels_select_from_img(self):
+
+        ColorBlockBackgroundRgb = (128, 128, 128)
+        ColorBlockBackgroundRgbDelta = (30, 30, 30)
+        ColorBlockBackgroundGray = 30
+        ColorBlockBackgroundGrayDelta = 30
+
+        FilePathElems = ["test", "test_color_scale_rgb.png"]
+        Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+
+        InkPixelCoords_and_MarkId = ocr.mark_pixels_select_from_img(
+            Prg, Img,
+            ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
+            ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
+
+        util.file_write(Prg, "log.txt", str(InkPixelCoords_and_MarkId))
+        WantedPixels = {(0, 0): None, (1, 0): None, (2, 0): None, (3, 0): None, (7, 0): None, (8, 0): None, (9, 0): None, (10, 0): None}
+        self.assertEqual(InkPixelCoords_and_MarkId, WantedPixels)
+
     def test_markid_of_coord_append_if_unknown(self):
 
         InkPixelCoords_and_MarkId = dict()

@@ -168,6 +168,15 @@ def dir_create_if_necessary(Prg, Path):
     if not os.path.isdir(Path):
         os.mkdir(Path)
 
+# Tested
+def img_load_into_prg_structure__get_imgid(Prg, FilePathElems):
+    FilePathImg = os.path.join(*FilePathElems)
+    ImgId = img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
+    img_load_into_prg_structure(Prg, FilePathImg, ImgId)
+    Img = Prg["ImagesLoaded"][ImgId]
+    return Img, ImgId
+
+# Tested
 def img_load_into_prg_structure(Prg, FileSelectedPath,
                                 ImgId,
                                 PixelsPreview = None,
@@ -247,3 +256,4 @@ def coords_neighbours(Coord):
         (X + 1, Y + 1),
         (X,     Y + 1),
     ]
+

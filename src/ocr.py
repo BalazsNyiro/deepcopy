@@ -108,7 +108,7 @@ def mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
 
     return MarkIdsInNeighbourhood, MarkIdIfNoNeighbour
 
-# TODO: TEST IT
+# TESTED
 def mark_pixels_select_from_img(Prg, Img,
                                 ColorBlockBackgroundRgb,
                                 ColorBlockBackgroundRgbDelta,
