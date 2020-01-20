@@ -210,7 +210,10 @@ def img_load_into_prg_structure(Prg, FileSelectedPath,
         "Height": ImgHeight
     }
 
-
+# indirect tested only:
+# util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+#  -> img_load_into_prg_structure(Prg, FilePathImg, ImgId)
+#    -> img_load_pixels()
 def img_load_pixels(Prg, ImgPath, Timer=False):
     try:
         from PIL import Image
