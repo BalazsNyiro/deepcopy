@@ -224,10 +224,18 @@ if __name__ == '__main__':
 def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=None):
     print("Num of Marks now detected: ", len(MarksNowDetected.keys()))
     print("Num of wanted results: ", len( TestWantedResults))
-    for Key in MarksNowDetected.keys():
+
+    WantedKeys = sorted(list(TestWantedResults.keys()))
+
+    for Key in sorted(list(MarksNowDetected.keys())):
+
+        # in MarkDetected dict() can be index gaps.
+        # example: D = {0:"A", 3:"B", 5, "C"}
+        # so we loop over on detected keys and always take the next element from the test -
+        # the two dict's keys can be different but the order of the keys are fixed
         MarkDetected = ocr.mark_to_string(Prg, MarksNowDetected[Key])
 
-        MarkWanted = TestWantedResults.get(Key, "Key not in Wanted results: " + str(Key))
+        MarkWanted = TestWantedResults.get(WantedKeys.pop(0), "Key not in Wanted results: " + str(Key))
 
         if MarkDetected != MarkWanted:
 

@@ -40,12 +40,12 @@ def mark_collect_from_img_object(Prg, Img,
                                                        ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
                                                        ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
     Marks_and_Coords = dict()
-    MarkIdDefault = 0
+    MarkIdIfNoNeighbour = 0
 
     for Coord, MarkIdCurrentPixel in InkPixelCoords_and_MarkId.items():
 
-        MarkIdsInNeighbourhood, MarkIdDefault = \
-            mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
+        MarkIdsInNeighbourhood, MarkIdIfNoNeighbour = \
+            mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
                                                 InkPixelCoords_and_MarkId)
 
         MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
@@ -65,15 +65,9 @@ def mark_collect_from_img_object(Prg, Img,
 
         InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
-    print("num of Mark pixels: ", len(InkPixelCoords_and_MarkId) )
+    print("num of Mark pixels: ", len(InkPixelCoords_and_MarkId))
 
-    # the keys can be missing: [0, 2, 3]
-    MarkReturn = dict()
-    Id = 0
-    for Val in Marks_and_Coords.values(): # here the keys will be re-setted: 0, 1, 2
-        MarkReturn[Id] = Val
-        Id += 1
-    return MarkReturn
+    return Marks_and_Coords
 
 # TODO: TEST IT
 def mark_ids_merge(Marks, MarkIdCurrentPixel,
@@ -93,7 +87,7 @@ def mark_ids_merge(Marks, MarkIdCurrentPixel,
 
 # return with new MarkIdNext if it used the original one
 # TODO: TEST IT
-def mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
+def mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
                                         InkPixelCoords_and_MarkId):
     MarkIdsInNeighbourhood = []  # if in the neighbours are a known mark, connect the current pixel into that mark
 
@@ -102,10 +96,10 @@ def mark_ids_collect_from_neighbourhood(Coord, MarkIdDefault,
                                           MarkIdsInNeighbourhood,
                                           InkPixelCoords_and_MarkId)
     if not MarkIdsInNeighbourhood:
-        MarkIdsInNeighbourhood.append(MarkIdDefault)
-        MarkIdDefault += 1
+        MarkIdsInNeighbourhood.append(MarkIdIfNoNeighbour)
+        MarkIdIfNoNeighbour += 1
 
-    return MarkIdsInNeighbourhood, MarkIdDefault
+    return MarkIdsInNeighbourhood, MarkIdIfNoNeighbour
 
 # TODO: TEST IT
 def mark_pixels_select_from_img(Img,
