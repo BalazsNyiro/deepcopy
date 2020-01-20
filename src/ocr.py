@@ -36,10 +36,10 @@ def mark_collect_from_img_object(Prg, Img,
 
     # Ink Pixel: a pixel that is not in background: wanted/detected foreground pixel
     # Ink is shorter name than Foreground so I chose that
-    InkPixelCoords_and_MarkId = mark_pixels_select_from_img(Img,
-                                                       ColorBlockBackgroundRgbDelta, ColorBlockBackgroundRgb,
+    InkPixelCoords_and_MarkId = mark_pixels_select_from_img(Prg, Img,
+                                                       ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
                                                        ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
-    Marks_and_Coords = dict()
+    Marks = dict()
     MarkIdIfNoNeighbour = 0
 
     for Coord, MarkIdCurrentPixel in InkPixelCoords_and_MarkId.items():
@@ -52,37 +52,44 @@ def mark_collect_from_img_object(Prg, Img,
 
         # we can connect more than one MarkIds from the neighbourhood
         # so this pixel merge more separated marks into one new
-        if MarkIdsInNeighbourhood:
-            mark_ids_merge(Marks_and_Coords, MarkIdCurrentPixel,
-                           InkPixelCoords_and_MarkId,
-                           MarkIdsInNeighbourhood)
-
-        if MarkIdCurrentPixel not in Marks_and_Coords:
-            Marks_and_Coords[MarkIdCurrentPixel] = dict()
-
-        # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
-        Marks_and_Coords[MarkIdCurrentPixel][Coord] = Img["Pixels"][Coord]
-
-        InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
+        mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
+                                InkPixelCoords_and_MarkId,
+                                MarkIdsInNeighbourhood, Img, Coord)
 
     print("num of Mark pixels: ", len(InkPixelCoords_and_MarkId))
 
-    return Marks_and_Coords
+    return Marks
 
 # TODO: TEST IT
-def mark_ids_merge(Marks, MarkIdCurrentPixel,
-                   InkPixelCoords_and_MarkId,
-                   MarkIdsInNeighbourhood):
+def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
+                            InkPixelCoords_and_MarkId,
+                            MarkIdsInNeighbourhood, Img, Coord):
 
-    for CoordMaybeMoved, MarkIdBeforeMoving in InkPixelCoords_and_MarkId.items():
-        if MarkIdBeforeMoving is not None:
-            if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
-                # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
-                InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
-                Marks[MarkIdCurrentPixel][CoordMaybeMoved] = True
+    ##########################
+    # set id for current pixel:
+    if MarkIdCurrentPixel not in Marks:
+        Marks[MarkIdCurrentPixel] = dict()
 
-    for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
-        del Marks[MarkIdNotMoreUsed]
+    # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
+    Marks[MarkIdCurrentPixel][Coord] = Img["Pixels"][Coord]
+    InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
+
+    ##########################
+    # set id for neighbours
+    if MarkIdsInNeighbourhood:
+        for CoordMaybeMoved, MarkIdBeforeMoving in InkPixelCoords_and_MarkId.items():
+            if MarkIdBeforeMoving is not None:
+                if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
+                    # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
+                    InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
+
+                    # copy the color value of the pixel to the new place
+                    Marks[MarkIdCurrentPixel][CoordMaybeMoved] = Marks[MarkIdBeforeMoving][CoordMaybeMoved]
+
+        # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
+        for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
+            del Marks[MarkIdNotMoreUsed]
+    ##########################
 
 
 # return with new MarkIdNext if it used the original one
@@ -102,9 +109,9 @@ def mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
     return MarkIdsInNeighbourhood, MarkIdIfNoNeighbour
 
 # TODO: TEST IT
-def mark_pixels_select_from_img(Img,
-                                ColorBlockBackgroundRgbDelta,
+def mark_pixels_select_from_img(Prg, Img,
                                 ColorBlockBackgroundRgb,
+                                ColorBlockBackgroundRgbDelta,
                                 ColorBlockBackgroundGray,
                                 ColorBlockBackgroundGrayDelta):
 
