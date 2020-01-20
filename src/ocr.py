@@ -19,10 +19,8 @@ def text_block_analyse(Prg,
 # the root dir is the program's parent dir
 # TESTED
 def mark_collect_from_img_file(Prg, FilePathElems):
-    FilePathImg = os.path.join(Prg["DirPrgParent"], *FilePathElems)
-    ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
-    util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
-    Img = Prg["ImagesLoaded"][ImgId]
+    FilePathElems = [Prg["DirPrgParent"], *FilePathElems]
+    Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
     Marks = mark_collect_from_img_object(Prg, Img)
     return Marks
 

@@ -28,7 +28,7 @@ class OcrBusinessFuncs(unittest.TestCase):
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
             ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
 
-        util.file_write(Prg, "log.txt", str(InkPixelCoords_and_MarkId))
+        # util.file_write(Prg, "log.txt", str(InkPixelCoords_and_MarkId))
         WantedPixels = {(0, 0): None, (1, 0): None, (2, 0): None, (3, 0): None, (7, 0): None, (8, 0): None, (9, 0): None, (10, 0): None}
         self.assertEqual(InkPixelCoords_and_MarkId, WantedPixels)
 
