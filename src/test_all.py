@@ -49,10 +49,8 @@ class OcrBusinessFuncs(unittest.TestCase):
 
 class Ocr(unittest.TestCase):
     def test_is_mark_rgb(self):
-        FilePathImg = os.path.join("test", "test_img_rgb_color_levels.png")
-        ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
-        util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
-        Img = Prg["ImagesLoaded"][ImgId]
+        FilePathElems = ["test", "test_img_rgb_color_levels.png"]
+        Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
 
         self.assertEqual(ocr.is_rgb(Img), True)
         # Bg == Background
@@ -97,10 +95,8 @@ class Ocr(unittest.TestCase):
 
 
     def test_is_mark_grayscale(self):
-        FilePathImg = os.path.join("test", "test_img_grayscale_color_levels.png")
-        ImgId = util.img_generate_id_for_loaded_list(Prg, PreFix="thumbnail", PostFix=FilePathImg)
-        util.img_load_into_prg_structure(Prg, FilePathImg, ImgId)
-        Img = Prg["ImagesLoaded"][ImgId]
+        FilePathElems = ["test", "test_img_grayscale_color_levels.png"]
+        Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
 
         ColorBackgroundGrayMin = 10
         ColorBackgroundGrayMax = 240
