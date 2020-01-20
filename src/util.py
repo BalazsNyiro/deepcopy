@@ -221,12 +221,12 @@ def img_load_pixels(Prg, ImgPath, Timer=False):
     ImgWidth, ImgHeight = ImgOriginal.size
 
     # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
-    PixelSample = ImgOriginal.getpixel((0, 0))
+    PixelSampleColorValue = ImgOriginal.getpixel((0, 0))
     # if it's a grayscale img, it't a simple int, not a tuple
-    if isinstance(PixelSample, int):
-        PixelDataSize = PixelSample
+    if isinstance(PixelSampleColorValue, int):
+        PixelDataSize = 1
     else:
-        PixelDataSize = len(PixelSample)
+        PixelDataSize = len(PixelSampleColorValue) # RGB value has 3 elems, RGBA has 4
     print("Pixel Data size: ", PixelDataSize)
 
     Pixels = ImgOriginal.load()

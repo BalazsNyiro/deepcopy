@@ -115,7 +115,8 @@ def mark_pixels_select_from_img(Prg, Img,
 
     if not is_rgb(Img) and not is_grayscale(Img):
         print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
-        sys.exit(1)
+        PixelDataSize = Img.get("PixelDataSize", -1)
+        sys.exit(PixelDataSize)
 
     InkPixels_and_MarkId = dict()
     DeltaR, DeltaG, DeltaB = ColorBlockBackgroundRgbDelta

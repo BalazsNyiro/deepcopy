@@ -17,19 +17,31 @@ class OcrBusinessFuncs(unittest.TestCase):
 
         ColorBlockBackgroundRgb = (128, 128, 128)
         ColorBlockBackgroundRgbDelta = (30, 30, 30)
-        ColorBlockBackgroundGray = 30
-        ColorBlockBackgroundGrayDelta = 30
+        ColorBlockBackgroundGray = 225
+        ColorBlockBackgroundGrayDelta = 128  # between 225+Delta - 225-Delta pixels are bg pixels
 
         FilePathElems = ["test", "test_color_scale_rgb.png"]
-        Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
 
         InkPixelCoords_and_MarkId = ocr.mark_pixels_select_from_img(
             Prg, Img,
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
             ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
 
-        # util.file_write(Prg, "log.txt", str(InkPixelCoords_and_MarkId))
         WantedPixels = {(0, 0): None, (1, 0): None, (2, 0): None, (3, 0): None, (7, 0): None, (8, 0): None, (9, 0): None, (10, 0): None}
+        self.assertEqual(InkPixelCoords_and_MarkId, WantedPixels)
+
+        # test with grayscale img
+        FilePathElems = ["test", "test_color_scale_gray.png"]
+        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        util.file_write(Prg, "log.txt", str(Img))
+        InkPixelCoords_and_MarkId = ocr.mark_pixels_select_from_img(
+            Prg, Img,
+            ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
+            ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
+
+        # util.file_write(Prg, "log.txt", str(InkPixelCoords_and_MarkId))
+        WantedPixels = {(7, 0): None, (8, 0): None, (9, 0): None, (10, 0): None}
         self.assertEqual(InkPixelCoords_and_MarkId, WantedPixels)
 
     def test_markid_of_coord_append_if_unknown(self):
