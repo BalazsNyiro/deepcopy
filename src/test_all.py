@@ -13,6 +13,39 @@ class UtilFuncs(unittest.TestCase):
         self.assertEqual(util.coords_neighbours((1, 1)), PossibleNeighbours)
 
 class OcrBusinessFuncs(unittest.TestCase):
+
+    def test_mark_ids_collect_from_neighbourhood__mark_ids_set_for_pixel(self):
+        # the second test uses the result of the first one.
+        ######## test: mark_ids_collect_from_neighbourhood ###########
+        Marks = {   22: {(2, 2): 0},
+                    42: {(4, 2): 0, (5, 2): 0},
+                    44: {(4, 4): 0}}
+        MarkIdIfNoNeighbour = 0
+        InkPixelCoords_and_MarkId = {(2, 2): 22, (4, 2): 42, (4, 4): 44, (5, 2): 42}
+
+        Coord = (3, 3)
+        MarkIdsInNeighbourhood, _MarkIdIfNoNeighbour = \
+            ocr.mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
+                                                InkPixelCoords_and_MarkId)
+        WantedMarkIdsInNeighbourhood = [22, 42, 44]
+
+        self.assertEqual(MarkIdsInNeighbourhood, WantedMarkIdsInNeighbourhood)
+
+        ######### test: mark_ids_set_for_pixel() ##########
+        MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
+
+        FilePathElems = ["test", "test_mark_ids_set_for_pixels_gray.png"]
+        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        ocr.mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
+                                InkPixelCoords_and_MarkId,
+                                MarkIdsInNeighbourhood, Img, Coord)
+        # util.file_write(Prg, "log_mark.txt", str(Marks))
+        WantedMarksPixelInserted_and_IdsMerged = {22: {(2, 2): 0, (3, 3): 128, (4, 2): 0, (4, 4): 0, (5, 2): 0}}
+        WantedInkPixelCoords_and_MarkId = {(2, 2): 22, (3, 3): 22, (4, 2): 22, (4, 4): 22, (5, 2): 22}
+        self.assertEqual(Marks, WantedMarksPixelInserted_and_IdsMerged)
+        self.assertEqual(InkPixelCoords_and_MarkId, WantedInkPixelCoords_and_MarkId)
+
+
     def test_mark_pixels_select_from_img(self):
 
         ColorBlockBackgroundRgb = (128, 128, 128)
@@ -34,7 +67,7 @@ class OcrBusinessFuncs(unittest.TestCase):
         # test with grayscale img
         FilePathElems = ["test", "test_color_scale_gray.png"]
         Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
-        util.file_write(Prg, "log.txt", str(Img))
+        # util.file_write(Prg, "log.txt", str(Img))
         InkPixelCoords_and_MarkId = ocr.mark_pixels_select_from_img(
             Prg, Img,
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,

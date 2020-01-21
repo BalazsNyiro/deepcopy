@@ -58,11 +58,10 @@ def mark_collect_from_img_object(Prg, Img,
 
     return Marks
 
-# TODO: TEST IT
+# TESTED
 def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                             InkPixelCoords_and_MarkId,
                             MarkIdsInNeighbourhood, Img, Coord):
-
     ##########################
     # set id for current pixel:
     if MarkIdCurrentPixel not in Marks:
@@ -91,7 +90,7 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
 
 
 # return with new MarkIdNext if it used the original one
-# TODO: TEST IT
+# TESTED
 def mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
                                         InkPixelCoords_and_MarkId):
     MarkIdsInNeighbourhood = []  # if in the neighbours are a known mark, connect the current pixel into that mark
