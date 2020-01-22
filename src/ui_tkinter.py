@@ -74,7 +74,7 @@ def window_main(Prg):
     OnePageFrame.pack()
 
     Tkinter.Button(OnePageFrame, text=util.ui_msg(Prg, "ocr.page_current_analyse"),
-                   command=ocr_page_analyse).pack()
+                   command=marks_collect_from_page).pack()
 
     TextSelectPreviewImg = Image.new("RGB", Prg["UiTextSelectPreviewSize"], color="grey")
     Prg["Tkinter"]["OnePageTextSelectPreviewImgLoaded"] = None
@@ -226,7 +226,7 @@ def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
     return ImageTk.PhotoImage(image_file_load(Prg, Path, ThumbnailSize=ThumbnailSize))
 
 
-def ocr_page_analyse():
+def marks_collect_from_page():
     Prg = PrgGlobal
     # first we implement a naive algorithm:
     # Simple paragraphs on white paper

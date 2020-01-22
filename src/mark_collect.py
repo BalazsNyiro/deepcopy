@@ -1,6 +1,5 @@
 import util, sys
-from mark_util import mark_to_string
-from util import is_rgb, is_grayscale
+import mark_util
 
 
 def text_block_analyse(Prg,
@@ -17,7 +16,9 @@ def text_block_analyse(Prg,
 
     Marks = mark_collect_from_img_object(Prg, Img)
     print("Num of Marks:", len(Marks.keys()))
-    mark_to_string(Prg, Marks[1])
+
+    print("TODO: convert marks to text")
+    print(mark_util.mark_to_string(Prg, Marks[1]))
 
 # the root dir is the program's parent dir
 # TESTED
@@ -115,7 +116,7 @@ def mark_pixels_select_from_img(Prg, Img,
                                 ColorBlockBackgroundGray,
                                 ColorBlockBackgroundGrayDelta):
 
-    if not is_rgb(Img) and not is_grayscale(Img):
+    if not util.is_rgb(Img) and not util.is_grayscale(Img):
         print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
         PixelDataSize = Img.get("PixelDataSize", -1)
         sys.exit(PixelDataSize)
@@ -134,13 +135,13 @@ def mark_pixels_select_from_img(Prg, Img,
     BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
     BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
-    if is_rgb(Img):
+    if util.is_rgb(Img):
         def is_mark(Img, X, Y):
             if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
                 return True
             return False
 
-    if is_grayscale(Img):
+    if util.is_grayscale(Img):
         def is_mark(Img, X, Y):
             if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
                 return True
