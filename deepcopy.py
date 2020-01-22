@@ -24,7 +24,7 @@ Prg = {"Os": "",
        }
 
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
-import util, test_all
+import util, test_mark_collect, test_mark_util
 
 util.dir_create_if_necessary(Prg, Prg["PathTempDir"])
 
@@ -37,7 +37,8 @@ print(sys.argv)
 if "testonly" in sys.argv:
        TestOnly = True
        sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a prg param so I hide it, temporary solution
-test_all.run_all_tests(Prg)
+test_mark_collect.run_all_tests(Prg)
+test_mark_util.run_all_tests(Prg)
 if TestOnly:
        sys.exit(0)
 

@@ -195,7 +195,7 @@ class Ocr(unittest.TestCase):
         self.assertEqual(util.is_grayscale(Img), True)
 
 class TestMethodsAnalysed(unittest.TestCase):
-    def test_ocr_mark_collect___base_abc_ubuntu(self):
+    def test_mark_collect___base_abc_ubuntu(self):
 
         FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
@@ -267,7 +267,7 @@ class TestMethods(unittest.TestCase):
         Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
         self.assertTrue(util.file_test(Prg, Path))
 
-    def test_ocr_mark_collect___word_the(self):
+    def test_mark_collect___word_the(self):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
         Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
@@ -281,7 +281,7 @@ def run_all_tests(P):
     global Prg
     Prg = P
     # exec all test:
-    unittest.main(module="test_all", verbosity=2, exit=False)
+    unittest.main(module="test_mark_collect", verbosity=2, exit=False)
     # unittest.main(TestMethodsAnalysed())
 
 
