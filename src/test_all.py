@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import unittest, util, os, ocr
+import unittest, util, os, mark_collect
+
+import mark_util
+
 
 class UtilFuncs(unittest.TestCase):
     def test_img_generate_id_for_loaded_list(self):
@@ -30,8 +33,8 @@ class OcrBusinessFuncs(unittest.TestCase):
 
         Coord = (3, 3)
         MarkIdsInNeighbourhood, _MarkIdIfNoNeighbour = \
-            ocr.mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
-                                                InkPixelCoords_and_MarkId)
+            mark_collect.mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
+                                                             InkPixelCoords_and_MarkId)
         WantedMarkIdsInNeighbourhood = [22, 42, 44]
 
         self.assertEqual(MarkIdsInNeighbourhood, WantedMarkIdsInNeighbourhood)
@@ -41,9 +44,9 @@ class OcrBusinessFuncs(unittest.TestCase):
 
         FilePathElems = ["test", "test_mark_ids_set_for_pixels_gray.png"]
         Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
-        ocr.mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
-                                InkPixelCoords_and_MarkId,
-                                MarkIdsInNeighbourhood, Img, Coord)
+        mark_collect.mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
+                                             InkPixelCoords_and_MarkId,
+                                             MarkIdsInNeighbourhood, Img, Coord)
         # util.file_write(Prg, "log_mark.txt", str(Marks))
         WantedMarksPixelInserted_and_IdsMerged = {22: {(2, 2): 0, (3, 3): 128, (4, 2): 0, (4, 4): 0, (5, 2): 0}}
         WantedInkPixelCoords_and_MarkId = {(2, 2): 22, (3, 3): 22, (4, 2): 22, (4, 4): 22, (5, 2): 22}
@@ -61,7 +64,7 @@ class OcrBusinessFuncs(unittest.TestCase):
         FilePathElems = ["test", "test_color_scale_rgb.png"]
         Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
 
-        InkPixelCoords_and_MarkId = ocr.mark_pixels_select_from_img(
+        InkPixelCoords_and_MarkId = mark_collect.mark_pixels_select_from_img(
             Prg, Img,
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
             ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
@@ -73,7 +76,7 @@ class OcrBusinessFuncs(unittest.TestCase):
         FilePathElems = ["test", "test_color_scale_gray.png"]
         Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
         # util.file_write(Prg, "log.txt", str(Img))
-        InkPixelCoords_and_MarkId = ocr.mark_pixels_select_from_img(
+        InkPixelCoords_and_MarkId = mark_collect.mark_pixels_select_from_img(
             Prg, Img,
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
             ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
@@ -89,9 +92,9 @@ class OcrBusinessFuncs(unittest.TestCase):
         InkPixelCoords_and_MarkId[(2, 2)] = 2
         MarkIdsPossible = [2] # this is a possible Id, as a theoretical start state
 
-        ocr.markid_of_coord_append_if_unknown((1, 1), MarkIdsPossible, InkPixelCoords_and_MarkId)
+        mark_collect.markid_of_coord_append_if_unknown((1, 1), MarkIdsPossible, InkPixelCoords_and_MarkId)
         # 2 is in the Possible id's list, so the func doesn't insert it again
-        ocr.markid_of_coord_append_if_unknown((2, 2), MarkIdsPossible, InkPixelCoords_and_MarkId)
+        mark_collect.markid_of_coord_append_if_unknown((2, 2), MarkIdsPossible, InkPixelCoords_and_MarkId)
 
         for MarkIdWanted in [1,2]:
             self.assertEqual(MarkIdWanted in MarkIdsPossible, True)
@@ -102,7 +105,7 @@ class Ocr(unittest.TestCase):
         FilePathElems = ["test", "test_img_rgb_color_levels.png"]
         Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
 
-        self.assertEqual(ocr.is_rgb(Img), True)
+        self.assertEqual(util.is_rgb(Img), True)
         # Bg == Background
 
         ColorBgRMin = 0
@@ -113,12 +116,12 @@ class Ocr(unittest.TestCase):
         ColorBgRMax = 40
         ColorBgBMax = 40
 
-        IsMarkRgb_0_0 = ocr.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                               ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
-        IsMarkRgb_1_0 = ocr.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
-        IsMarkRgb_2_0 = ocr.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
+        IsMarkRgb_0_0 = mark_collect.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
+        IsMarkRgb_1_0 = mark_collect.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
+        IsMarkRgb_2_0 = mark_collect.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
         self.assertEqual(IsMarkRgb_0_0, False)
         self.assertEqual(IsMarkRgb_1_0, True)
         self.assertEqual(IsMarkRgb_2_0, True)
@@ -133,12 +136,12 @@ class Ocr(unittest.TestCase):
         ColorBgRMax = 255
         ColorBgBMax = 255
 
-        IsMarkRgb_0_0 = ocr.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
-        IsMarkRgb_1_0 = ocr.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
-        IsMarkRgb_2_0 = ocr.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                        ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_0_0 = mark_collect.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_1_0 = mark_collect.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+        IsMarkRgb_2_0 = mark_collect.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
         self.assertEqual(IsMarkRgb_0_0, True)
         self.assertEqual(IsMarkRgb_1_0, False)
         self.assertEqual(IsMarkRgb_2_0, False)
@@ -151,45 +154,45 @@ class Ocr(unittest.TestCase):
         ColorBackgroundGrayMin = 10
         ColorBackgroundGrayMax = 240
 
-        self.assertEqual(ocr.is_grayscale(Img), True)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
+        self.assertEqual(util.is_grayscale(Img), True)
+        self.assertEqual(mark_collect.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
+        self.assertEqual(mark_collect.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(mark_collect.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
 
         ColorBackgroundGrayMin = 1
         ColorBackgroundGrayMax = 255
 
-        self.assertEqual(ocr.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
-        self.assertEqual(ocr.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(mark_collect.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(mark_collect.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
+        self.assertEqual(mark_collect.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
 
     def test_is_rgb_pixel_datasize_field_missing(self):
         Img = dict()
-        self.assertEqual(ocr.is_rgb(Img), False)
+        self.assertEqual(util.is_rgb(Img), False)
 
     def test_is_rgb_pixel_datasize_field_is_zero(self):
         Img = dict()
         Img["PixelDataSize"] = 0
-        self.assertEqual(ocr.is_rgb(Img), False)
+        self.assertEqual(util.is_rgb(Img), False)
 
     def test_is_rgb_pixel_datasize_field_is_one(self):
         Img = dict()
         Img["PixelDataSize"] = 3
-        self.assertEqual(ocr.is_rgb(Img), True)
+        self.assertEqual(util.is_rgb(Img), True)
 
     def test_is_grayscale_pixel_datasize_field_missing(self):
         Img = dict()
-        self.assertEqual(ocr.is_grayscale(Img), False)
+        self.assertEqual(util.is_grayscale(Img), False)
 
     def test_is_grayscale_pixel_datasize_field_is_zero(self):
         Img = dict()
         Img["PixelDataSize"] = 0
-        self.assertEqual(ocr.is_grayscale(Img), False)
+        self.assertEqual(util.is_grayscale(Img), False)
 
     def test_is_grayscale_pixel_datasize_field_is_one(self):
         Img = dict()
         Img["PixelDataSize"] = 1
-        self.assertEqual(ocr.is_grayscale(Img), True)
+        self.assertEqual(util.is_grayscale(Img), True)
 
 class TestMethodsAnalysed(unittest.TestCase):
     def test_ocr_mark_collect___base_abc_ubuntu(self):
@@ -298,7 +301,7 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, Append
         # example: D = {0:"A", 3:"B", 5, "C"}
         # so we loop over on detected keys and always take the next element from the test -
         # the two dict's keys can be different but the order of the keys are fixed
-        MarkDetected = ocr.mark_to_string(Prg, MarksNowDetected[Key])
+        MarkDetected = mark_util.mark_to_string(Prg, MarksNowDetected[Key])
 
         MarkWanted = TestWantedResults.get(WantedKeys.pop(0), "Key not in Wanted results: " + str(Key))
 
@@ -318,7 +321,7 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, Append
                 SelfObj.assertEqual(MarkDetected, MarkWanted)
 
 def marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult):
-    Marks = ocr.mark_collect_from_img_file(Prg, FilePathImg)
+    Marks = mark_collect.mark_collect_from_img_file(Prg, FilePathImg)
     print("Test, Num of Marks:", len(Marks.keys()))
     TestWantedResults = test_results_load_from_mark_detection(Prg, FileWantedResult)
     return Marks, TestWantedResults

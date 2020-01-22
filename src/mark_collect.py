@@ -1,4 +1,7 @@
-import util, sys, os
+import util, sys
+from mark_util import mark_to_string
+from util import is_rgb, is_grayscale
+
 
 def text_block_analyse(Prg,
                        PositionStart=(0, 0),
@@ -151,42 +154,6 @@ def mark_pixels_select_from_img(Prg, Img,
     return InkPixels_and_MarkId
 
 # display func, tested with usage
-def mark_to_string(Prg, Mark):
-    Xmin = None
-    Ymin = None
-    Xmax = None
-    Ymax = None
-    # Determine Xmin, Ymin
-    for Coord in Mark:
-        X, Y = Coord
-        if Xmin is None:
-            Xmin = X
-            Ymin = Y
-            Xmax = X
-            Ymax = Y
-        if X < Xmin: Xmin = X
-        if Y < Ymin: Ymin = Y
-        if X > Xmax: Xmax = X
-        if Y > Ymax: Ymax = Y
-
-    # print("Xmin, Ymin, Xmax, Ymax", Xmin, Ymin, Xmax, Ymax)
-    RowNum = Ymax - Ymin + 1
-    ColumnNum = Xmax - Xmin + 1
-    OneRowTemplate = "." * ColumnNum + "\n"
-    Rows = (OneRowTemplate * RowNum).split()
-    #print("\n".join(Rows))
-
-    #print("RowNum:", RowNum)
-    #print("ColumnNum:", ColumnNum)
-
-    for Coord in Mark:
-        X, Y = Coord
-        Xrelative = X - Xmin
-        Yrelative = Y - Ymin
-        Rows[Yrelative] = Rows[Yrelative][:Xrelative] + "O" + Rows[Yrelative][Xrelative+1:]
-        # print(Xrelative, Yrelative)
-
-    return "\n".join(Rows)
 
 # TESTED, here we know that CoordNeighbour is next to our current pixel
 def markid_of_coord_append_if_unknown(Coord, MarkIds, PixelCoords_and_MarkId):
@@ -233,18 +200,4 @@ def is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin
 
     if PrintRetVal:
         print("is_mark_rgb ret val: False")
-    return False
-
-# TESTED
-def is_rgb(Img):
-    Size = Img.get("PixelDataSize", -1)
-    if Size == 3:
-        return True
-    return False
-
-# TESTED
-def is_grayscale(Img):
-    Size = Img.get("PixelDataSize", -1)
-    if Size == 1:
-        return True
     return False

@@ -15,6 +15,7 @@ def installed_environment_detect(Prg):
 
 # Real situation: PIL is available but ImageTk is not.
 # so module_available is not totally enough to successful import.
+# TESTED
 def module_available(Prg, ModuleName, Msg):
     if not importlib.util.find_spec(ModuleName):
         warning_display(Msg, "util:module_available")
@@ -36,6 +37,7 @@ def ui_msg_init(Prg):
 # MsgPath example: os_detect.detected
 # if we process an error message and later the program can be broken,
 # we print the message immediately
+# TESTED
 def ui_msg(Prg, MsgPath, TestCase=False):
 
     # it can handle one path or list of paths
@@ -87,6 +89,7 @@ def list_display(List, Title):
         print(L)
 ##################################
 
+# TESTED
 def file_read_all(Prg, Fname="", Mode="r"): # if you want read binary, write "rb"
     Content = ""
     if file_test(Prg, Fname, MsgErr="File doesn't exists: '" + Fname + "'"):
@@ -116,6 +119,7 @@ def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
             warning_display(ErrMsgNoFile, "file_read_all, if ErrExit=False")
     return []
 
+# TESTED
 def file_test(Prg, Fn="", MsgErr="", ErrExit=False, MsgOk=""):
     Ret=True
     if not os.path.isfile(Fn):
@@ -261,3 +265,16 @@ def coords_neighbours(Coord):
         (X,     Y + 1),
     ]
 
+# TESTED
+def is_rgb(Img):
+    Size = Img.get("PixelDataSize", -1)
+    if Size == 3:
+        return True
+    return False
+
+# TESTED
+def is_grayscale(Img):
+    Size = Img.get("PixelDataSize", -1)
+    if Size == 1:
+        return True
+    return False

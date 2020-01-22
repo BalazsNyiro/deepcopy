@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import util, os, time, ocr
+import util, os, time, mark_collect
 
 PrgGlobal = None
 ErrorsLocal = []
@@ -231,4 +231,4 @@ def ocr_page_analyse():
     # first we implement a naive algorithm:
     # Simple paragraphs on white paper
     # without any different text blocks backgrounds
-    ocr.text_block_analyse(Prg)
+    mark_collect.text_block_analyse(Prg)
