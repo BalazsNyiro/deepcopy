@@ -4,6 +4,11 @@
 import unittest, util, os, ocr
 
 class UtilFuncs(unittest.TestCase):
+    def test_img_generate_id_for_loaded_list(self):
+        PrgDict = {"ImagesLoaded": {1:"img_one", 2:"img_two"}}
+        ImgId = util.img_generate_id_for_loaded_list(PrgDict, PreFix="Pre", PostFix="Post")
+        self.assertEqual(ImgId, "Pre_3_Post")
+
     def test_coords_neighbours(self):
         #   neighbour coord order:
         #   CDE
@@ -17,9 +22,9 @@ class OcrBusinessFuncs(unittest.TestCase):
     def test_mark_ids_collect_from_neighbourhood__mark_ids_set_for_pixel(self):
         # the second test uses the result of the first one.
         ######## test: mark_ids_collect_from_neighbourhood ###########
-        Marks = {   22: {(2, 2): 0},
-                    42: {(4, 2): 0, (5, 2): 0},
-                    44: {(4, 4): 0}}
+        Marks = {22: {(2, 2): 0},
+                 42: {(4, 2): 0, (5, 2): 0},
+                 44: {(4, 4): 0}}
         MarkIdIfNoNeighbour = 0
         InkPixelCoords_and_MarkId = {(2, 2): 22, (4, 2): 42, (4, 4): 44, (5, 2): 42}
 

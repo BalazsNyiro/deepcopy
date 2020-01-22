@@ -236,6 +236,7 @@ def img_load_pixels(Prg, ImgPath, Timer=False):
 
     return Pixels, PixelDataSize, ImgWidth, ImgHeight
 
+# TESTED
 def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
     NumOfLoadedPics = len(Prg["ImagesLoaded"].keys())
     if PreFix: PreFix += "_"
