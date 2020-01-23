@@ -7,6 +7,23 @@ import mark_util
 
 
 class UtilFuncs(unittest.TestCase):
+    def test_connect_coords(self):
+        Points = util.connect_coords(2, 2, 4, 2)
+        self.assertEqual(Points, [(2,2), (3,2), (4,2)])
+
+        Points = util.connect_coords(3, 3, 1, 3)
+        self.assertEqual(Points, [(3,3), (2,3), (1,3)])
+
+        Points = util.connect_coords(2, 2,  2, 5)
+        self.assertEqual(Points, [(2,2), (2,3), (2,4), (2,5)])
+
+        Points = util.connect_coords(2, 5,  2, 2)
+        self.assertEqual(Points, [(2, 5), (2, 4), (2, 3), (2, 2)])
+
+        # util.connect_coords(0, 0, 4, 5)
+        # util.connect_coords(4, 5, 0, 0)
+        # TODO: finish this test
+
     def test_img_generate_id_for_loaded_list(self):
         PrgDict = {"ImagesLoaded": {1:"img_one", 2:"img_two"}}
         ImgId = util.img_generate_id_for_loaded_list(PrgDict, PreFix="Pre", PostFix="Post")

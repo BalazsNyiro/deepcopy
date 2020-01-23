@@ -278,3 +278,42 @@ def is_grayscale(Img):
     if Size == 1:
         return True
     return False
+
+# it's a very often used func.
+# I want to avoid extract values so I didn't receive
+# coords as a tuple.
+# TESTED
+def connect_coords(Ax, Ay, Bx, By):
+
+    DeltaX = Bx - Ax
+    DeltaY = By - Ay
+
+    StepY = 1
+    if Ay > By:
+        StepY = -1
+
+    StepX = 1
+    if Ax > Bx:
+        StepX = -1
+
+
+    Points = []
+    print("\n>>>", Ax, Ay, ",  ", Bx, By)
+
+    RangeX = range(Ax, Bx + StepX, StepX)
+    RangeY = range(Ay, By + StepY, StepY)
+
+    # simple case: only X is moving
+    if DeltaY == 0:
+        Y = Ay
+        for X in RangeX:
+            Points.append((X,Y))
+
+    # simple case: only Y is moving
+    if DeltaX == 0:
+        X = Ax
+        for Y in RangeY:
+            Points.append((X,Y))
+
+
+    return Points

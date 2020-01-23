@@ -134,3 +134,4 @@ def mark_area_empty_making(Width, Height):
 def markstats_insert_id(MarkStats, MarkId):
     if MarkId not in MarkStats:
         MarkStats[MarkId] = dict()
+
