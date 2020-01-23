@@ -13,7 +13,32 @@ class MarkUtil(unittest.TestCase):
         print(mark_util.marks_info_table(Prg, Marks, MarkParserFuns=MarkParserFuns,
                                          WantedIdNums=[2, 3], OutputType="txt"))
 
-        self.assertTrue(True, True)
+        self.assertTrue(True)
+
+    def test_mark_min_max_width_height(self):
+        Mark = {(2,1):1, (4,3):1, (8,3):1,
+                (4,4):1,
+                (3,5):1, (4,6):1          }
+
+        Result = mark_util.mark_min_max_width_height(Prg, Mark)
+        Wanted = (2, 8, 1, 6, 7, 6)
+        self.assertEqual(Result, Wanted)
+
+
+    def test_mark_to_string(self):
+        Mark = {(3,3):1, (4,3):1, (5,3):1,
+                         (4,4):1,
+                (3,5):1, (4,5):1          }
+
+        Wanted = "OOO\n" + \
+                 ".O.\n" + \
+                 "OO."
+        self.assertEqual(Wanted, mark_util.mark_to_string(Prg, Mark))
+
+    def test_markstats_insert_id(self):
+        MarkStats = dict()
+        mark_util.markstats_insert_id(MarkStats, 1)
+        self.assertTrue(1 in MarkStats)
 
 
 def run_all_tests(P):

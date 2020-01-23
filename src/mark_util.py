@@ -64,7 +64,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
         return "\n".join(ResultToStr) + "\n" + "\n".join(Errors)
 
 
-# TODO: TEST IT
+# TESTED
 def mark_min_max_width_height(Prg, Mark):
     Xmin = None
     Ymin = None
@@ -86,20 +86,15 @@ def mark_min_max_width_height(Prg, Mark):
 
     Width = Xmax - Xmin + 1
     Height = Ymax - Ymin + 1
-    return Xmin, Xmax, Ymin, Ymax, Width, Height
+    return (Xmin, Xmax, Ymin, Ymax, Width, Height)
 
+# TESTED
 def mark_to_string(Prg, Mark):
-    Xmin, Xmax, Ymin, Ymax, _Width, _Height = mark_min_max_width_height(Prg, Mark)
+    Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
 
     # print("Xmin, Ymin, Xmax, Ymax", Xmin, Ymin, Xmax, Ymax)
-    RowNum = Ymax - Ymin + 1
-    ColumnNum = Xmax - Xmin + 1
-    OneRowTemplate = "." * ColumnNum + "\n"
-    Rows = (OneRowTemplate * RowNum).split()
-    #print("\n".join(Rows))
-
-    #print("RowNum:", RowNum)
-    #print("ColumnNum:", ColumnNum)
+    OneRowTemplate = "." * Width + "\n"
+    Rows = (OneRowTemplate * Height).split()
 
     for Coord in Mark:
         X, Y = Coord
@@ -110,7 +105,7 @@ def mark_to_string(Prg, Mark):
 
     return "\n".join(Rows)
 
-
+# TESTED
 def markstats_insert_id(MarkStats, MarkId):
     if MarkId not in MarkStats:
         MarkStats[MarkId] = dict()
