@@ -20,6 +20,19 @@ class UtilFuncs(unittest.TestCase):
         Points = util.connect_coords(2, 5,  2, 2)
         self.assertEqual(Points, [(2, 5), (2, 4), (2, 3), (2, 2)])
 
+        Points = util.connect_coords(2, 2,  4, 6)
+        self.assertEqual(Points, [(2,2), (3,4), (4,6)])
+
+        Points = util.connect_coords(4, 6, 2, 2)
+        self.assertEqual(Points, [(4,6), (3,4), (2,2)])
+
+        # difficult case:
+        Points = util.connect_coords(8, 8, 11, 15)
+        self.assertEqual(Points, [(8, 8), (9, 10), (10, 13), (11, 15)])
+
+        Points = util.connect_coords(11, 15, 7, 6)
+        self.assertEqual(Points, [(11, 15), (10, 13), (9, 10), (8, 8), (7, 6)])
+
         # util.connect_coords(0, 0, 4, 5)
         # util.connect_coords(4, 5, 0, 0)
         # TODO: finish this test

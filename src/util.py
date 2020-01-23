@@ -298,7 +298,7 @@ def connect_coords(Ax, Ay, Bx, By):
 
 
     Points = []
-    print("\n>>>", Ax, Ay, ",  ", Bx, By)
+    # print("\n>>>", Ax, Ay, ",  ", Bx, By)
 
     RangeX = range(Ax, Bx + StepX, StepX)
     RangeY = range(Ay, By + StepY, StepY)
@@ -310,10 +310,18 @@ def connect_coords(Ax, Ay, Bx, By):
             Points.append((X,Y))
 
     # simple case: only Y is moving
-    if DeltaX == 0:
+    elif DeltaX == 0:
         X = Ax
         for Y in RangeY:
             Points.append((X,Y))
 
+    else: # X and Y is moving, not horizontal/vertical steps
+        Y = Ay
+        YchangePerUnit = DeltaY / abs(DeltaX)
+
+        Step = 0
+        for X in RangeX:
+            Points.append((X, round(Y+YchangePerUnit*Step)))
+            Step +=1
 
     return Points
