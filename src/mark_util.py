@@ -107,8 +107,10 @@ def mark_to_string(Prg, Mark):
 
     return mark_area_to_string(Area)
 
+
+# Prefix: if you want to insert spaces to move the output to right, you can do it
 # TESTED
-def mark_area_to_string(Area):
+def mark_area_to_string(Area, Prefix=""):
     Width = len(Area)
     Height = len(Area[0])
 
@@ -117,7 +119,7 @@ def mark_area_to_string(Area):
         Row = []
         for X in range(0, Width):
             Row.append(Area[X][Y])
-        Rows.append("".join(Row))
+        Rows.append(Prefix + "".join(Row))
     return "\n".join(Rows)
 
 # TESTED

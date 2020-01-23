@@ -1,21 +1,28 @@
-import mark_util
+import mark_util, util
 
 # Mark analyser algorithms, main logic
 # OutputType can be: human | data
 
-# naive implementation,
-# maybe there is better solution
 def mark_convex_area(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
-    PixelCoords = [P for P in Mark.keys()]
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_util.mark_min_max_width_height(Prg, Mark)
     AreaConvex = mark_util.mark_area_empty_making(Width, Height)
 
-    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", 1)])
-
+    # naive implementation,
+    # maybe there is better solution
+    # connect all points with each other
+    PixelCoords = [P for P in Mark.keys()]
     while PixelCoords:
-        X, Y = PixelCoords.pop(0)
-    pass
+        FromX, FromY = PixelCoords.pop(0)
+        for ToX, ToY in PixelCoords:
+            for ConnectionPointX, ConnectionPointY in util.connect_coords(FromX, FromY, ToX, ToY):
+
+                # -Xmin, -Ymin: A mark contains pixels with relative coords: the minimum is in the left/top corner
+                AreaConvex[ConnectionPointX-Xmin][ConnectionPointY-Ymin] = mark_util.MarkFg
+
+    StringPrefix = " " * MarkStats["keywords_len_max"]
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n"+mark_util.mark_area_to_string(AreaConvex, StringPrefix))])
+
 
 def mark_convex_hull(Prg, Marks, MarkId, MarkStats):
     # TODO: implement it, based on convex_area
