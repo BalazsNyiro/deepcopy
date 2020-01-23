@@ -1,4 +1,4 @@
-#
+import mark_util
 
 # return with info about Marks
 def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParserFuns=[]):
@@ -6,6 +6,8 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
 
     Source = Marks.items()
     Errors = []
+    MarkStats = dict()
+
     if WantedIdNums and isinstance(WantedIdNums, list):
         MarksWanted = dict()
         for Id in WantedIdNums:
@@ -16,11 +18,10 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
         Source = MarksWanted.items()
 
     for MarkId, Mark in Source:
+        mark_util.markstats_insert_id(MarkStats, MarkId)
 
-        MarkParserFunsResults = []
         for MarkParserFun in MarkParserFuns:
-            ParserFunResult = MarkParserFun(Prg, Marks, MarkId, "human")
-            MarkParserFunsResults.append(ParserFunResult)
+            MarkParserFun(Prg, Marks, MarkId, MarkStats)
 
         if OutputType == "txt":
             Result.append("\n") # empty line
@@ -28,9 +29,12 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             Result.append("") # empty line
             Result.append(mark_to_string(Prg, Mark))
 
-            if MarkParserFunsResults:
+            if MarkStats[MarkId]:
+                Stats = []
+                for K, V in MarkStats[MarkId].items():
+                    Stats.append(str(K) + "")
                 Result.append("")
-                Result.append("\n".join(MarkParserFunsResults))
+                Result.append("\n".join(Stats))
 
 
         elif OutputType == "html":
@@ -97,3 +101,8 @@ def mark_to_string(Prg, Mark):
         # print(Xrelative, Yrelative)
 
     return "\n".join(Rows)
+
+
+def markstats_insert_id(MarkStats, MarkId):
+    if MarkId not in MarkStats:
+        MarkStats[MarkId] = dict()
