@@ -11,7 +11,7 @@ def mark_info_basic(Prg, Marks, MarkId, MarkStats):
         ("height", Height),
         ("area_bounding_box", Width*Height),
         ("pixelnum", len(Marks[MarkId])),
-        ("=================", "other infos"),
+        ("==notImportant==", ""),
         ("x_min", Xmin),
         ("x_max", Xmax),
         ("y_min", Ymin),

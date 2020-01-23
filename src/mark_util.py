@@ -36,6 +36,8 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             if MarkStats[MarkId]:
                 Stats = []
                 for K, V in MarkStats[MarkId].items():
+                    if "==notImportant==" in K:
+                        break
                     Kformatted = "{txt: >{fill}}".format(txt=K, fill=MarkStats["keywords_len_max"]) # maybe f strings?
 
                     Stats.append(str(Kformatted) + ": " + str(V))
