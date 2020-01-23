@@ -1,12 +1,16 @@
 import mark_util
 
+
+def markstats_init():
+    return {"keywords_len_max": 0}
+
 # return with info about Marks
 def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParserFuns=[]):
     Result = []
 
     Source = Marks.items()
     Errors = []
-    MarkStats = dict()
+    MarkStats = markstats_init()
 
     if WantedIdNums and isinstance(WantedIdNums, list):
         MarksWanted = dict()
@@ -32,7 +36,9 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             if MarkStats[MarkId]:
                 Stats = []
                 for K, V in MarkStats[MarkId].items():
-                    Stats.append(str(K) + "")
+                    Kformatted = "{txt: >{fill}}".format(txt=K, fill=MarkStats["keywords_len_max"]) # maybe f strings?
+
+                    Stats.append(str(Kformatted) + ": " + str(V))
                 Result.append("")
                 Result.append("\n".join(Stats))
 
