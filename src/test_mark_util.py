@@ -40,6 +40,24 @@ class MarkUtil(unittest.TestCase):
         mark_util.markstats_insert_id(MarkStats, 1)
         self.assertTrue(1 in MarkStats)
 
+    def test_mark_area_to_string(self):
+        Bg = mark_util.MarkBg
+        # there are two columns in the Area
+        Area = [    [Bg,
+                     Bg,
+                     Bg], [Bg,
+                           Bg,
+                           Bg]]
+        Wanted = "..\n..\n.."
+        self.assertEqual(Wanted, mark_util.mark_area_to_string(Area))
+
+    def test_mark_area_empty_making(self):
+        Result = mark_util.mark_area_empty_making(2, 3)
+        Bg = mark_util.MarkBg
+        WantedColumn = [Bg, Bg, Bg]
+        WantedRows = [WantedColumn, WantedColumn]
+        self.assertEqual(WantedRows, Result)
+
 
 def run_all_tests(P):
     print("run all tests")

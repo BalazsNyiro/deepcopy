@@ -1,8 +1,13 @@
 import mark_util
 
+MarkBg = "." # the sigh of background area, no active pixel
+MarkFg = "O" # if active pixel is in the mark
 
 def markstats_init():
     return {"keywords_len_max": 0}
+
+
+
 
 # return with info about Marks
 def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParserFuns=[]):
@@ -92,18 +97,38 @@ def mark_min_max_width_height(Prg, Mark):
 def mark_to_string(Prg, Mark):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
 
-    # print("Xmin, Ymin, Xmax, Ymax", Xmin, Ymin, Xmax, Ymax)
-    OneRowTemplate = "." * Width + "\n"
-    Rows = (OneRowTemplate * Height).split()
+    Area = mark_area_empty_making(Width, Height)
 
     for Coord in Mark:
         X, Y = Coord
         Xrelative = X - Xmin
         Yrelative = Y - Ymin
-        Rows[Yrelative] = Rows[Yrelative][:Xrelative] + "O" + Rows[Yrelative][Xrelative+1:]
-        # print(Xrelative, Yrelative)
+        Area[Xrelative][Yrelative] = MarkFg
 
+    return mark_area_to_string(Area)
+
+# TESTED
+def mark_area_to_string(Area):
+    Width = len(Area)
+    Height = len(Area[0])
+
+    Rows = []
+    for Y in range(0, Height):
+        Row = []
+        for X in range(0, Width):
+            Row.append(Area[X][Y])
+        Rows.append("".join(Row))
     return "\n".join(Rows)
+
+# TESTED
+def mark_area_empty_making(Width, Height):
+    OneColumn = []
+    for I in range(0, Height):
+        OneColumn.append(MarkBg)
+    Columns = []
+    for I in range(0, Width):
+        Columns.append(list(OneColumn)) # we have to duplicate OneColumn, not insert same one
+    return Columns
 
 # TESTED
 def markstats_insert_id(MarkStats, MarkId):

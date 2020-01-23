@@ -3,6 +3,14 @@ import mark_util
 # OutputType can be: human | data
 
 
+def mark_convex_area(Prg, Marks, MarkId, MarkStats):
+    # TODO: implement it
+    pass
+
+def mark_convex_hull(Prg, Marks, MarkId, MarkStats):
+    # TODO: implement it, based on convex_area
+    pass
+
 def mark_info_basic(Prg, Marks, MarkId, MarkStats):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_util.mark_min_max_width_height(Prg, Marks[MarkId])
 

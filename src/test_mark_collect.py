@@ -335,7 +335,7 @@ def test_results_load_from_mark_detection(Prg, FileResultPathElems):
     print("File result path:", FileResultPath)
     for Line in util.file_read_lines(Prg, Fname=FileResultPath):
         Line = Line.strip()
-        if "." not in Line and "O" not in Line:
+        if mark_util.MarkBg not in Line and mark_util.MarkFg not in Line:
             if MarkLines:
                 Marks[MarkId] = "\n".join(MarkLines)
                 MarkLines = []
