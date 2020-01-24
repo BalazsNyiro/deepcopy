@@ -7,6 +7,11 @@ import mark_util
 
 
 class UtilFuncs(unittest.TestCase):
+    def test_multiline_txt_insert_prefix(self):
+        Lines = "A\nB\nC"
+        Formatted = util.multiline_txt_insert_prefix(Prg, Lines, ">>")
+        self.assertEqual(Formatted, ">>A\n>>B\n>>C")
+
     def test_connect_coords(self):
         Points = util.connect_coords(2, 2, 4, 2)
         self.assertEqual(Points, [(2,2), (3,2), (4,2)])
