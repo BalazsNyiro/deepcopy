@@ -17,6 +17,8 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
     Errors = []
     MarkStats = markstats_init()
 
+    NotImportantInfoKeys = {"x_min":1, "y_min":1, "x_max":1, "y_max":1}
+
     if WantedIdNums and isinstance(WantedIdNums, list):
         MarksWanted = dict()
         for Id in WantedIdNums:
@@ -41,6 +43,8 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             if MarkStats[MarkId]:
                 Stats = []
                 for K, V in MarkStats[MarkId].items():
+                    if K in NotImportantInfoKeys:
+                        continue
 
                     Vformatted = str(V)
                     Kformatted = "{txt: >{fill}}".format(txt=K, fill=MarkStats["keywords_len_max"]) # maybe f strings?
