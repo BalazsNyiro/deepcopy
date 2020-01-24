@@ -42,24 +42,6 @@ class MarkUtil(unittest.TestCase):
         mark_util.markstats_insert_id(MarkStats, 1)
         self.assertTrue(1 in MarkStats)
 
-    def test_mark_area_to_string(self):
-        Bg = mark_util.MarkBg
-        Fg = mark_util.MarkFg
-        # there are two columns in the Area
-        Area = [    [Bg,
-                     Bg,
-                     Bg], [Bg,
-                           Fg,
-                           Bg]]
-        Wanted = "..\n.O\n.."
-        self.assertEqual(Wanted, area.to_string(Area))
-
-    def test_mark_area_empty_making(self):
-        Result = area.make_empty(2, 3, mark_util.MarkBg)
-        Bg = mark_util.MarkBg
-        WantedColumn = [Bg, Bg, Bg]
-        WantedRows = [WantedColumn, WantedColumn]
-        self.assertEqual(WantedRows, Result)
 
     def test_mark_area_convex(self):
         Mark = {(1,1):1, (2,2):2, (3,3):3, (1,3):4}

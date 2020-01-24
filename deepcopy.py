@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, sys, importlib, tempfile
+import os, sys, importlib
 
 DirPrgParent = os.path.dirname(os.path.realpath(__file__))
 Prg = {"Os": "",
@@ -24,7 +24,7 @@ Prg = {"Os": "",
        }
 
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
-import util, test_mark_collect, test_mark_util
+import util, test_mark_collect, test_mark_util, test_area
 
 util.dir_create_if_necessary(Prg, Prg["PathTempDir"])
 
@@ -37,6 +37,7 @@ print(sys.argv)
 if "testonly" in sys.argv:
        TestOnly = True
        sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a prg param so I hide it, temporary solution
+test_area.run_all_tests(Prg)
 test_mark_collect.run_all_tests(Prg)
 test_mark_util.run_all_tests(Prg)
 if TestOnly:
