@@ -21,23 +21,17 @@ def mark_info_basic(Prg, Marks, MarkId, MarkStats):
         ("height", Height),
         ("area_bounding_box", Width*Height),
         ("pixelnum", len(Marks[MarkId])),
-        ("x_min", Xmin, "notimportant"),
-        ("x_max", Xmax, "notimportant"),
-        ("y_min", Ymin, "notimportant"),
-        ("y_max", Ymax, "notimportant"),
+        ("x_min", Xmin),
+        ("x_max", Xmax),
+        ("y_min", Ymin),
+        ("y_max", Ymax),
     ])
 
     return "parser mark_width_height: " + str(Width) + ", " + str(Height)
 
 def mark_info_insert(_Prg, MarkStats, MarkId, KeyVals):
     Mark = MarkStats[MarkId]
-    for KeyVal in KeyVals:
-
-        if len(KeyVal) > 2:
-            if KeyVal[2] == "notimportant":
-                continue
-
-        Key, Val = KeyVal[:2]
+    for Key, Val in KeyVals:
 
         if Key in Mark:
             print("ERROR: owerwrite existing key: " + Key + "  oldval: " + Mark[Key] + "   new val:" + Val)
