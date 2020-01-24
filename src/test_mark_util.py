@@ -10,7 +10,7 @@ class MarkUtil(unittest.TestCase):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
         Marks = mark_collect.mark_collect_from_img_file(Prg, FilePathImg)
 
-        MarkParserFuns = [mark_parse.mark_info_basic, mark_parse.mark_convex_area] # these functions analyses the Marks one by one
+        MarkParserFuns = [mark_parse.mark_info_basic, mark_parse.mark_area_convex] # these functions analyses the Marks one by one
         print(mark_util.marks_info_table(Prg, Marks, MarkParserFuns=MarkParserFuns,
                                          WantedIdNums=[2, 3], OutputType="txt"))
 

@@ -325,3 +325,9 @@ def connect_coords(Ax, Ay, Bx, By):
             Step +=1
 
     return Points
+
+def multiline_txt_insert_prefix(Prg, Lines, Prefix=">> "):
+    Formatted = []
+    for Line in Lines.split("\n"):
+        Formatted.append(Prefix + Line)
+    return "\n".join(Formatted)

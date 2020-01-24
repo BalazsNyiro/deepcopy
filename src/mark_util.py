@@ -1,4 +1,4 @@
-import mark_util
+import util
 
 MarkBg = "." # the sigh of background area, no active pixel
 MarkFg = "O" # if active pixel is in the mark
@@ -27,7 +27,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
         Source = MarksWanted.items()
 
     for MarkId, Mark in Source:
-        mark_util.markstats_insert_id(MarkStats, MarkId)
+        markstats_insert_id(MarkStats, MarkId)
 
         for MarkParserFun in MarkParserFuns:
             MarkParserFun(Prg, Marks, MarkId, MarkStats)
@@ -41,11 +41,13 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             if MarkStats[MarkId]:
                 Stats = []
                 for K, V in MarkStats[MarkId].items():
-                    if "==notImportant==" in K:
-                        break
-                    Kformatted = "{txt: >{fill}}".format(txt=K, fill=MarkStats["keywords_len_max"]) # maybe f strings?
 
-                    Stats.append(str(Kformatted) + ": " + str(V))
+                    Vformatted = str(V)
+                    Kformatted = "{txt: >{fill}}".format(txt=K, fill=MarkStats["keywords_len_max"]) # maybe f strings?
+                    if isinstance(V, str) and "\n" in V:
+                        Vformatted = util.multiline_txt_insert_prefix(Prg, V, Prefix=" "*(MarkStats["keywords_len_max"]+2))
+
+                    Stats.append(str(Kformatted) + ": " + Vformatted)
                 Result.append("")
                 Result.append("\n".join(Stats))
 
@@ -108,9 +110,8 @@ def mark_to_string(Prg, Mark):
     return mark_area_to_string(Area)
 
 
-# Prefix: if you want to insert spaces to move the output to right, you can do it
 # TESTED
-def mark_area_to_string(Area, Prefix=""):
+def mark_area_to_string(Area):
     Width = len(Area)
     Height = len(Area[0])
 
@@ -119,7 +120,7 @@ def mark_area_to_string(Area, Prefix=""):
         Row = []
         for X in range(0, Width):
             Row.append(Area[X][Y])
-        Rows.append(Prefix + "".join(Row))
+        Rows.append("".join(Row))
     return "\n".join(Rows)
 
 # TESTED
@@ -137,3 +138,18 @@ def markstats_insert_id(MarkStats, MarkId):
     if MarkId not in MarkStats:
         MarkStats[MarkId] = dict()
 
+def mark_area_convex(Prg, Mark):
+    Xmin, _Xmax, Ymin, _Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
+    AreaConvex = mark_area_empty_making(Width, Height)
+
+    # naive implementation,
+    # maybe there is better solution
+    # connect all points with each other
+    PixelCoords = [P for P in Mark.keys()]
+    while PixelCoords:
+        FromX, FromY = PixelCoords.pop(0)
+        for ToX, ToY in PixelCoords:
+            for ConnectionPointX, ConnectionPointY in util.connect_coords(FromX, FromY, ToX, ToY):
+                # -Xmin, -Ymin: A mark contains pixels with relative coords: the minimum is in the left/top corner
+                AreaConvex[ConnectionPointX - Xmin][ConnectionPointY - Ymin] = MarkFg
+    return AreaConvex

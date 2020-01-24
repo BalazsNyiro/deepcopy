@@ -3,28 +3,13 @@ import mark_util, util
 # Mark analyser algorithms, main logic
 # OutputType can be: human | data
 
-def mark_convex_area(Prg, Marks, MarkId, MarkStats):
+def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
-    Xmin, Xmax, Ymin, Ymax, Width, Height = mark_util.mark_min_max_width_height(Prg, Mark)
-    AreaConvex = mark_util.mark_area_empty_making(Width, Height)
+    AreaConvex = mark_util.mark_area_convex(Prg, Mark)
 
-    # naive implementation,
-    # maybe there is better solution
-    # connect all points with each other
-    PixelCoords = [P for P in Mark.keys()]
-    while PixelCoords:
-        FromX, FromY = PixelCoords.pop(0)
-        for ToX, ToY in PixelCoords:
-            for ConnectionPointX, ConnectionPointY in util.connect_coords(FromX, FromY, ToX, ToY):
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n"+mark_util.mark_area_to_string(AreaConvex))])
 
-                # -Xmin, -Ymin: A mark contains pixels with relative coords: the minimum is in the left/top corner
-                AreaConvex[ConnectionPointX-Xmin][ConnectionPointY-Ymin] = mark_util.MarkFg
-
-    StringPrefix = " " * MarkStats["keywords_len_max"]
-    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n"+mark_util.mark_area_to_string(AreaConvex, StringPrefix))])
-
-
-def mark_convex_hull(Prg, Marks, MarkId, MarkStats):
+def mark_hull_convex(Prg, Marks, MarkId, MarkStats):
     # TODO: implement it, based on convex_area
     pass
 
@@ -36,18 +21,24 @@ def mark_info_basic(Prg, Marks, MarkId, MarkStats):
         ("height", Height),
         ("area_bounding_box", Width*Height),
         ("pixelnum", len(Marks[MarkId])),
-#        ("==notImportant==", ""),
-        ("x_min", Xmin),
-        ("x_max", Xmax),
-        ("y_min", Ymin),
-        ("y_max", Ymax),
+        ("x_min", Xmin, "notimportant"),
+        ("x_max", Xmax, "notimportant"),
+        ("y_min", Ymin, "notimportant"),
+        ("y_max", Ymax, "notimportant"),
     ])
 
     return "parser mark_width_height: " + str(Width) + ", " + str(Height)
 
 def mark_info_insert(_Prg, MarkStats, MarkId, KeyVals):
     Mark = MarkStats[MarkId]
-    for Key, Val in KeyVals:
+    for KeyVal in KeyVals:
+
+        if len(KeyVal) > 2:
+            if KeyVal[2] == "notimportant":
+                continue
+
+        Key, Val = KeyVal[:2]
+
         if Key in Mark:
             print("ERROR: owerwrite existing key: " + Key + "  oldval: " + Mark[Key] + "   new val:" + Val)
         Mark[Key] = Val

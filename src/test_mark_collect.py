@@ -33,10 +33,6 @@ class UtilFuncs(unittest.TestCase):
         Points = util.connect_coords(11, 15, 7, 6)
         self.assertEqual(Points, [(11, 15), (10, 13), (9, 10), (8, 8), (7, 6)])
 
-        # util.connect_coords(0, 0, 4, 5)
-        # util.connect_coords(4, 5, 0, 0)
-        # TODO: finish this test
-
     def test_img_generate_id_for_loaded_list(self):
         PrgDict = {"ImagesLoaded": {1:"img_one", 2:"img_two"}}
         ImgId = util.img_generate_id_for_loaded_list(PrgDict, PreFix="Pre", PostFix="Post")
