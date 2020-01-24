@@ -99,7 +99,7 @@ def mark_min_max_width_height(Prg, Mark):
     Height = Ymax - Ymin + 1
     return (Xmin, Xmax, Ymin, Ymax, Width, Height)
 
-# TESTED
+# TESTED, coordinate based data structure with foreground pixels only
 def mark_to_string(Prg, Mark):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
 
@@ -114,7 +114,7 @@ def mark_to_string(Prg, Mark):
     return mark_area_to_string(Area)
 
 
-# TESTED
+# TESTED. Array like data structure, with foreground/background pixels
 def mark_area_to_string(Area):
     Width = len(Area)
     Height = len(Area[0])
@@ -142,6 +142,7 @@ def markstats_insert_id(MarkStats, MarkId):
     if MarkId not in MarkStats:
         MarkStats[MarkId] = dict()
 
+# TESTED
 def mark_area_convex(Prg, Mark):
     Xmin, _Xmax, Ymin, _Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
     AreaConvex = mark_area_empty_making(Width, Height)
