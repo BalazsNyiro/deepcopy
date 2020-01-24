@@ -26,17 +26,24 @@ class UtilFuncs(unittest.TestCase):
         self.assertEqual(Points, [(2, 5), (2, 4), (2, 3), (2, 2)])
 
         Points = util.connect_coords(2, 2,  4, 6)
-        self.assertEqual(Points, [(2,2), (3,4), (4,6)])
+        self.assertEqual(Points, [(2, 2), (2, 3), (3, 4), (4, 5), (4, 6)])
 
         Points = util.connect_coords(4, 6, 2, 2)
-        self.assertEqual(Points, [(4,6), (3,4), (2,2)])
+        self.assertEqual(Points, [(4, 6), (4, 5), (3, 4), (2, 3), (2, 2)])
 
         # difficult case:
         Points = util.connect_coords(8, 8, 11, 15)
-        self.assertEqual(Points, [(8, 8), (9, 10), (10, 13), (11, 15)])
+        self.assertEqual(Points, [(8, 8), (8, 9), (9, 10), (9, 11), (10, 12), (10, 13), (11, 14), (11, 15)])
 
         Points = util.connect_coords(11, 15, 7, 6)
-        self.assertEqual(Points, [(11, 15), (10, 13), (9, 10), (8, 8), (7, 6)])
+        self.assertEqual(Points, [(11, 15), (11, 14), (10, 13), (10, 12), (9, 11), (9, 10), (8, 9), (8, 8), (7, 7), (7, 6)])
+
+        Points = util.connect_coords(2, 1, 1, 4)
+        self.assertEqual(Points, [(2, 1), (2, 2), (1, 3), (1, 4)])
+
+        Points = util.connect_coords(1, 2,  4, 1)
+        self.assertEqual(Points, [(1, 2), (2, 2), (3, 1), (4, 1)])
+
 
     def test_img_generate_id_for_loaded_list(self):
         PrgDict = {"ImagesLoaded": {1:"img_one", 2:"img_two"}}

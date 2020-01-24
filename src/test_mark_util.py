@@ -76,7 +76,7 @@ class MarkUtil(unittest.TestCase):
 
         AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
         AreaWanted = ("OOO..\n"
-                      "OOO..\n"
+                      "OOOO.\n"
                       "OOOO.\n"
                       "OOOO.\n"
                       "OOOOO" )
