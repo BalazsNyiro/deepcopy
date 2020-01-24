@@ -155,11 +155,11 @@ class Ocr(unittest.TestCase):
         ColorBgBMax = 40
 
         IsMarkRgb_0_0 = mark_collect.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=False)
         IsMarkRgb_1_0 = mark_collect.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=False)
         IsMarkRgb_2_0 = mark_collect.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True)
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=False)
         self.assertEqual(IsMarkRgb_0_0, False)
         self.assertEqual(IsMarkRgb_1_0, True)
         self.assertEqual(IsMarkRgb_2_0, True)
@@ -175,11 +175,11 @@ class Ocr(unittest.TestCase):
         ColorBgBMax = 255
 
         IsMarkRgb_0_0 = mark_collect.is_mark_rgb(Img, 0, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=False, PrintRetVal=False)
         IsMarkRgb_1_0 = mark_collect.is_mark_rgb(Img, 1, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=False, PrintRetVal=False)
         IsMarkRgb_2_0 = mark_collect.is_mark_rgb(Img, 2, 0, ColorBgRMin, ColorBgGMin, ColorBgBMin,
-                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=True, PrintRetVal=True)
+                                                 ColorBgGMax, ColorBgRMax, ColorBgBMax, PrintRgb=False, PrintRetVal=False)
         self.assertEqual(IsMarkRgb_0_0, True)
         self.assertEqual(IsMarkRgb_1_0, False)
         self.assertEqual(IsMarkRgb_2_0, False)

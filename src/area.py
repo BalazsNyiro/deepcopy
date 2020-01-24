@@ -22,10 +22,9 @@ def to_string(Area):
         Rows.append("".join(Row))
     return "\n".join(Rows)
 
-# TODO: TEST IT
+# TESTED
 def coords_insert(Area, Coords, Char, Xshift=0, Yshift=0):
-    for Coord in Coords:
-        X, Y = Coord
+    for X, Y in Coords:
         Xrelative = X + Xshift
         Yrelative = Y + Yshift
         Area[Xrelative][Yrelative] = Char
