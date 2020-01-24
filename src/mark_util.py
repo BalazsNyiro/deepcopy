@@ -105,12 +105,7 @@ def mark_to_string(Prg, Mark):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
 
     Area = area.make_empty(Width, Height, MarkBg)
-
-    for Coord in Mark:
-        X, Y = Coord
-        Xrelative = X - Xmin
-        Yrelative = Y - Ymin
-        Area[Xrelative][Yrelative] = MarkFg
+    area.coords_insert(Area, Mark, MarkFg, Xshift= -Xmin, Yshift= -Ymin)
 
     return area.to_string(Area)
 
