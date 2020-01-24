@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import platform, sys, json, os, importlib, gzip
+import platform, json, os, importlib, gzip
 
 def installed_environment_detect(Prg):
     Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]

@@ -1,4 +1,5 @@
-import util
+# -*- coding: utf-8 -*-
+import util, area
 
 MarkBg = "." # the sigh of background area, no active pixel
 MarkFg = "O" # if active pixel is in the mark
@@ -103,7 +104,7 @@ def mark_min_max_width_height(Prg, Mark):
 def mark_to_string(Prg, Mark):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
 
-    Area = mark_area_empty_making(Width, Height)
+    Area = area.make_empty(Width, Height, MarkBg)
 
     for Coord in Mark:
         X, Y = Coord
@@ -111,31 +112,8 @@ def mark_to_string(Prg, Mark):
         Yrelative = Y - Ymin
         Area[Xrelative][Yrelative] = MarkFg
 
-    return mark_area_to_string(Area)
+    return area.to_string(Area)
 
-
-# TESTED. Array like data structure, with foreground/background pixels
-def mark_area_to_string(Area):
-    Width = len(Area)
-    Height = len(Area[0])
-
-    Rows = []
-    for Y in range(0, Height):
-        Row = []
-        for X in range(0, Width):
-            Row.append(Area[X][Y])
-        Rows.append("".join(Row))
-    return "\n".join(Rows)
-
-# TESTED
-def mark_area_empty_making(Width, Height):
-    OneColumn = []
-    for I in range(0, Height):
-        OneColumn.append(MarkBg)
-    Columns = []
-    for I in range(0, Width):
-        Columns.append(list(OneColumn)) # we have to duplicate OneColumn, not insert same one
-    return Columns
 
 # TESTED
 def markstats_insert_id(MarkStats, MarkId):
@@ -145,10 +123,12 @@ def markstats_insert_id(MarkStats, MarkId):
 # TESTED
 def mark_area_convex(Prg, Mark, PointsWanted=False):
     Xmin, _Xmax, Ymin, _Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
-    AreaConvex = mark_area_empty_making(Width, Height)
+    AreaConvex = area.make_empty(Width, Height, MarkBg)
 
     ConnectionPointLines = []
-    # naive implementation,
+    # naive implementation, it based on Mark's special attributes: there aren't gaps in marks.
+    # I want to revise it later.
+    # TODO: maybe if we have more time: Gift Wrapping Algorithm (Convex Hull)
     # maybe there is better solution
     # connect all points with each other
     PixelCoords = [P for P in Mark.keys()]

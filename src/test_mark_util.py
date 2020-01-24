@@ -1,5 +1,7 @@
 import unittest, mark_collect, mark_util, mark_parse
 
+import area
+
 
 class MarkUtil(unittest.TestCase):
 
@@ -12,7 +14,7 @@ class MarkUtil(unittest.TestCase):
 
         MarkParserFuns = [mark_parse.mark_info_basic, mark_parse.mark_area_convex] # these functions analyses the Marks one by one
         print(mark_util.marks_info_table(Prg, Marks, MarkParserFuns=MarkParserFuns,
-                                         WantedIdNums=[2, 3], OutputType="txt"))
+                                         WantedIdNums=[0, 1, 2, 3], OutputType="txt"))
 
         self.assertTrue(True)
 
@@ -50,10 +52,10 @@ class MarkUtil(unittest.TestCase):
                            Fg,
                            Bg]]
         Wanted = "..\n.O\n.."
-        self.assertEqual(Wanted, mark_util.mark_area_to_string(Area))
+        self.assertEqual(Wanted, area.to_string(Area))
 
     def test_mark_area_empty_making(self):
-        Result = mark_util.mark_area_empty_making(2, 3)
+        Result = area.make_empty(2, 3, mark_util.MarkBg)
         Bg = mark_util.MarkBg
         WantedColumn = [Bg, Bg, Bg]
         WantedRows = [WantedColumn, WantedColumn]
@@ -65,7 +67,7 @@ class MarkUtil(unittest.TestCase):
         AreaWanted = ("O..\n"
                       "OO.\n"
                       "OOO")
-        self.assertEqual(AreaWanted, mark_util.mark_area_to_string(AreaConvexGenerated))
+        self.assertEqual(AreaWanted, area.to_string(AreaConvexGenerated))
 
         ####################################
         Mark = {(1,1):11, (2,1):21, (3,1):31,
@@ -80,7 +82,7 @@ class MarkUtil(unittest.TestCase):
                       "OOOO.\n"
                       "OOOO.\n"
                       "OOOOO" )
-        self.assertEqual(AreaWanted, mark_util.mark_area_to_string(AreaConvexGenerated))
+        self.assertEqual(AreaWanted, area.to_string(AreaConvexGenerated))
 
         ################## + sign convex area test ###################
 
@@ -101,7 +103,7 @@ class MarkUtil(unittest.TestCase):
                       "..OOO..\n"
                       "...O..."
                       )
-        self.assertEqual(AreaWanted, mark_util.mark_area_to_string(AreaConvexGenerated))
+        self.assertEqual(AreaWanted, area.to_string(AreaConvexGenerated))
 
 def run_all_tests(P):
     print("run all tests")

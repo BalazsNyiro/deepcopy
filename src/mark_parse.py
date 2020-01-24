@@ -1,4 +1,6 @@
-import mark_util, util
+# -*- coding: utf-8 -*-
+import area
+import mark_util
 
 # Mark analyser algorithms, main logic
 # OutputType can be: human | data
@@ -6,7 +8,7 @@ import mark_util, util
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
     AreaConvex = mark_util.mark_area_convex(Prg, Mark)
-    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n"+mark_util.mark_area_to_string(AreaConvex))])
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n" + area.to_string(AreaConvex))])
 
 
 def mark_hull_convex(Prg, Marks, MarkId, MarkStats):
