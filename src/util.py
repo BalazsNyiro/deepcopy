@@ -317,11 +317,24 @@ def connect_coords(Ax, Ay, Bx, By):
 
     else: # X and Y is moving, not horizontal/vertical steps
         Y = Ay
-        YchangePerUnit = DeltaY / abs(DeltaX)
+        YchangePerUnit = float(DeltaY) / abs(DeltaX)
 
         Step = 0
         for X in RangeX:
-            Points.append((X, round(Y+YchangePerUnit*Step)))
+            PointCalculated = (X, int(round(Y+YchangePerUnit*Step) ) )
+            if PointCalculated not in Points:
+                Points.append(PointCalculated)
+            Step +=1
+
+        ############################################
+        X = Ax
+        XchangePerUnit = float(DeltaX) / abs(DeltaY)
+
+        Step = 0
+        for Y in RangeY:
+            PointCalculated = (  int(round(X+XchangePerUnit*Step)), Y )
+            if PointCalculated not in Points:
+                Points.append(PointCalculated)
             Step +=1
 
     return Points
