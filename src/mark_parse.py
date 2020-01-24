@@ -6,8 +6,8 @@ import mark_util, util
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
     AreaConvex = mark_util.mark_area_convex(Prg, Mark)
-
     mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n"+mark_util.mark_area_to_string(AreaConvex))])
+
 
 def mark_hull_convex(Prg, Marks, MarkId, MarkStats):
     # TODO: implement it, based on convex_area

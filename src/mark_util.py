@@ -17,7 +17,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
     Errors = []
     MarkStats = markstats_init()
 
-    NotImportantInfoKeys = {"x_min":1, "y_min":1, "x_max":1, "y_max":1}
+    NotImportantInfoKeys = {}
 
     if WantedIdNums and isinstance(WantedIdNums, list):
         MarksWanted = dict()
@@ -143,10 +143,11 @@ def markstats_insert_id(MarkStats, MarkId):
         MarkStats[MarkId] = dict()
 
 # TESTED
-def mark_area_convex(Prg, Mark):
+def mark_area_convex(Prg, Mark, PointsWanted=False):
     Xmin, _Xmax, Ymin, _Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
     AreaConvex = mark_area_empty_making(Width, Height)
 
+    ConnectionPointLines = []
     # naive implementation,
     # maybe there is better solution
     # connect all points with each other
@@ -154,7 +155,13 @@ def mark_area_convex(Prg, Mark):
     while PixelCoords:
         FromX, FromY = PixelCoords.pop(0)
         for ToX, ToY in PixelCoords:
-            for ConnectionPointX, ConnectionPointY in util.connect_coords(FromX, FromY, ToX, ToY):
+            Points = util.connect_coords(FromX, FromY, ToX, ToY)
+            if PointsWanted:
+                ConnectionPointLines.append(Points)
+            for ConnectionPointX, ConnectionPointY in Points:
                 # -Xmin, -Ymin: A mark contains pixels with relative coords: the minimum is in the left/top corner
                 AreaConvex[ConnectionPointX - Xmin][ConnectionPointY - Ymin] = MarkFg
+
+    if PointsWanted:
+        return AreaConvex, ConnectionPointLines
     return AreaConvex
