@@ -37,9 +37,9 @@ print(sys.argv)
 if "testonly" in sys.argv:
        TestOnly = True
        sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a prg param so I hide it, temporary solution
-test_area.run_all_tests(Prg)
 test_mark_collect.run_all_tests(Prg)
 test_mark_util.run_all_tests(Prg)
+test_area.run_all_tests(Prg)
 if TestOnly:
        sys.exit(0)
 
