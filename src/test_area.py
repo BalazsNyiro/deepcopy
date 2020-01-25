@@ -29,10 +29,11 @@ class Area(unittest.TestCase):
 
         ##########################################
         Area2 = area.make_empty(Width, Height, Bg)
+        Area2[2][1] = "X"
         Burning = [(1,1), (2,3)]
-        area.fire(Area2, Burning, ["Up"], [Fg])
-        Wanted = (".FF."
-                  ".FF."
+        area.fire(Area2, Burning, ["Up"], [Fg, "X"])
+        Wanted = (".F.."
+                  ".FX."
                   "..F."
                   "..F."
                   "....")

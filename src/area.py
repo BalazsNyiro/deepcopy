@@ -10,8 +10,9 @@ def fire(Area, BurningAreaCoords, Directions, CharsBlocking, CharFire="F"):
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
 
     # 0 based X, Y coords!
+    # these are Area coords, not pixel coords!
     for X, Y in BurningAreaCoords:
-        if X < Width and X>=0:
+        if X < Width and X >= 0:
             if Y < Height and Y >= 0:
                 if Area[X][Y] not in CharsBlocking:
                     Area[X][Y] = CharFire
