@@ -17,7 +17,7 @@ class MarkUtil(unittest.TestCase):
                           mark_parse.mark_area_select_closed_empty_area
                           ] # these functions analyses the Marks one by one
         print(mark_util.marks_info_table(Prg, Marks, MarkParserFuns=MarkParserFuns,
-                                         WantedIdNums=[0, 1, 2, 3], OutputType="txt"))
+                                         WantedIdNums=[0, 2, 3], OutputType="txt"))
 
         self.assertTrue(True)
 

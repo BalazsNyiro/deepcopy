@@ -10,9 +10,11 @@ import mark_util
 #
 def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
+    MarkNumOfPixels = len(Mark.keys())
     Area = mark_util.mark_to_area(Prg, Mark)
 
     Fg = mark_util.MarkFg
+    Bg = mark_util.MarkBg
 
     #                   on right side you can find the closed empty areas:
     #     ....OOOOOOO...                                                      FFFFOOOOOOOFFF
@@ -36,7 +38,13 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     area.fire_from_side(Area, "Left",   [Fg], Directions="All")
     area.fire_from_side(Area, "Right",  [Fg], Directions="All")
 
-    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + area.to_string(Area))])
+    AreaStr = area.to_string(Area)
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + AreaStr )])
+    NumOfClosedEmptyPixels = AreaStr.count(Bg)
+
+    MarkAreaClosedEmptyRatio = NumOfClosedEmptyPixels / MarkNumOfPixels
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_closed_empty_ratio", str(MarkAreaClosedEmptyRatio )  )])
+
 
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
