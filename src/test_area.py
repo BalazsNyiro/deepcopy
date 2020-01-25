@@ -7,6 +7,8 @@ class Area(unittest.TestCase):
         Fg = mark_util.MarkFg
         Width = 6
         Height = 5
+
+        ########### Test from Right #############################
         Area = area.make_empty(Width, Height, Bg)
 
         # this is a ⊃  math sign, more or less :-)
@@ -15,7 +17,6 @@ class Area(unittest.TestCase):
         Area[2][3] = Fg;    Area[3][3] = Fg;   Area[4][3] = Fg
 
         area.fire_from_side(Area, "Right", [Fg])
-        print("\n" + area.to_string(Area))
 
         Wanted = ("FFFFFF"
                   "FFOOOF"
@@ -24,6 +25,71 @@ class Area(unittest.TestCase):
                   "FFFFFF")
 
         self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
+
+        ########### Test from Left#############################
+        Area = area.make_empty(Width, Height, Bg)
+
+        # stylized I sign
+        Area[2][1] = Fg;    Area[3][1] = Fg;   Area[4][1] = Fg
+        pass;               Area[3][2] = Fg
+        Area[2][3] = Fg;    Area[3][3] = Fg;   Area[4][3] = Fg
+
+        area.fire_from_side(Area, "Left", [Fg])
+
+        Wanted = ("FFFFFF"
+                  "FFOOOF"
+                  "FFFO.F"
+                  "FFOOOF"
+                  "FFFFFF")
+
+        self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
+
+
+        ########### Test from Top #############################
+        Width = 5
+        Height = 5
+
+        Area = area.make_empty(Width, Height, Bg)
+        Area[0][1] = Fg
+        Area[1][1] = Fg
+        Area[2][1] = Fg
+        Area[3][1] = Fg
+        Area[4][1] = Fg
+
+        area.fire_from_side(Area, "Top", [Fg])
+
+        Wanted = ("FFFFF"
+                  "OOOOO"
+                  "....."
+                  "....."
+                  ".....")
+
+        self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
+
+
+
+        ########### Test from Bottom #############################
+        Width = 5
+        Height = 5
+
+        Area = area.make_empty(Width, Height, Bg)
+        Area[0][1] = Fg
+        Area[1][1] = Fg
+        Area[2][1] = Fg
+        Area[3][1] = Fg
+        Area[4][1] = Fg
+
+        area.fire_from_side(Area, "Bottom", [Fg])
+
+        Wanted = ("....."
+                  "OOOOO"
+                  "FFFFF"
+                  "FFFFF"
+                  "FFFFF")
+
+        self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
+
+
 
     def test_fire(self):
         Bg = mark_util.MarkBg
