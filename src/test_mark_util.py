@@ -14,7 +14,7 @@ class MarkUtil(unittest.TestCase):
 
         MarkParserFuns = [mark_parse.mark_info_basic,
                           mark_parse.mark_area_convex,
-                          mark_parse.mark_area_select_notclosed
+                          mark_parse.mark_area_select_closed_empty_area
                           ] # these functions analyses the Marks one by one
         print(mark_util.marks_info_table(Prg, Marks, MarkParserFuns=MarkParserFuns,
                                          WantedIdNums=[0, 1, 2, 3], OutputType="txt"))

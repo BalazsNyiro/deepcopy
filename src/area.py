@@ -4,6 +4,10 @@ import copy
 def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"):
     Width, Height = width_height_get(Area)
 
+    if Directions == "All":
+        Directions = ["Left", "Right", "Up", "Down", "LeftUp", "LeftDown", "RightUp", "RightDown"]
+
+
     if CharFire not in CharsBlocking:
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
 
@@ -32,7 +36,7 @@ def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"
 # Directions: Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown
 # TESTED
 def fire(Area, BurningAreaCoords, CharsBlocking, Directions=None, CharFire="F"):
-    if Directions == None:
+    if Directions == "All" or Directions == None:
         Directions = ["Left", "Right", "Up", "Down", "LeftUp", "LeftDown", "RightUp", "RightDown"]
 
     Width, Height = width_height_get(Area)

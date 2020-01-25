@@ -8,16 +8,55 @@ import mark_util
 # in '8' or 'B' chars there are 2 closed areas,
 # in 'b' or 'e' or in 'o' there are one closed.
 #
-def mark_area_select_notclosed(Prg, Marks, MarkId, MarkStats):
+def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
-    MarkInArea = mark_util.mark_to_area(Prg, Mark)
+    Area = mark_util.mark_to_area(Prg, Mark)
 
-    pass
+    Fg = mark_util.MarkFg
+    # FFFFOOOOOOOFFF
+    # FFOOOOOOOOOOFF
+    # FOOOOOOOOOOOOF
+    # FOOOOO..OOOOOF
+    # OOOO......OOOO
+    # OOOO......OOOO
+    # OOOOOOOOOOOOOO
+    # OOOOOOOOOOOOOO
+    # OOOFFFFFFFFFFF
+    # OOOOFFFFFFFFFF
+    # OOOOFFFFFFFFFF
+    # FOOOOOOFFFOOOF
+    # FOOOOOOOOOOOOF
+    # FFOOOOOOOOOOOF
+    # FFFFOOOOOOOOFF
+
+    # all direction is important here, because:
+    #     ....OOOOOOO...
+    #     ..OOOOOOOOOO..
+    #     .OOOOOOOOOOOO.
+    #     .OOOOO..OOOOO.
+    #     OOOO......OOOO
+    #     OOOO......OOOO
+    #     OOOOOOOOOOOOOO
+    #     OOOOOOOOOOOOOO
+    #     OOO...........  in case of letter e, if you fire from right
+    #     OOOO..........  the *** chars will be empty because Bottom Fire
+    #     OOOO..........  can't go down basically,
+    #     .OOOOOO***OOO.  and it fills the area with F sign
+    #     .OOOOOOOOOOOO.  and can't fill *** with F so in this situation
+    #     ..OOOOOOOOOOO.  when starts a fire, it can spread
+    #     ....OOOOOOOO..  into any direction
+
+    area.fire_from_side(Area, "Top",    [Fg], Directions="All")
+    area.fire_from_side(Area, "Bottom", [Fg], Directions="All")
+    area.fire_from_side(Area, "Left",   [Fg], Directions="All")
+    area.fire_from_side(Area, "Right",  [Fg], Directions="All")
+
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + area.to_string(Area))])
 
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
     AreaConvex = mark_util.mark_area_convex(Prg, Mark)
-    mark_info_insert(Prg, MarkStats, MarkId, [("mark_convex_area", "\n" + area.to_string(AreaConvex))])
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_convex", "\n" + area.to_string(AreaConvex))])
 
 
 def mark_hull_convex(Prg, Marks, MarkId, MarkStats):
