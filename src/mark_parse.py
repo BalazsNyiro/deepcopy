@@ -5,6 +5,15 @@ import mark_util
 # Mark analyser algorithms, main logic
 # OutputType can be: human | data
 
+# in '8' or 'B' chars there are 2 closed areas,
+# in 'b' or 'e' or in 'o' there are one closed.
+#
+def mark_area_select_notclosed(Prg, Marks, MarkId, MarkStats):
+    Mark = Marks[MarkId]
+    MarkInArea = mark_util.mark_to_area(Prg, Mark)
+
+    pass
+
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
     AreaConvex = mark_util.mark_area_convex(Prg, Mark)

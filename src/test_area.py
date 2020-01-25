@@ -1,7 +1,29 @@
+# -*- coding: utf-8 -*-
 import unittest, mark_util, area
 
-
 class Area(unittest.TestCase):
+    def test_fire_from_side(self):
+        Bg = mark_util.MarkBg
+        Fg = mark_util.MarkFg
+        Width = 6
+        Height = 5
+        Area = area.make_empty(Width, Height, Bg)
+
+        # this is a ⊃  math sign, more or less :-)
+        Area[2][1] = Fg;    Area[3][1] = Fg;   Area[4][1] = Fg
+        pass;                                  Area[4][2] = Fg
+        Area[2][3] = Fg;    Area[3][3] = Fg;   Area[4][3] = Fg
+
+        area.fire_from_side(Area, "Right", [Fg])
+        print("\n" + area.to_string(Area))
+
+        Wanted = ("FFFFFF"
+                  "FFOOOF"
+                  "FF..OF"
+                  "FFOOOF"
+                  "FFFFFF")
+
+        self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
 
     def test_fire(self):
         Bg = mark_util.MarkBg
@@ -11,7 +33,7 @@ class Area(unittest.TestCase):
         Area = area.make_empty(Width, Height, Bg)
         AreaDuplicated = area.duplicate(Area) # later we modify Area with burning
         Burning = [(1,1), (2,3)]
-        area.fire(Area, Burning, ["Left"], [Fg])
+        area.fire(Area, Burning, [Fg], ["Left"])
 
         Wanted = ("...."
                   "FF.."
@@ -31,7 +53,7 @@ class Area(unittest.TestCase):
         Area2 = area.make_empty(Width, Height, Bg)
         Area2[2][1] = "X"
         Burning = [(1,1), (2,3)]
-        area.fire(Area2, Burning, ["Up"], [Fg, "X"])
+        area.fire(Area2, Burning, [Fg, "X"], ["Up"])
         Wanted = (".F.."
                   ".FX."
                   "..F."

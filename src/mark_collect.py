@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import util, sys
 import mark_util
 

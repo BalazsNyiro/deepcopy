@@ -100,14 +100,16 @@ def mark_min_max_width_height(Prg, Mark):
     Height = Ymax - Ymin + 1
     return (Xmin, Xmax, Ymin, Ymax, Width, Height)
 
-# TESTED, coordinate based data structure with foreground pixels only
-def mark_to_string(Prg, Mark):
+# TESTED from mark_to_string
+def mark_to_area(Prg, Mark):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
-
     Area = area.make_empty(Width, Height, MarkBg)
     area.coords_insert(Area, Mark, MarkFg, Xshift= -Xmin, Yshift= -Ymin)
+    return Area
 
-    return area.to_string(Area)
+# TESTED
+def mark_to_string(Prg, Mark):
+    return area.to_string(mark_to_area(Prg, Mark))
 
 
 # TESTED

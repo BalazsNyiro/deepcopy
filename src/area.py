@@ -1,8 +1,39 @@
+# -*- coding: utf-8 -*-
 import copy
+
+def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"):
+    Width, Height = width_height_get(Area)
+
+    if CharFire not in CharsBlocking:
+        CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
+
+    if   StartSide == "Top":
+        BurningAreaCoords = [(X,0) for X in range(0, Width) if Area[X][0] not in CharsBlocking]
+        if Directions is None:
+            Directions = ["Down", "Left", "Right", "LeftDown", "RightDown"]
+
+    elif StartSide == "Bottom": # -1 means: the last elem in the column, the bottom...
+        BurningAreaCoords = [(X,Height-1) for X in range(0, Width) if Area[X][Height-1] not in CharsBlocking]
+        if Directions is None:
+            Directions = ["Up", "Left", "Right", "LeftUp", "RightUp"]
+
+    elif StartSide == "Left":
+        BurningAreaCoords = [(0,Y) for Y in range(0, Height) if Area[0][Y] not in CharsBlocking]
+        if Directions is None:
+            Directions = ["Right", "Up", "Down", "RightUp", "RightDown"]
+
+    elif StartSide == "Right": # coord -1: the last element, so the most-right column :-)
+        BurningAreaCoords = [(Width-1,Y) for Y in range(0, Height) if Area[Width-1][Y] not in CharsBlocking]
+        if Directions is None:
+            Directions = ["Left", "Up", "Down", "LeftUp", "LeftDown"]
+
+    fire(Area, BurningAreaCoords,  CharsBlocking, Directions)
 
 # Directions: Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown
 # TESTED
-def fire(Area, BurningAreaCoords, Directions, CharsBlocking, CharFire="F"):
+def fire(Area, BurningAreaCoords, CharsBlocking, Directions=None, CharFire="F"):
+    if Directions == None:
+        Directions = ["Left", "Right", "Up", "Down", "LeftUp", "LeftDown", "RightUp", "RightDown"]
 
     Width, Height = width_height_get(Area)
 
@@ -16,15 +47,15 @@ def fire(Area, BurningAreaCoords, Directions, CharsBlocking, CharFire="F"):
             if Y < Height and Y >= 0:
                 if Area[X][Y] not in CharsBlocking:
                     Area[X][Y] = CharFire
-                    if "Left"      in Directions: fire(Area, [(X-1,Y  )], Directions, CharsBlocking, CharFire)
-                    if "Right"     in Directions: fire(Area, [(X+1,Y  )], Directions, CharsBlocking, CharFire)
-                    if "Up"        in Directions: fire(Area, [(X  ,Y-1)], Directions, CharsBlocking, CharFire)
-                    if "Down"      in Directions: fire(Area, [(X  ,Y+1)], Directions, CharsBlocking, CharFire)
+                    if "Left"      in Directions: fire(Area, [(X-1,Y  )], CharsBlocking, Directions, CharFire)
+                    if "Right"     in Directions: fire(Area, [(X+1,Y  )], CharsBlocking, Directions, CharFire)
+                    if "Up"        in Directions: fire(Area, [(X  ,Y-1)], CharsBlocking, Directions, CharFire)
+                    if "Down"      in Directions: fire(Area, [(X  ,Y+1)], CharsBlocking, Directions, CharFire)
 
-                    if "LeftUp"    in Directions: fire(Area, [(X-1,Y-1)], Directions, CharsBlocking, CharFire)
-                    if "LeftDown"  in Directions: fire(Area, [(X-1,Y+1)], Directions, CharsBlocking, CharFire)
-                    if "RightUp"   in Directions: fire(Area, [(X+1,Y-1)], Directions, CharsBlocking, CharFire)
-                    if "RightDown" in Directions: fire(Area, [(X+1,Y+1)], Directions, CharsBlocking, CharFire)
+                    if "LeftUp"    in Directions: fire(Area, [(X-1,Y-1)], CharsBlocking, Directions, CharFire)
+                    if "LeftDown"  in Directions: fire(Area, [(X-1,Y+1)], CharsBlocking, Directions, CharFire)
+                    if "RightUp"   in Directions: fire(Area, [(X+1,Y-1)], CharsBlocking, Directions, CharFire)
+                    if "RightDown" in Directions: fire(Area, [(X+1,Y+1)], CharsBlocking, Directions, CharFire)
 
 # TESTED
 def make_empty(Width, Height, Bg):
