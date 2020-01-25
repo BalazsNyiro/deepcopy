@@ -13,38 +13,23 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     Area = mark_util.mark_to_area(Prg, Mark)
 
     Fg = mark_util.MarkFg
-    # FFFFOOOOOOOFFF
-    # FFOOOOOOOOOOFF
-    # FOOOOOOOOOOOOF
-    # FOOOOO..OOOOOF
-    # OOOO......OOOO
-    # OOOO......OOOO
-    # OOOOOOOOOOOOOO
-    # OOOOOOOOOOOOOO
-    # OOOFFFFFFFFFFF
-    # OOOOFFFFFFFFFF
-    # OOOOFFFFFFFFFF
-    # FOOOOOOFFFOOOF
-    # FOOOOOOOOOOOOF
-    # FFOOOOOOOOOOOF
-    # FFFFOOOOOOOOFF
 
-    # all direction is important here, because:
-    #     ....OOOOOOO...
-    #     ..OOOOOOOOOO..
-    #     .OOOOOOOOOOOO.
-    #     .OOOOO..OOOOO.
-    #     OOOO......OOOO
-    #     OOOO......OOOO
-    #     OOOOOOOOOOOOOO
-    #     OOOOOOOOOOOOOO
-    #     OOO...........  in case of letter e, if you fire from right
-    #     OOOO..........  the *** chars will be empty because Bottom Fire
-    #     OOOO..........  can't go down basically,
-    #     .OOOOOO***OOO.  and it fills the area with F sign
-    #     .OOOOOOOOOOOO.  and can't fill *** with F so in this situation
-    #     ..OOOOOOOOOOO.  when starts a fire, it can spread
-    #     ....OOOOOOOO..  into any direction
+    #                   on right side you can find the closed empty areas:
+    #     ....OOOOOOO...                                                      FFFFOOOOOOOFFF
+    #     ..OOOOOOOOOO..                                                      FFOOOOOOOOOOFF
+    #     .OOOOOOOOOOOO.                                                      FOOOOOOOOOOOOF
+    #     .OOOOO..OOOOO.                                                      FOOOOO..OOOOOF
+    #     OOOO......OOOO                                                      OOOO......OOOO
+    #     OOOO......OOOO                                                      OOOO......OOOO
+    #     OOOOOOOOOOOOOO   all direction is important here, because:          OOOOOOOOOOOOOO
+    #     OOOOOOOOOOOOOO                                                      OOOOOOOOOOOOOO
+    #     OOO...........  in case of letter e, if you fire from right         OOOFFFFFFFFFFF
+    #     OOOO..........  the *** chars will be empty because Bottom Fire     OOOOFFFFFFFFFF
+    #     OOOO..........  can't go down basically,                            OOOOFFFFFFFFFF
+    #     .OOOOOO***OOO.  and it fills the area with F sign                   FOOOOOOFFFOOOF
+    #     .OOOOOOOOOOOO.  and can't fill *** with F so in this situation      FOOOOOOOOOOOOF
+    #     ..OOOOOOOOOOO.  when starts a fire, it can spread                   FFOOOOOOOOOOOF
+    #     ....OOOOOOOO..  into any direction                                  FFFFOOOOOOOOFF
 
     area.fire_from_side(Area, "Top",    [Fg], Directions="All")
     area.fire_from_side(Area, "Bottom", [Fg], Directions="All")
