@@ -1,16 +1,29 @@
 # -*- coding: utf-8 -*-
 import copy
 
+###   TODO:   line scanning, horizontal
+###   TODO:  mask area with area
+
 # WantedPatterns example = ["Pattern1", "P2"]
 # TESTED
-def count_pattern(Area, WantedPatterns):
+def count_pattern(Area, WantedPatterns=[], UnwantedPatterns=[]):
+    # if you define wanted patterns, you search specific patterns.
+    # if you use Unwanted patterns, then you find everything that is not unwanted
+
     Result = dict()
     for Pattern in WantedPatterns:
         Result[Pattern] = 0
     for OneColumn in Area:
         for Pattern in OneColumn:
-            if Pattern in WantedPatterns:
-                Result[Pattern] += 1
+            if UnwantedPatterns:
+                if Pattern not in UnwantedPatterns:
+                    if Pattern not in Result:
+                        Result[Pattern] = 1
+                    else:
+                        Result[Pattern] += 1
+            else:
+                if Pattern in WantedPatterns:
+                    Result[Pattern] += 1
     return Result
 
 def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"):
