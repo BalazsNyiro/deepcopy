@@ -92,30 +92,30 @@ def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
 
     if   StartSide == "Top":
-        BurningAreaCoords = [(X,0) for X in range(0, Width) if Area[X][0] not in CharsBlocking]
+        CoordsFireStart = [(X,0) for X in range(0, Width) if Area[X][0] not in CharsBlocking]
         if Directions is None:
             Directions = ["Down", "Left", "Right", "LeftDown", "RightDown"]
 
     elif StartSide == "Bottom": # -1 means: the last elem in the column, the bottom...
-        BurningAreaCoords = [(X,Height-1) for X in range(0, Width) if Area[X][Height-1] not in CharsBlocking]
+        CoordsFireStart = [(X,Height-1) for X in range(0, Width) if Area[X][Height-1] not in CharsBlocking]
         if Directions is None:
             Directions = ["Up", "Left", "Right", "LeftUp", "RightUp"]
 
     elif StartSide == "Left":
-        BurningAreaCoords = [(0,Y) for Y in range(0, Height) if Area[0][Y] not in CharsBlocking]
+        CoordsFireStart = [(0,Y) for Y in range(0, Height) if Area[0][Y] not in CharsBlocking]
         if Directions is None:
             Directions = ["Right", "Up", "Down", "RightUp", "RightDown"]
 
     elif StartSide == "Right": # coord -1: the last element, so the most-right column :-)
-        BurningAreaCoords = [(Width-1,Y) for Y in range(0, Height) if Area[Width-1][Y] not in CharsBlocking]
+        CoordsFireStart = [(Width-1,Y) for Y in range(0, Height) if Area[Width-1][Y] not in CharsBlocking]
         if Directions is None:
             Directions = ["Left", "Up", "Down", "LeftUp", "LeftDown"]
 
-    return fire(Area, BurningAreaCoords,  CharsBlocking, Directions)
+    return fire(Area, CoordsFireStart,  CharsBlocking, Directions)
 
 # Directions: Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown
 # TESTED
-def fire(Area, BurningAreaCoords, CharsBlocking, Directions=None, CharFire="F"):
+def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
     if Directions == "All" or Directions == None:
         Directions = ["Left", "Right", "Up", "Down", "LeftUp", "LeftDown", "RightUp", "RightDown"]
 
@@ -125,26 +125,38 @@ def fire(Area, BurningAreaCoords, CharsBlocking, Directions=None, CharFire="F"):
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
 
     BurntAreaSize = 0
+    AreaXmin = AreaXmax = AreaYmin = AreaYmax = None
+
+
+    def local_fire(CoordsFireStart):
+        # LocalBurntAreaSize, LocalAreaXmin, LocalAreaXmax, LocalAreaYmin, LocalAreaYmax = fire(Area, CoordsFireStart, CharsBlocking, Directions, CharFire)
+        LocalBurntAreaSize = fire(Area, CoordsFireStart, CharsBlocking, Directions, CharFire)
+        return LocalBurntAreaSize
+
+    # TODO: handle MIN/MAX VALUES
 
     # 0 based X, Y coords!
     # these are Area coords, not pixel coords!
-    for X, Y in BurningAreaCoords:
+    for X, Y in CoordsFireStart:
         if X < Width and X >= 0:
             if Y < Height and Y >= 0:
                 if Area[X][Y] not in CharsBlocking:
                     Area[X][Y] = CharFire
                     BurntAreaSize += 1
-                    if "Left"      in Directions: BurntAreaSize += fire(Area, [(X-1,Y  )], CharsBlocking, Directions, CharFire)
-                    if "Right"     in Directions: BurntAreaSize += fire(Area, [(X+1,Y  )], CharsBlocking, Directions, CharFire)
-                    if "Up"        in Directions: BurntAreaSize += fire(Area, [(X  ,Y-1)], CharsBlocking, Directions, CharFire)
-                    if "Down"      in Directions: BurntAreaSize += fire(Area, [(X  ,Y+1)], CharsBlocking, Directions, CharFire)
+                    if "Left"      in Directions: BurntAreaSize += local_fire([(X-1,Y  )])
+                    if "Right"     in Directions: BurntAreaSize += local_fire([(X+1,Y  )])
+                    if "Up"        in Directions: BurntAreaSize += local_fire([(X  ,Y-1)])
+                    if "Down"      in Directions: BurntAreaSize += local_fire([(X  ,Y+1)])
 
-                    if "LeftUp"    in Directions: BurntAreaSize += fire(Area, [(X-1,Y-1)], CharsBlocking, Directions, CharFire)
-                    if "LeftDown"  in Directions: BurntAreaSize += fire(Area, [(X-1,Y+1)], CharsBlocking, Directions, CharFire)
-                    if "RightUp"   in Directions: BurntAreaSize += fire(Area, [(X+1,Y-1)], CharsBlocking, Directions, CharFire)
-                    if "RightDown" in Directions: BurntAreaSize += fire(Area, [(X+1,Y+1)], CharsBlocking, Directions, CharFire)
+                    if "LeftUp"    in Directions: BurntAreaSize += local_fire([(X-1,Y-1)])
+                    if "LeftDown"  in Directions: BurntAreaSize += local_fire([(X-1,Y+1)])
+                    if "RightUp"   in Directions: BurntAreaSize += local_fire([(X+1,Y-1)])
+                    if "RightDown" in Directions: BurntAreaSize += local_fire([(X+1,Y+1)])
 
+    # return (BurntAreaSize, AreaXmin, AreaXmax, AreaYmin, AreaYmax)
     return BurntAreaSize
+
+
 # TESTED
 def make_empty(Width, Height, Bg):
     OneColumn = []
