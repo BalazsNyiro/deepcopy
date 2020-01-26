@@ -2,18 +2,63 @@
 import unittest, mark_util, area
 
 class Area(unittest.TestCase):
-    def test_count_pattern(self):
+    def test_count_separated_blocks(self):
+        Bg = mark_util.MarkBg
+        Fg = mark_util.MarkFg
+        Width = 6
+        Height = 9
+
+        Area = area.make_empty(Width, Height, Bg)
+
+        # this is a '8' char
+        Area[2][1] = Fg;    Area[3][1] = Fg;   Area[4][1] = Fg
+        Area[2][2] = Fg;                       Area[4][2] = Fg
+        Area[2][3] = Fg;    Area[3][3] = Fg;   Area[4][3] = Fg
+        Area[2][4] = Fg;                       Area[4][4] = Fg
+        Area[2][5] = Fg;    Area[3][5] = Fg;   Area[4][5] = Fg
+
+        # the correct result is 3 because the there are an outside block
+        # with Bg and two inside block
+
+        CharsBlocking =  [Fg]
+        self.assertEqual(3, area.count_separated_blocks(Area, Bg, CharsBlocking))
+
+        # we rease the outside block
+        area.fire(Area, [(0,0)], CharsBlocking)
+        self.assertEqual(2, area.count_separated_blocks(Area, Bg, CharsBlocking))
+
+        # then we erase one of the inside blocks
+        area.fire(Area, [(3,2)], CharsBlocking)
+        self.assertEqual(1, area.count_separated_blocks(Area, Bg, CharsBlocking))
+
+    def test_pattern_position_find(self):
         Bg = mark_util.MarkBg
         Width = 6
-        Height = 5
+        Height = 7
         Area = area.make_empty(Width, Height, Bg)
-        Area[2][3] = "X"
+        Area[4][3] = "Y"
+        Area[5][4] = "Y"
 
-        CountedChars = area.count_pattern(Area, WantedPatterns=[Bg, "X"])
-        self.assertEqual(CountedChars, {".": 29, "X":1})
+        Pos = area.pattern_position_find_first(Area, "Y")
+        self.assertEqual(Pos, (4,3))
 
-        CountedChars = area.count_pattern(Area, UnwantedPatterns=["Y"])
-        self.assertEqual(CountedChars, {".": 29, "X":1})
+        Pos = area.pattern_position_find_first(Area, "U")
+        self.assertEqual(Pos, None)
+
+
+    def test_pattern_count(self):
+        Bg = mark_util.MarkBg
+        Width = 2
+        Height = 3
+        Area = area.make_empty(Width, Height, Bg)
+        Area[1][2] = "X"
+
+        CountedChars = area.pattern_count(Area, WantedPatterns=[Bg, "X"])
+        WantedResult = {".": 5, "X":1, "Coords": {".": [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1)], "X":[(1,2)]}}
+        self.assertEqual(CountedChars, WantedResult)
+
+        CountedChars = area.pattern_count(Area, UnwantedPatterns=["Y"])
+        self.assertEqual(CountedChars, WantedResult)
 
     def test_fire_from_side(self):
         Bg = mark_util.MarkBg

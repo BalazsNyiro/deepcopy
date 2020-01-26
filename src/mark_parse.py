@@ -13,7 +13,6 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     Bg = mark_util.MarkBg
 
     Mark = Marks[MarkId]
-    MarkNumOfPixels = len(Mark.keys())
     Area = mark_util.mark_to_area(Prg, Mark)
 
     #                   on right side you can find the closed empty areas:
@@ -33,19 +32,25 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     #     ..OOOOOOOOOOO.  when starts a fire, it can spread                   FFOOOOOOOOOOOF
     #     ....OOOOOOOO..  into any direction                                  FFFFOOOOOOOOFF
 
-    area.fire_from_side(Area, "Top",    [Fg], Directions="All")
-    area.fire_from_side(Area, "Bottom", [Fg], Directions="All")
-    area.fire_from_side(Area, "Left",   [Fg], Directions="All")
-    area.fire_from_side(Area, "Right",  [Fg], Directions="All")
+    CharFire = "F"
+    area.fire_from_side(Area, "Top",    [Fg], Directions="All", CharFire=CharFire)
+    area.fire_from_side(Area, "Bottom", [Fg], Directions="All", CharFire=CharFire)
+    area.fire_from_side(Area, "Left",   [Fg], Directions="All", CharFire=CharFire)
+    area.fire_from_side(Area, "Right",  [Fg], Directions="All", CharFire=CharFire)
 
     # AreaStr = area.to_string(Area)
     # mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + AreaStr )])
-    NumOfClosedEmptyPixels = area.count_pattern(Area, [Bg])
+    NumOfClosedEmptyPixels = area.pattern_count(Area, [Bg])
 
+    MarkNumOfPixels = len(Mark.keys())
     MarkAreaClosedEmptyRatio = NumOfClosedEmptyPixels[Bg] / MarkNumOfPixels
     mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_closed_empty_ratio", str(MarkAreaClosedEmptyRatio )  )])
 
-    # TODO: num of closed area (above some %)
+    NumOfSeparatedBlocks = area.count_separated_blocks(Area, Bg, [Fg, CharFire])
+    mark_info_insert(Prg, MarkStats, MarkId, [("num_of_separated_blocks", str(NumOfSeparatedBlocks)  )])
+
+
+# TODO: num of closed area (above some %)
     # TODO: ratio of open area
 
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
