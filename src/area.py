@@ -5,24 +5,26 @@ import copy, sys
 ###   TODO:  mask area with area
 
 
-# TODO: SAVE INFO: the size of the first, second, third block
 # how many separated block is in the Area?
+# the func return with size of separated blocks, too, with one of its coordinates
 # TESTED
 def count_separated_blocks(AreaOrig, WantedChar, FireBlockingChars):
     Area = duplicate(AreaOrig) # don't modify the original Area
 
     NumOfAreas = 0
+    BlockSizes = {}
 
     while True:
         Counter = pattern_count(Area, WantedPatterns=[WantedChar])
         NumOfChars = Counter[WantedChar]
 
         if NumOfChars == 0:
-            return NumOfAreas
+            return (NumOfAreas, BlockSizes)
 
         NumOfAreas += 1
-        OneCharacterposition = Counter["Coords"][WantedChar][0]
-        fire(Area, [OneCharacterposition], FireBlockingChars)
+        OneCharacterPosition = Counter["Coords"][WantedChar][0]
+        BlockSize = fire(Area, [OneCharacterPosition], FireBlockingChars)
+        BlockSizes[OneCharacterPosition] = BlockSize
 
 
 # TESTED

@@ -46,12 +46,13 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     MarkAreaClosedEmptyRatio = NumOfClosedEmptyPixels[Bg] / MarkNumOfPixels
     mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_closed_empty_ratio", str(MarkAreaClosedEmptyRatio )  )])
 
-    NumOfSeparatedBlocks = area.count_separated_blocks(Area, Bg, [Fg, CharFire])
-    mark_info_insert(Prg, MarkStats, MarkId, [("num_of_separated_blocks", str(NumOfSeparatedBlocks)  )])
 
-
-# TODO: num of closed area (above some %)
+    # TODO: num of closed area (above some %)
     # TODO: ratio of open area
+    BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, [Fg, CharFire])
+    mark_info_insert(Prg, MarkStats, MarkId, [("separated_blocks_volume", str(BlockVolume)  )])
+    mark_info_insert(Prg, MarkStats, MarkId, [("separated_blocks_sizes", str(BlockSizes)  )])
+
 
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]

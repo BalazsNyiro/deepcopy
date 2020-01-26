@@ -21,16 +21,22 @@ class Area(unittest.TestCase):
         # with Bg and two inside block
 
         CharsBlocking =  [Fg]
-        self.assertEqual(3, area.count_separated_blocks(Area, Bg, CharsBlocking))
+        BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, CharsBlocking)
+        self.assertEqual(3, BlockVolume)
+        self.assertEqual({(0, 0): 39, (3, 2): 1, (3, 4): 1}, BlockSizes)
 
         # we rease the outside block
         BurntAreaSize = area.fire(Area, [(0,0)], CharsBlocking)
-        self.assertEqual(2, area.count_separated_blocks(Area, Bg, CharsBlocking))
+        BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, CharsBlocking)
+        self.assertEqual(2, BlockVolume)
         self.assertEqual(39, BurntAreaSize)
+        self.assertEqual({(3, 2): 1, (3, 4): 1}, BlockSizes)
 
         # then we erase one of the inside blocks
         area.fire(Area, [(3,2)], CharsBlocking)
-        self.assertEqual(1, area.count_separated_blocks(Area, Bg, CharsBlocking))
+        BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, CharsBlocking)
+        self.assertEqual(1, BlockVolume)
+        self.assertEqual({(3, 4): 1}, BlockSizes)
 
     def test_pattern_position_find(self):
         Bg = mark_util.MarkBg
