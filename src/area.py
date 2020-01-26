@@ -12,7 +12,7 @@ def count_separated_blocks(AreaOrig, WantedChar, FireBlockingChars):
     Area = duplicate(AreaOrig) # don't modify the original Area
 
     NumOfAreas = 0
-    BlockSizes = {}
+    BlockSizes = {"total_size_of_closed_areas": 0}
 
     while True:
         Counter = pattern_count(Area, WantedPatterns=[WantedChar])
@@ -25,6 +25,7 @@ def count_separated_blocks(AreaOrig, WantedChar, FireBlockingChars):
         OneCharacterPosition = Counter["Coords"][WantedChar][0]
         BlockSize = fire(Area, [OneCharacterPosition], FireBlockingChars)
         BlockSizes[OneCharacterPosition] = BlockSize
+        BlockSizes["total_size_of_closed_areas"] += BlockSize
 
 
 # TESTED

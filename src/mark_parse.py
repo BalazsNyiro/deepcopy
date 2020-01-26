@@ -19,7 +19,7 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     #     ....OOOOOOO...       signed with '.' chars,                         FFFFOOOOOOOFFF
     #     ..OOOOOOOOOO..       F means: fired/reached from outside            FFOOOOOOOOOOFF
     #     .OOOOOOOOOOOO.                                                      FOOOOOOOOOOOOF
-    #     .OOOOO..OOOOO.                                                      FOOOOO..OOOOOF
+    #     .OOOOO..OOOOO.        the closed block size = 14 in this case:      FOOOOO..OOOOOF
     #     OOOO......OOOO                                                      OOOO......OOOO
     #     OOOO......OOOO                                                      OOOO......OOOO
     #     OOOOOOOOOOOOOO   all direction is important here, because:          OOOOOOOOOOOOOO
@@ -53,6 +53,8 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     mark_info_insert(Prg, MarkStats, MarkId, [("separated_blocks_volume", str(BlockVolume)  )])
     mark_info_insert(Prg, MarkStats, MarkId, [("separated_blocks_sizes", str(BlockSizes)  )])
 
+    # TODO: measure OPEN empty area: the lower part of e is open,
+    # with area convex you can count the size of open area
 
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]
