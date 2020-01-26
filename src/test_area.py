@@ -24,8 +24,9 @@ class Area(unittest.TestCase):
         self.assertEqual(3, area.count_separated_blocks(Area, Bg, CharsBlocking))
 
         # we rease the outside block
-        area.fire(Area, [(0,0)], CharsBlocking)
+        BurntAreaSize = area.fire(Area, [(0,0)], CharsBlocking)
         self.assertEqual(2, area.count_separated_blocks(Area, Bg, CharsBlocking))
+        self.assertEqual(39, BurntAreaSize)
 
         # then we erase one of the inside blocks
         area.fire(Area, [(3,2)], CharsBlocking)
@@ -74,7 +75,7 @@ class Area(unittest.TestCase):
         pass;                                  Area[4][2] = Fg
         Area[2][3] = Fg;    Area[3][3] = Fg;   Area[4][3] = Fg
 
-        area.fire_from_side(Area, "Right", [Fg])
+        BurntAreaSize = area.fire_from_side(Area, "Right", [Fg])
 
         Wanted = ("FFFFFF"
                   "FFOOOF"
@@ -83,6 +84,7 @@ class Area(unittest.TestCase):
                   "FFFFFF")
 
         self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
+        self.assertEqual(21, BurntAreaSize)
 
         ########### Test from Left#############################
         Area = area.make_empty(Width, Height, Bg)

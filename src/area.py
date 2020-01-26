@@ -108,7 +108,7 @@ def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"
         if Directions is None:
             Directions = ["Left", "Up", "Down", "LeftUp", "LeftDown"]
 
-    fire(Area, BurningAreaCoords,  CharsBlocking, Directions)
+    return fire(Area, BurningAreaCoords,  CharsBlocking, Directions)
 
 # Directions: Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown
 # TESTED
@@ -121,6 +121,8 @@ def fire(Area, BurningAreaCoords, CharsBlocking, Directions=None, CharFire="F"):
     if CharFire not in CharsBlocking:
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
 
+    BurntAreaSize = 0
+
     # 0 based X, Y coords!
     # these are Area coords, not pixel coords!
     for X, Y in BurningAreaCoords:
@@ -128,16 +130,18 @@ def fire(Area, BurningAreaCoords, CharsBlocking, Directions=None, CharFire="F"):
             if Y < Height and Y >= 0:
                 if Area[X][Y] not in CharsBlocking:
                     Area[X][Y] = CharFire
-                    if "Left"      in Directions: fire(Area, [(X-1,Y  )], CharsBlocking, Directions, CharFire)
-                    if "Right"     in Directions: fire(Area, [(X+1,Y  )], CharsBlocking, Directions, CharFire)
-                    if "Up"        in Directions: fire(Area, [(X  ,Y-1)], CharsBlocking, Directions, CharFire)
-                    if "Down"      in Directions: fire(Area, [(X  ,Y+1)], CharsBlocking, Directions, CharFire)
+                    BurntAreaSize += 1
+                    if "Left"      in Directions: BurntAreaSize += fire(Area, [(X-1,Y  )], CharsBlocking, Directions, CharFire)
+                    if "Right"     in Directions: BurntAreaSize += fire(Area, [(X+1,Y  )], CharsBlocking, Directions, CharFire)
+                    if "Up"        in Directions: BurntAreaSize += fire(Area, [(X  ,Y-1)], CharsBlocking, Directions, CharFire)
+                    if "Down"      in Directions: BurntAreaSize += fire(Area, [(X  ,Y+1)], CharsBlocking, Directions, CharFire)
 
-                    if "LeftUp"    in Directions: fire(Area, [(X-1,Y-1)], CharsBlocking, Directions, CharFire)
-                    if "LeftDown"  in Directions: fire(Area, [(X-1,Y+1)], CharsBlocking, Directions, CharFire)
-                    if "RightUp"   in Directions: fire(Area, [(X+1,Y-1)], CharsBlocking, Directions, CharFire)
-                    if "RightDown" in Directions: fire(Area, [(X+1,Y+1)], CharsBlocking, Directions, CharFire)
+                    if "LeftUp"    in Directions: BurntAreaSize += fire(Area, [(X-1,Y-1)], CharsBlocking, Directions, CharFire)
+                    if "LeftDown"  in Directions: BurntAreaSize += fire(Area, [(X-1,Y+1)], CharsBlocking, Directions, CharFire)
+                    if "RightUp"   in Directions: BurntAreaSize += fire(Area, [(X+1,Y-1)], CharsBlocking, Directions, CharFire)
+                    if "RightDown" in Directions: BurntAreaSize += fire(Area, [(X+1,Y+1)], CharsBlocking, Directions, CharFire)
 
+    return BurntAreaSize
 # TESTED
 def make_empty(Width, Height, Bg):
     OneColumn = []
