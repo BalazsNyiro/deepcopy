@@ -9,16 +9,16 @@ import mark_util
 # in 'b' or 'e' or in 'o' there are one closed.
 #
 def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
+    Fg = mark_util.MarkFg
+    Bg = mark_util.MarkBg
+
     Mark = Marks[MarkId]
     MarkNumOfPixels = len(Mark.keys())
     Area = mark_util.mark_to_area(Prg, Mark)
 
-    Fg = mark_util.MarkFg
-    Bg = mark_util.MarkBg
-
     #                   on right side you can find the closed empty areas:
-    #     ....OOOOOOO...                                                      FFFFOOOOOOOFFF
-    #     ..OOOOOOOOOO..                                                      FFOOOOOOOOOOFF
+    #     ....OOOOOOO...       signed with '.' chars,                         FFFFOOOOOOOFFF
+    #     ..OOOOOOOOOO..       F means: fired/reached from outside            FFOOOOOOOOOOFF
     #     .OOOOOOOOOOOO.                                                      FOOOOOOOOOOOOF
     #     .OOOOO..OOOOO.                                                      FOOOOO..OOOOOF
     #     OOOO......OOOO                                                      OOOO......OOOO
@@ -38,13 +38,15 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     area.fire_from_side(Area, "Left",   [Fg], Directions="All")
     area.fire_from_side(Area, "Right",  [Fg], Directions="All")
 
-    AreaStr = area.to_string(Area)
-    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + AreaStr )])
-    NumOfClosedEmptyPixels = AreaStr.count(Bg)
+    # AreaStr = area.to_string(Area)
+    # mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + AreaStr )])
+    NumOfClosedEmptyPixels = area.count_pattern(Area, [Bg])
 
-    MarkAreaClosedEmptyRatio = NumOfClosedEmptyPixels / MarkNumOfPixels
+    MarkAreaClosedEmptyRatio = NumOfClosedEmptyPixels[Bg] / MarkNumOfPixels
     mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_closed_empty_ratio", str(MarkAreaClosedEmptyRatio )  )])
 
+    # TODO: num of closed area (above some %)
+    # TODO: ratio of open area
 
 def mark_area_convex(Prg, Marks, MarkId, MarkStats):
     Mark = Marks[MarkId]

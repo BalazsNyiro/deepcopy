@@ -1,12 +1,23 @@
 # -*- coding: utf-8 -*-
 import copy
 
+# WantedPatterns example = ["Pattern1", "P2"]
+# TESTED
+def count_pattern(Area, WantedPatterns):
+    Result = dict()
+    for Pattern in WantedPatterns:
+        Result[Pattern] = 0
+    for OneColumn in Area:
+        for Pattern in OneColumn:
+            if Pattern in WantedPatterns:
+                Result[Pattern] += 1
+    return Result
+
 def fire_from_side(Area, StartSide, CharsBlocking, Directions=None, CharFire="F"):
     Width, Height = width_height_get(Area)
 
     if Directions == "All":
         Directions = ["Left", "Right", "Up", "Down", "LeftUp", "LeftDown", "RightUp", "RightDown"]
-
 
     if CharFire not in CharsBlocking:
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too

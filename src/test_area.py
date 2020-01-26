@@ -2,6 +2,15 @@
 import unittest, mark_util, area
 
 class Area(unittest.TestCase):
+    def test_count_chars(self):
+        Bg = mark_util.MarkBg
+        Width = 6
+        Height = 5
+        Area = area.make_empty(Width, Height, Bg)
+        Area[2][3] = "X"
+        CountedChars = area.count_pattern(Area, [Bg, "X"])
+        self.assertEqual(CountedChars, {".": 29, "X":1})
+
     def test_fire_from_side(self):
         Bg = mark_util.MarkBg
         Fg = mark_util.MarkFg
