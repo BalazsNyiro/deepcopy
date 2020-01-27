@@ -210,8 +210,9 @@ def to_string(Area, OneLine=False, Separator="\n"):
     return Separator.join(Rows)
 
 # TESTED
-def coords_insert(Area, Coords, Char, Xshift=0, Yshift=0):
-    for X, Y in Coords:
+def coords_insert(Area, Mark, Char, Xshift=0, Yshift=0):
+
+    for X, Y in Mark["Coords"]:
         Xrelative = X + Xshift
         Yrelative = Y + Yshift
         Area[Xrelative][Yrelative] = Char

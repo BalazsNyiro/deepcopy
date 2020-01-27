@@ -84,7 +84,7 @@ def mark_min_max_width_height(Prg, Mark):
     Ymax = None
 
     # Determine Xmin, Ymin
-    for Coord in Mark:
+    for Coord in Mark["Coords"]:
         X, Y = Coord
         if Xmin is None:
             Xmin = X
@@ -136,7 +136,7 @@ def mark_area_convex(Prg, Mark, PointsWanted=False):
     # TODO: maybe if we have more time: Gift Wrapping Algorithm (Convex Hull)
     # maybe there is better solution
     # connect all points with each other
-    PixelCoords = [P for P in Mark.keys()]
+    PixelCoords = [P for P in Mark["Coords"].keys()]
     while PixelCoords:
         FromX, FromY = PixelCoords.pop(0)
         for ToX, ToY in PixelCoords:

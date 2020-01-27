@@ -70,12 +70,12 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
     ##########################
     # set id for current pixel:
     if MarkIdCurrentPixel not in Marks:
-        Marks[MarkIdCurrentPixel] = dict()
+        Marks[MarkIdCurrentPixel] = {"Coords": dict()}
 
     # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
     # THIS IS THE MAIN STRUCTURE OF A MARK:
-    # [id][(1,2)]=pixelValue
-    Marks[MarkIdCurrentPixel][Coord] = Img["Pixels"][Coord]
+    # [id]["Coords"][(1,2)]=pixelValue
+    Marks[MarkIdCurrentPixel]["Coords"][Coord] = Img["Pixels"][Coord]
 
     InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
@@ -89,7 +89,7 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                     InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
 
                     # copy the color value of the pixel to the new place
-                    Marks[MarkIdCurrentPixel][CoordMaybeMoved] = Marks[MarkIdBeforeMoving][CoordMaybeMoved]
+                    Marks[MarkIdCurrentPixel]["Coords"][CoordMaybeMoved] = Marks[MarkIdBeforeMoving]["Coords"][CoordMaybeMoved]
 
         # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
         for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:

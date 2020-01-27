@@ -63,9 +63,9 @@ class OcrBusinessFuncs(unittest.TestCase):
     def test_mark_ids_collect_from_neighbourhood__mark_ids_set_for_pixel(self):
         # the second test uses the result of the first one.
         ######## test: mark_ids_collect_from_neighbourhood ###########
-        Marks = {22: {(2, 2): 0},
-                 42: {(4, 2): 0, (5, 2): 0},
-                 44: {(4, 4): 0}}
+        Marks = {22: {"Coords":{(2, 2): 0}},
+                 42: {"Coords":{(4, 2): 0, (5, 2): 0}},
+                 44: {"Coords":{(4, 4): 0}}}
         MarkIdIfNoNeighbour = 0
         InkPixelCoords_and_MarkId = {(2, 2): 22, (4, 2): 42, (4, 4): 44, (5, 2): 42}
 
@@ -86,7 +86,7 @@ class OcrBusinessFuncs(unittest.TestCase):
                                              InkPixelCoords_and_MarkId,
                                              MarkIdsInNeighbourhood, Img, Coord)
         # util.file_write(Prg, "log_mark.txt", str(Marks))
-        WantedMarksPixelInserted_and_IdsMerged = {22: {(2, 2): 0, (3, 3): 128, (4, 2): 0, (4, 4): 0, (5, 2): 0}}
+        WantedMarksPixelInserted_and_IdsMerged = {22: {"Coords":{(2, 2): 0, (3, 3): 128, (4, 2): 0, (4, 4): 0, (5, 2): 0}}}
         WantedInkPixelCoords_and_MarkId = {(2, 2): 22, (3, 3): 22, (4, 2): 22, (4, 4): 22, (5, 2): 22}
         self.assertEqual(Marks, WantedMarksPixelInserted_and_IdsMerged)
         self.assertEqual(InkPixelCoords_and_MarkId, WantedInkPixelCoords_and_MarkId)
