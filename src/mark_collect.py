@@ -70,13 +70,14 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
     ##########################
     # set id for current pixel:
     if MarkIdCurrentPixel not in Marks:
+        X, Y = Coord
         Marks[MarkIdCurrentPixel] = {"Coords": dict(),
-                                     "Xmin": None,
-                                     "Xmax": None,
-                                     "Ymin": None,
-                                     "Ymax": None,
-                                     "Width": None,
-                                     "Height": None
+                                     "Xmin": X,
+                                     "Xmax": X,
+                                     "Ymin": Y,
+                                     "Ymax": Y,
+                                     "Width": 1,
+                                     "Height": 1
                                      }
 
     # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
@@ -96,9 +97,17 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                     InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
 
                     # copy the color value of the pixel to the new place
-                    Marks[MarkIdCurrentPixel]["Coords"][CoordMaybeMoved] = Marks[MarkIdBeforeMoving]["Coords"][CoordMaybeMoved]
+                    MarkCurrent = Marks[MarkIdCurrentPixel]
+                    MarkBeforeMoving = Marks[MarkIdBeforeMoving]
+                    MarkCurrent["Coords"][CoordMaybeMoved] = MarkBeforeMoving["Coords"][CoordMaybeMoved]
+                    if MarkBeforeMoving["Xmin"] < MarkCurrent["Xmin"]: MarkCurrent["Xmin"] = MarkBeforeMoving["Xmin"]
+                    if MarkBeforeMoving["Xmax"] > MarkCurrent["Xmax"]: MarkCurrent["Xmax"] = MarkBeforeMoving["Xmax"]
+                    if MarkBeforeMoving["Ymin"] < MarkCurrent["Ymin"]: MarkCurrent["Ymin"] = MarkBeforeMoving["Ymin"]
+                    if MarkBeforeMoving["Ymax"] > MarkCurrent["Ymax"]: MarkCurrent["Ymax"] = MarkBeforeMoving["Ymax"]
+                    MarkCurrent["Width"]  = MarkCurrent["Xmax"] - MarkCurrent["Xmin"] + 1
+                    MarkCurrent["Height"] = MarkCurrent["Ymax"] - MarkCurrent["Ymin"] + 1
 
-        # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
+                    # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
         for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
             del Marks[MarkIdNotMoreUsed]
     ##########################
