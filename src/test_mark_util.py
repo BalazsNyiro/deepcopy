@@ -21,19 +21,10 @@ class MarkUtil(unittest.TestCase):
 
         self.assertTrue(True)
 
-    def test_mark_min_max_width_height(self):
-        Mark = {"Coords":{(2,1):1, (4,3):1, (8,3):1,
-                                   (4,4):1,
-                                   (3,5):1, (4,6):1          }}
-
-        Result = mark_util.mark_min_max_width_height(Prg, Mark)
-        Wanted = (2, 8, 1, 6, 7, 6)
-        self.assertEqual(Result, Wanted)
-
     def test_mark_to_string(self):
         Mark = {"Coords":{(3,3):1, (4,3):1, (5,3):1,
                                    (4,4):1,
-                          (3,5):1, (4,5):1          }}
+                          (3,5):1, (4,5):1          }, "Width":3, "Height":3, "Xmin":3, "Ymin":3, "Xmax":5, "Ymax":5}
 
         Wanted = ( "OOO\n"
                    ".O.\n"
@@ -47,7 +38,7 @@ class MarkUtil(unittest.TestCase):
 
 
     def test_mark_area_convex(self):
-        Mark = {"Coords":{(1,1):1, (2,2):2, (3,3):3, (1,3):4}}
+        Mark = {"Coords":{(1,1):1, (2,2):2, (3,3):3, (1,3):4}, "Width":3, "Height":3, "Xmin":1, "Ymin":1, "Xmax":3, "Ymax":3}
         AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
         AreaWanted = ("O..\n"
                       "OO.\n"
@@ -57,10 +48,11 @@ class MarkUtil(unittest.TestCase):
         ####################################
         Mark = {"Coords":
                 {(1,1):11, (2,1):21, (3,1):31,
-                (1,2):12,
-                (1,3):13,
-                (1,4):14,
-                (1,5):15, (2,5):25, (3,5):35, (4,5):45, (5,5):55}
+                 (1,2):12,
+                 (1,3):13,
+                 (1,4):14,
+                 (1,5):15, (2,5):25, (3,5):35, (4,5):45, (5,5):55},
+                "Width": 5, "Height": 5, "Xmin": 1, "Ymin": 1, "Xmax": 5, "Ymax": 5
                 }
 
         AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
@@ -81,7 +73,8 @@ class MarkUtil(unittest.TestCase):
                                            (3,6): 36,
                                            (3,7): 37,
                                            (3,8): 38
-            }
+            },
+            "Width": 7, "Height": 7, "Xmin": 0, "Ymin": 2, "Xmax": 6, "Ymax": 8
         }
         AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
         AreaWanted = ("...O...\n"

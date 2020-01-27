@@ -67,28 +67,28 @@ def mark_hull_convex(Prg, Marks, MarkId, MarkStats):
     pass
 
 def mark_info_basic(Prg, Marks, MarkId, MarkStats):
-    Xmin, Xmax, Ymin, Ymax, Width, Height = mark_util.mark_min_max_width_height(Prg, Marks[MarkId])
+    Mark = Marks[MarkId]
 
     mark_info_insert(Prg, MarkStats, MarkId, [
-        ("width",  Width),
-        ("height", Height),
-        ("area_bounding_box", Width*Height),
-        ("pixelnum", len(Marks[MarkId])),
-        ("x_min", Xmin),
-        ("x_max", Xmax),
-        ("y_min", Ymin),
-        ("y_max", Ymax),
-    ])
+        ("Width",  Mark["Width"]),
+        ("Height", Mark["Height"]),
+        ("Area_bounding_box", Mark["BoundingBox"]),
+        ("Pixelnum", len(Marks[MarkId])),
+        ("Xmin", Mark["Xmin"]),
+        ("Xmax", Mark["Xmax"]),
+        ("Ymin", Mark["Ymin"]),
+        ("Ymax", Mark["Ymax"]),
+    ], "mark_info_basic")
 
-    return "parser mark_width_height: " + str(Width) + ", " + str(Height)
+    return "parser mark_width_height: " + str(Mark["Width"]) + ", " + str(Mark["Height"])
 
-def mark_info_insert(_Prg, MarkStats, MarkId, KeyVals):
-    Mark = MarkStats[MarkId]
+def mark_info_insert(_Prg, MarkStats, MarkId, KeyVals, Caller=""):
+    MarkStat = MarkStats[MarkId]
     for Key, Val in KeyVals:
 
-        if Key in Mark:
-            print("ERROR: owerwrite existing key: " + Key + "  oldval: " + Mark[Key] + "   new val:" + Val)
-        Mark[Key] = Val
+        if Key in MarkStat:
+            print("ERROR("+Caller+"): owerwrite existing key: " + str(Key) + "  oldval: " + str(MarkStat[Key]) + "   new val:" + str(Val))
+        MarkStat[Key] = Val
 
         if len(Key) > MarkStats["keywords_len_max"]:
             MarkStats["keywords_len_max"] = len(Key)

@@ -88,7 +88,8 @@ class OcrBusinessFuncs(unittest.TestCase):
                                              MarkIdsInNeighbourhood, Img, Coord)
         # util.file_write(Prg, "log_mark.txt", str(Marks))
         WantedMarksPixelInserted_and_IdsMerged = {22: {"Coords":{(2, 2): 0, (3, 3): 128, (4, 2): 0, (4, 4): 0, (5, 2): 0},
-                                                       "Xmin": 2, "Xmax": 5, "Ymin": 2, "Ymax": 4, "Width": 4, "Height": 3
+                                                       "Xmin": 2, "Xmax": 5, "Ymin": 2, "Ymax": 4, "Width": 4, "Height": 3,
+                                                       "BoundingBox": 12
                                                        }}
         WantedInkPixelCoords_and_MarkId = {(2, 2): 22, (3, 3): 22, (4, 2): 22, (4, 4): 22, (5, 2): 22}
         self.assertEqual(Marks, WantedMarksPixelInserted_and_IdsMerged)
@@ -235,6 +236,27 @@ class Ocr(unittest.TestCase):
         Img["PixelDataSize"] = 1
         self.assertEqual(util.is_grayscale(Img), True)
 
+class TestMarkIdsSetForPixel(unittest.TestCase):
+    def test_mark_ids_set_for_pixels_debug(self):
+        Marks = {22: {"Coords":{(2, 2): 22},             "Xmin": 2, "Xmax": 2, "Ymin": 2, "Ymax": 2, "Width": 1, "Height": 1},
+                 42: {"Coords":{(4, 2): 42, (5, 2): 52}, "Xmin": 4, "Xmax": 5, "Ymin": 2, "Ymax": 2, "Width": 2, "Height": 1},
+                 33: {"Coords":{(3, 3): 33},             "Xmin": 3, "Xmax": 3, "Ymin": 3, "Ymax": 3, "Width": 1, "Height": 1}}
+        InkPixelCoords_and_MarkId = {(2,2): 22, (4,2):42, (5,2): 42}
+        Img = {"Pixels": {(2,2): 22, (4,2): 42, (5,2):52, (3,3):33}}
+        mark_collect.mark_ids_set_for_pixels(Marks, 33,
+                                             InkPixelCoords_and_MarkId,
+                                             [22, 42], Img, (3,3))
+
+        WantedMarksPixelInserted_and_IdsMerged = {33: {
+            'Coords': {(3, 3): 33, (2, 2): 22, (4, 2): 42, (5,2): 52},
+            'Xmin': 2, 'Xmax': 5,
+            'Ymin': 2, 'Ymax': 3,
+            'Width': 4, 'Height': 2,
+            'BoundingBox': 8}
+        }
+
+        self.assertEqual(Marks, WantedMarksPixelInserted_and_IdsMerged)
+
 class TestMethodsAnalysed(unittest.TestCase):
     def test_mark_collect___base_abc_ubuntu(self):
 
@@ -323,7 +345,10 @@ def run_all_tests(P):
     Prg = P
     # exec all test:
     unittest.main(module="test_mark_collect", verbosity=2, exit=False)
+
+    # this execute ONE CASE
     # unittest.main(TestMethodsAnalysed())
+    # unittest.main( TestMarkIdsSetForPixel())
 
 
 if __name__ == '__main__':

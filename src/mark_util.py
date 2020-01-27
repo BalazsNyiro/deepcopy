@@ -76,30 +76,6 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
         return "\n".join(ResultToStr) + "\n" + "\n".join(Errors)
 
 
-# TESTED
-def mark_min_max_width_height(Prg, Mark):
-    Xmin = None
-    Ymin = None
-    Xmax = None
-    Ymax = None
-
-    # Determine Xmin, Ymin
-    for Coord in Mark["Coords"]:
-        X, Y = Coord
-        if Xmin is None:
-            Xmin = X
-            Ymin = Y
-            Xmax = X
-            Ymax = Y
-        if X < Xmin: Xmin = X
-        if Y < Ymin: Ymin = Y
-        if X > Xmax: Xmax = X
-        if Y > Ymax: Ymax = Y
-
-    Width = Xmax - Xmin + 1
-    Height = Ymax - Ymin + 1
-    return (Xmin, Xmax, Ymin, Ymax, Width, Height)
-
 # TESTED from mark_to_string
 # in a Mark:
 #    - original coordinates with pixel values
@@ -110,9 +86,9 @@ def mark_min_max_width_height(Prg, Mark):
 #        - an area can represent an unreal set of points,
 #          for example area_convex. Those pixels don't exists
 def mark_to_area(Prg, Mark):
-    Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
-    Area = area.make_empty(Width, Height, MarkBg)
-    area.coords_insert(Area, Mark, MarkFg, Xshift= -Xmin, Yshift= -Ymin)
+    Area = area.make_empty(Mark["Width"], Mark["Height"], MarkBg)
+    # print(Mark)
+    area.coords_insert(Area, Mark, MarkFg, Xshift= -Mark["Xmin"], Yshift= -Mark["Ymin"])
     return Area
 
 # TESTED
@@ -127,8 +103,7 @@ def markstats_insert_id(MarkStats, MarkId):
 
 # TESTED
 def mark_area_convex(Prg, Mark, PointsWanted=False):
-    Xmin, _Xmax, Ymin, _Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
-    AreaConvex = area.make_empty(Width, Height, MarkBg)
+    AreaConvex = area.make_empty(Mark["Width"], Mark["Height"], MarkBg)
 
     ConnectionPointLines = []
     # naive implementation, it based on Mark's special attributes: there aren't gaps in marks.
@@ -145,7 +120,7 @@ def mark_area_convex(Prg, Mark, PointsWanted=False):
                 ConnectionPointLines.append(Points)
             for ConnectionPointX, ConnectionPointY in Points:
                 # -Xmin, -Ymin: A mark contains pixels with relative coords: the minimum is in the left/top corner
-                AreaConvex[ConnectionPointX - Xmin][ConnectionPointY - Ymin] = MarkFg
+                AreaConvex[ConnectionPointX - Mark["Xmin"] ][ConnectionPointY - Mark["Ymin"] ] = MarkFg
 
     if PointsWanted:
         return AreaConvex, ConnectionPointLines
