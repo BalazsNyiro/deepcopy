@@ -70,7 +70,14 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
     ##########################
     # set id for current pixel:
     if MarkIdCurrentPixel not in Marks:
-        Marks[MarkIdCurrentPixel] = {"Coords": dict()}
+        Marks[MarkIdCurrentPixel] = {"Coords": dict(),
+                                     "Xmin": None,
+                                     "Xmax": None,
+                                     "Ymin": None,
+                                     "Ymax": None,
+                                     "Width": None,
+                                     "Height": None
+                                     }
 
     # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
     # THIS IS THE MAIN STRUCTURE OF A MARK:
