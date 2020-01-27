@@ -21,22 +21,60 @@ class Area(unittest.TestCase):
         # with Bg and two inside block
 
         CharsBlocking = [Fg]
-        BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, CharsBlocking)
+        BlockVolume, FireInfo = area.count_separated_blocks(Area, Bg, CharsBlocking)
         self.assertEqual(3, BlockVolume)
-        self.assertEqual({(0, 0): 39, (3, 2): 1, (3, 4): 1, "total_size_of_closed_areas": 41, }, BlockSizes)
 
-        # we rease the outside block
-        BurntAreaSize = area.fire(Area, [(0,0)], CharsBlocking)
-        BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, CharsBlocking)
+        FireInfoWanted = {"total_size_of_closed_areas": 41,
+                          (0, 0): {"AreaXmax": 5,
+                                   "AreaXmin": 0,
+                                   "AreaYmax": 8,
+                                   "AreaYmin": 0,
+                                   "BurntAreaSize": 39},
+                          (3, 2): {"AreaXmax": 3,
+                                   "AreaXmin": 3,
+                                   "AreaYmax": 2,
+                                   "AreaYmin": 2,
+                                   "BurntAreaSize": 1},
+                          (3, 4): {"AreaXmax": 3,
+                                   "AreaXmin": 3,
+                                   "AreaYmax": 4,
+                                   "AreaYmin": 4,
+                                   "BurntAreaSize": 1}}
+
+        self.assertEqual( FireInfoWanted, FireInfo )
+
+        # we erase the outside block
+        FireInfo = area.fire(Area, [(0,0)], CharsBlocking)
+        self.assertEqual(39, FireInfo["BurntAreaSize"])
+
+        BlockVolume,  FireInfo = area.count_separated_blocks(Area, Bg, CharsBlocking)
         self.assertEqual(2, BlockVolume)
-        self.assertEqual(39, BurntAreaSize)
-        self.assertEqual({(3, 2): 1, (3, 4): 1, "total_size_of_closed_areas": 2}, BlockSizes)
+
+        FireInfoWanted = {"total_size_of_closed_areas": 2,
+                          (3, 2): {"AreaXmax": 3,
+                                   "AreaXmin": 3,
+                                   "AreaYmax": 2,
+                                   "AreaYmin": 2,
+                                   "BurntAreaSize": 1},
+                          (3, 4): {"AreaXmax": 3,
+                                   "AreaXmin": 3,
+                                   "AreaYmax": 4,
+                                   "AreaYmin": 4,
+                                   "BurntAreaSize": 1}}
+        self.assertEqual(FireInfoWanted, FireInfo)
 
         # then we erase one of the inside blocks
         area.fire(Area, [(3,2)], CharsBlocking)
-        BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, CharsBlocking)
+        BlockVolume, FireInfo = area.count_separated_blocks(Area, Bg, CharsBlocking)
         self.assertEqual(1, BlockVolume)
-        self.assertEqual({(3, 4): 1, "total_size_of_closed_areas": 1}, BlockSizes)
+
+        FireInfoWanted = {"total_size_of_closed_areas": 1,
+                          (3, 4): {"AreaXmax": 3,
+                                   "AreaXmin": 3,
+                                   "AreaYmax": 4,
+                                   "AreaYmin": 4,
+                                   "BurntAreaSize": 1}}
+        self.assertEqual(FireInfoWanted, FireInfo)
 
     def test_pattern_position_find(self):
         Bg = mark_util.MarkBg
@@ -81,7 +119,7 @@ class Area(unittest.TestCase):
         pass;                                  Area[4][2] = Fg
         Area[2][3] = Fg;    Area[3][3] = Fg;   Area[4][3] = Fg
 
-        BurntAreaSize = area.fire_from_side(Area, "Right", [Fg])
+        FireInfo = area.fire_from_side(Area, "Right", [Fg])
 
         Wanted = ("FFFFFF"
                   "FFOOOF"
@@ -90,7 +128,7 @@ class Area(unittest.TestCase):
                   "FFFFFF")
 
         self.assertEqual(Wanted, area.to_string(Area, OneLine=True))
-        self.assertEqual(21, BurntAreaSize)
+        self.assertEqual(21, FireInfo["BurntAreaSize"])
 
         ########### Test from Left#############################
         Area = area.make_empty(Width, Height, Bg)

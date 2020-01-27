@@ -23,9 +23,10 @@ def count_separated_blocks(AreaOrig, WantedChar, FireBlockingChars):
 
         NumOfAreas += 1
         OneCharacterPosition = Counter["Coords"][WantedChar][0]
-        BlockSize = fire(Area, [OneCharacterPosition], FireBlockingChars)
-        BlockSizes[OneCharacterPosition] = BlockSize
-        BlockSizes["total_size_of_closed_areas"] += BlockSize
+
+        FireInfo = fire(Area, [OneCharacterPosition], FireBlockingChars)
+        BlockSizes[OneCharacterPosition] = FireInfo
+        BlockSizes["total_size_of_closed_areas"] += FireInfo["BurntAreaSize"]
 
 
 # TESTED
@@ -124,14 +125,22 @@ def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
     if CharFire not in CharsBlocking:
         CharsBlocking.append(CharFire)  # if fire is somewhere, it's blocking, too
 
-    BurntAreaSize = 0
-    AreaXmin = AreaXmax = AreaYmin = AreaYmax = None
+    Result = {"BurntAreaSize": 0,
+              "AreaXmin": None,
+              "AreaXmax": None,
+              "AreaYmin": None,
+              "AreaYmax": None
+    }
 
 
     def local_fire(CoordsFireStart):
-        # LocalBurntAreaSize, LocalAreaXmin, LocalAreaXmax, LocalAreaYmin, LocalAreaYmax = fire(Area, CoordsFireStart, CharsBlocking, Directions, CharFire)
-        LocalBurntAreaSize = fire(Area, CoordsFireStart, CharsBlocking, Directions, CharFire)
-        return LocalBurntAreaSize
+        Local = fire(Area, CoordsFireStart, CharsBlocking, Directions, CharFire)
+        Result["BurntAreaSize"] += Local["BurntAreaSize"]
+        if Local["AreaXmin"] is not None and Local["AreaXmin"] < Result["AreaXmin"]: Result["AreaXmin"] = Local["AreaXmin"]
+        if Local["AreaXmax"] is not None and Local["AreaXmax"] > Result["AreaXmax"]: Result["AreaXmax"] = Local["AreaXmax"]
+        if Local["AreaYmin"] is not None and Local["AreaYmin"] < Result["AreaYmin"]: Result["AreaYmin"] = Local["AreaYmin"]
+        if Local["AreaYmax"] is not None and Local["AreaYmax"] > Result["AreaYmax"]: Result["AreaYmax"] = Local["AreaYmax"]
+
 
     # TODO: handle MIN/MAX VALUES
 
@@ -142,19 +151,25 @@ def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
             if Y < Height and Y >= 0:
                 if Area[X][Y] not in CharsBlocking:
                     Area[X][Y] = CharFire
-                    BurntAreaSize += 1
-                    if "Left"      in Directions: BurntAreaSize += local_fire([(X-1,Y  )])
-                    if "Right"     in Directions: BurntAreaSize += local_fire([(X+1,Y  )])
-                    if "Up"        in Directions: BurntAreaSize += local_fire([(X  ,Y-1)])
-                    if "Down"      in Directions: BurntAreaSize += local_fire([(X  ,Y+1)])
 
-                    if "LeftUp"    in Directions: BurntAreaSize += local_fire([(X-1,Y-1)])
-                    if "LeftDown"  in Directions: BurntAreaSize += local_fire([(X-1,Y+1)])
-                    if "RightUp"   in Directions: BurntAreaSize += local_fire([(X+1,Y-1)])
-                    if "RightDown" in Directions: BurntAreaSize += local_fire([(X+1,Y+1)])
+                    Result["BurntAreaSize"] += 1
+                    Result["AreaXmin"] = X
+                    Result["AreaXmax"] = X
+                    Result["AreaYmin"] = Y
+                    Result["AreaYmax"] = Y
 
-    # return (BurntAreaSize, AreaXmin, AreaXmax, AreaYmin, AreaYmax)
-    return BurntAreaSize
+                    if "Left"      in Directions: local_fire([(X-1,Y  )])
+                    if "Right"     in Directions: local_fire([(X+1,Y  )])
+                    if "Up"        in Directions: local_fire([(X  ,Y-1)])
+                    if "Down"      in Directions: local_fire([(X  ,Y+1)])
+
+                    if "LeftUp"    in Directions: local_fire([(X-1,Y-1)])
+                    if "LeftDown"  in Directions: local_fire([(X-1,Y+1)])
+                    if "RightUp"   in Directions: local_fire([(X+1,Y-1)])
+                    if "RightDown" in Directions: local_fire([(X+1,Y+1)])
+
+    # return (Result, AreaXmin, AreaXmax, AreaYmin, AreaYmax)
+    return Result
 
 
 # TESTED
