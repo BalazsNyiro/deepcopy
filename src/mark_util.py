@@ -101,6 +101,14 @@ def mark_min_max_width_height(Prg, Mark):
     return (Xmin, Xmax, Ymin, Ymax, Width, Height)
 
 # TESTED from mark_to_string
+# in a Mark:
+#    - original coordinates with pixel values
+#    - its a simple set of pixels
+#
+# area:  relative coordinates with 0,0 start coord
+#        - the bg pixels exists in the strutcture
+#        - an area can represent an unreal set of points,
+#          for example area_convex. Those pixels don't exists
 def mark_to_area(Prg, Mark):
     Xmin, Xmax, Ymin, Ymax, Width, Height = mark_min_max_width_height(Prg, Mark)
     Area = area.make_empty(Width, Height, MarkBg)
