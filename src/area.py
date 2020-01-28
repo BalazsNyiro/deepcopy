@@ -4,6 +4,13 @@ import copy, sys
 ###   TODO:   line scanning, horizontal
 ###   TODO:  mask area with area
 
+#####################################################################
+# a MARK is the original pixel with color and coordinate infos.
+# an AREA is a sandbox where I can modify/draw anything, it's a duplication
+#
+# AREAS are important because sometime I want to draw on the top of
+# the marks and I can't avoid the duplication making
+#####################################################################
 
 # how many separated block is in the Area?
 # the func return with size of separated blocks, too, with one of its coordinates
@@ -27,7 +34,6 @@ def count_separated_blocks(AreaOrig, WantedChar, FireBlockingChars):
         FireInfo = fire(Area, [OneCharacterPosition], FireBlockingChars)
         BlockSizes[OneCharacterPosition] = FireInfo
         BlockSizes["total_size_of_closed_areas"] += FireInfo["BurntAreaSize"]
-
 
 # TESTED
 # From Area you want to get back the position of one Specific char, return with the first

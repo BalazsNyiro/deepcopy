@@ -81,11 +81,11 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                                      "BoundingBox": 1
                                      }
 
-    def mark_info_update(Mark, X, Y):
-        if X < Mark["Xmin"]: Mark["Xmin"] = X
-        if X > Mark["Xmax"]: Mark["Xmax"] = X
-        if Y < Mark["Ymin"]: Mark["Ymin"] = Y
-        if Y > Mark["Ymax"]: Mark["Ymax"] = Y
+    def mark_info_update(Mark, Xmin, Ymin, Xmax, Ymax):
+        if Xmin < Mark["Xmin"]: Mark["Xmin"] = Xmin
+        if Xmax > Mark["Xmax"]: Mark["Xmax"] = Xmax
+        if Ymin < Mark["Ymin"]: Mark["Ymin"] = Ymin
+        if Ymax > Mark["Ymax"]: Mark["Ymax"] = Ymax
         Mark["Width"]       = Mark["Xmax"] - Mark["Xmin"] + 1
         Mark["Height"]      = Mark["Ymax"] - Mark["Ymin"] + 1
         Mark["BoundingBox"] = Mark["Width"] * Mark["Height"]
@@ -95,27 +95,20 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
     # [id]["Coords"][(1,2)]=pixelValue
     MarkCurrent = Marks[MarkIdCurrentPixel]
     MarkCurrent["Coords"][Coord] = Img["Pixels"][Coord]
-    mark_info_update(MarkCurrent, X, Y)
+    mark_info_update(MarkCurrent, X, Y, X, Y) # min is same as max
     InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
-    ##########################
-    # set id for neighbours
-    if MarkIdsInNeighbourhood:
-        for CoordMaybeMoved, MarkIdBeforeMoving in InkPixelCoords_and_MarkId.items():
-            if MarkIdBeforeMoving is not None:
-                if MarkIdBeforeMoving in MarkIdsInNeighbourhood:
-                    # print(" ", CoordMaybeMoved, MarkIdBeforeMoving, " id moving -> ", MarkId)
-                    InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
+    for MarkIdNeighbour in MarkIdsInNeighbourhood:
+        MarkNeighbour = Marks[MarkIdNeighbour]
+        mark_info_update(MarkCurrent, MarkNeighbour["Xmin"], MarkNeighbour["Ymin"],
+                                      MarkNeighbour["Xmax"], MarkNeighbour["Ymax"])
+        for CoordFromNeighbour in MarkNeighbour["Coords"]:
+            MarkCurrent["Coords"][CoordFromNeighbour] = MarkNeighbour["Coords"][CoordFromNeighbour]
+            InkPixelCoords_and_MarkId[CoordFromNeighbour] = MarkIdCurrentPixel
 
-                    # copy the color value of the pixel to the new place
-                    MarkCurrent["Coords"][CoordMaybeMoved] = Marks[MarkIdBeforeMoving]["Coords"][CoordMaybeMoved]
-                    mark_info_update(MarkCurrent, CoordMaybeMoved[0], CoordMaybeMoved[1])
+        del Marks[MarkIdNeighbour]
 
-        # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
-        for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
-            del Marks[MarkIdNotMoreUsed]
     # print(Marks)
-    ##########################
 
 
 # return with new MarkIdNext if it used the original one
