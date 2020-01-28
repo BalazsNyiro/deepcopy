@@ -13,7 +13,7 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     Bg = mark_util.MarkBg
 
     Mark = Marks[MarkId]
-    Area = mark_util.mark_to_area(Prg, Mark)
+    AreaFired = mark_util.mark_to_area(Prg, Mark)
 
     #                   on right side you can find the closed empty areas:
     #     ....OOOOOOO...       signed with '.' chars,                         FFFFOOOOOOOFFF
@@ -35,14 +35,17 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     CharFire = "F" # Directions: not all, because if there is only 1 pixel wide frame around
     Directions = ["Left", "Right", "Up", "Down"] # the closed area, the fire can enter into it
 
-    area.fire_from_side(Area, "Top",    [Fg], Directions=Directions, CharFire=CharFire)
-    area.fire_from_side(Area, "Bottom", [Fg], Directions=Directions, CharFire=CharFire)
-    area.fire_from_side(Area, "Left",   [Fg], Directions=Directions, CharFire=CharFire)
-    area.fire_from_side(Area, "Right",  [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(AreaFired, "Top",    [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(AreaFired, "Bottom", [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(AreaFired, "Left",   [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(AreaFired, "Right",  [Fg], Directions=Directions, CharFire=CharFire)
 
-    # AreaStr = area.to_string(Area)
-    # mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + AreaStr )])
-    NumOfClosedEmptyPixels = area.pattern_count(Area, [Bg])
+
+    AreaFiredInConvex = area.process_pixels(mark_util.mark_area_convex(Prg, Mark), AreaFired, area. processor_mask_with_convex_shape, Fg, Bg)
+    AreaStr = area.to_string(AreaFiredInConvex)
+    mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open_in_convex", "\n" + AreaStr )])
+
+    NumOfClosedEmptyPixels = area.pattern_count(AreaFired, [Bg])
 
     MarkNumOfPixels = len(Mark.keys())
     MarkAreaClosedEmptyRatio = NumOfClosedEmptyPixels[Bg] / MarkNumOfPixels
@@ -51,7 +54,7 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
 
     # TODO: num of closed area (above some %)
     # TODO: ratio of open area
-    BlockVolume, BlockSizes = area.count_separated_blocks(Area, Bg, [Fg, CharFire])
+    BlockVolume, BlockSizes = area.count_separated_blocks(AreaFired, Bg, [Fg, CharFire])
     mark_info_insert(Prg, MarkStats, MarkId, [("separated_blocks_volume", str(BlockVolume)  )])
     mark_info_insert(Prg, MarkStats, MarkId, [("separated_blocks_sizes", str(BlockSizes)  )])
 

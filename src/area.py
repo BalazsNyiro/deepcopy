@@ -12,6 +12,23 @@ import copy, sys
 # the marks and I can't avoid the duplication making
 #####################################################################
 
+
+# TODO: TEST IT
+def processor_mask_with_convex_shape(X, Y, AreaConvex, AreaFired, AreaResult, Fg, Bg):
+    Pixel = Bg
+    if AreaConvex[X][Y] == Fg:
+        Pixel = AreaFired[X][Y]
+    AreaResult[X][Y] = Pixel
+
+# TODO: TEST IT
+def process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar):
+    Width, Height = width_height_get(AreaB)
+    AreaResult = make_empty(Width, Height, BackgroundChar)
+    for Y in range(0, Height):
+        for X in range(0, Width):
+            FuncProcessor(X, Y, AreaA, AreaB, AreaResult, ForegroundChar, BackgroundChar)
+    return AreaResult
+
 # how many separated block is in the Area?
 # the func return with size of separated blocks, too, with one of its coordinates
 # TESTED
@@ -213,8 +230,7 @@ def to_string(Area, OneLine=False, Separator="\n"):
     return Separator.join(Rows)
 
 # TESTED
-def coords_insert(Area, Mark, Char, Xshift=0, Yshift=0):
-
+def coords_insert_from_mark(Area, Mark, Char, Xshift=0, Yshift=0):
     for X, Y in Mark["Coords"]:
         Xrelative = X + Xshift
         Yrelative = Y + Yshift

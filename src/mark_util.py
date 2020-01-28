@@ -88,7 +88,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
 def mark_to_area(Prg, Mark):
     Area = area.make_empty(Mark["Width"], Mark["Height"], MarkBg)
     # print(Mark)
-    area.coords_insert(Area, Mark, MarkFg, Xshift= -Mark["Xmin"], Yshift= -Mark["Ymin"])
+    area.coords_insert_from_mark(Area, Mark, MarkFg, Xshift= -Mark["Xmin"], Yshift= -Mark["Ymin"])
     return Area
 
 # TESTED

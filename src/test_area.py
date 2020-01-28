@@ -243,7 +243,7 @@ class Area(unittest.TestCase):
         Fg = mark_util.MarkFg
         Area = area.make_empty(5, 6, Bg)
         Mark = {"Coords": {(1,1):1, (2,2):2, (3,3):3, (1,3):4}}
-        area.coords_insert(Area, Mark, Fg, Xshift=1, Yshift=1)
+        area.coords_insert_from_mark(Area, Mark, Fg, Xshift=1, Yshift=1)
         Wanted = (  ".....\n"
                     ".....\n"
                     "..O..\n"
