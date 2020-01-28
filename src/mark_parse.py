@@ -32,11 +32,13 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     #     ..OOOOOOOOOOO.  when starts a fire, it can spread                   FFOOOOOOOOOOOF
     #     ....OOOOOOOO..  into any direction                                  FFFFOOOOOOOOFF
 
-    CharFire = "F"
-    area.fire_from_side(Area, "Top",    [Fg], Directions="All", CharFire=CharFire)
-    area.fire_from_side(Area, "Bottom", [Fg], Directions="All", CharFire=CharFire)
-    area.fire_from_side(Area, "Left",   [Fg], Directions="All", CharFire=CharFire)
-    area.fire_from_side(Area, "Right",  [Fg], Directions="All", CharFire=CharFire)
+    CharFire = "F" # Directions: not all, because if there is only 1 pixel wide frame around
+    Directions = ["Left", "Right", "Up", "Down"] # the closed area, the fire can enter into it
+
+    area.fire_from_side(Area, "Top",    [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(Area, "Bottom", [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(Area, "Left",   [Fg], Directions=Directions, CharFire=CharFire)
+    area.fire_from_side(Area, "Right",  [Fg], Directions=Directions, CharFire=CharFire)
 
     # AreaStr = area.to_string(Area)
     # mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open", "\n" + AreaStr )])

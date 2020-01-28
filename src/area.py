@@ -138,7 +138,6 @@ def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
               "AreaYmax": None
     }
 
-
     def local_fire(CoordsFireStart):
         Local = fire(Area, CoordsFireStart, CharsBlocking, Directions, CharFire)
         Result["BurntAreaSize"] += Local["BurntAreaSize"]
@@ -146,7 +145,6 @@ def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
         if Local["AreaXmax"] is not None and Local["AreaXmax"] > Result["AreaXmax"]: Result["AreaXmax"] = Local["AreaXmax"]
         if Local["AreaYmin"] is not None and Local["AreaYmin"] < Result["AreaYmin"]: Result["AreaYmin"] = Local["AreaYmin"]
         if Local["AreaYmax"] is not None and Local["AreaYmax"] > Result["AreaYmax"]: Result["AreaYmax"] = Local["AreaYmax"]
-
 
     # TODO: handle MIN/MAX VALUES
 
@@ -176,7 +174,6 @@ def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
 
     # return (Result, AreaXmin, AreaXmax, AreaYmin, AreaYmax)
     return Result
-
 
 # TESTED
 def make_empty(Width, Height, Bg):
