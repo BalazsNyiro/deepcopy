@@ -81,19 +81,21 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                                      "BoundingBox": 1
                                      }
 
+    def mark_info_update(Mark, X, Y):
+        if X < Mark["Xmin"]: Mark["Xmin"] = X
+        if X > Mark["Xmax"]: Mark["Xmax"] = X
+        if Y < Mark["Ymin"]: Mark["Ymin"] = Y
+        if Y > Mark["Ymax"]: Mark["Ymax"] = Y
+        Mark["Width"]       = Mark["Xmax"] - Mark["Xmin"] + 1
+        Mark["Height"]      = Mark["Ymax"] - Mark["Ymin"] + 1
+        Mark["BoundingBox"] = Mark["Width"] * Mark["Height"]
+
     # store original pixel's color info. If Img is RGB, its (R,G,B), if Gray, it's 0-255 int
     # THIS IS THE MAIN STRUCTURE OF A MARK:
     # [id]["Coords"][(1,2)]=pixelValue
     MarkCurrent = Marks[MarkIdCurrentPixel]
     MarkCurrent["Coords"][Coord] = Img["Pixels"][Coord]
-    if X < MarkCurrent["Xmin"]: MarkCurrent["Xmin"] = X
-    if X > MarkCurrent["Xmax"]: MarkCurrent["Xmax"] = X
-    if Y < MarkCurrent["Ymin"]: MarkCurrent["Ymin"] = Y
-    if Y > MarkCurrent["Ymax"]: MarkCurrent["Ymax"] = Y
-    MarkCurrent["Width"]       = MarkCurrent["Xmax"] - MarkCurrent["Xmin"] + 1
-    MarkCurrent["Height"]      = MarkCurrent["Ymax"] - MarkCurrent["Ymin"] + 1
-    MarkCurrent["BoundingBox"] = MarkCurrent["Width"] * MarkCurrent["Height"]
-
+    mark_info_update(MarkCurrent, X, Y)
     InkPixelCoords_and_MarkId[Coord] = MarkIdCurrentPixel
 
     ##########################
@@ -106,19 +108,10 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                     InkPixelCoords_and_MarkId[CoordMaybeMoved] = MarkIdCurrentPixel
 
                     # copy the color value of the pixel to the new place
-                    MarkBeforeMoving = Marks[MarkIdBeforeMoving]
-                    # print("Mark current:", MarkCurrent)
-                    # print("Mark before :", MarkBeforeMoving)
-                    MarkCurrent["Coords"][CoordMaybeMoved] = MarkBeforeMoving["Coords"][CoordMaybeMoved]
-                    if MarkBeforeMoving["Xmin"] < MarkCurrent["Xmin"]: MarkCurrent["Xmin"] = MarkBeforeMoving["Xmin"]
-                    if MarkBeforeMoving["Xmax"] > MarkCurrent["Xmax"]: MarkCurrent["Xmax"] = MarkBeforeMoving["Xmax"]
-                    if MarkBeforeMoving["Ymin"] < MarkCurrent["Ymin"]: MarkCurrent["Ymin"] = MarkBeforeMoving["Ymin"]
-                    if MarkBeforeMoving["Ymax"] > MarkCurrent["Ymax"]: MarkCurrent["Ymax"] = MarkBeforeMoving["Ymax"]
-                    MarkCurrent["Width"]  = MarkCurrent["Xmax"] - MarkCurrent["Xmin"] + 1
-                    MarkCurrent["Height"] = MarkCurrent["Ymax"] - MarkCurrent["Ymin"] + 1
-                    MarkCurrent["BoundingBox"] = MarkCurrent["Width"] * MarkCurrent["Height"]
+                    MarkCurrent["Coords"][CoordMaybeMoved] = Marks[MarkIdBeforeMoving]["Coords"][CoordMaybeMoved]
+                    mark_info_update(MarkCurrent, CoordMaybeMoved[0], CoordMaybeMoved[1])
 
-                    # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
+        # we can delete the old MarkId at the end because more than one pixel can belong to one MarkId
         for MarkIdNotMoreUsed in MarkIdsInNeighbourhood:
             del Marks[MarkIdNotMoreUsed]
     # print(Marks)
