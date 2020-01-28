@@ -40,8 +40,8 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     area.fire_from_side(AreaFired, "Left",   [Fg], Directions=Directions, CharFire=CharFire)
     area.fire_from_side(AreaFired, "Right",  [Fg], Directions=Directions, CharFire=CharFire)
 
+    AreaFiredInConvex = area.mask_with_convex_shape(AreaFired, mark_util.mark_area_convex(Prg, Mark), Fg, Bg)
 
-    AreaFiredInConvex = area.process_pixels(mark_util.mark_area_convex(Prg, Mark), AreaFired, area. processor_mask_with_convex_shape, Fg, Bg)
     AreaStr = area.to_string(AreaFiredInConvex)
     mark_info_insert(Prg, MarkStats, MarkId, [("mark_area_open_in_convex", "\n" + AreaStr )])
 

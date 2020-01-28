@@ -13,14 +13,21 @@ import copy, sys
 #####################################################################
 
 
-# TODO: TEST IT
-def processor_mask_with_convex_shape(X, Y, AreaConvex, AreaFired, AreaResult, Fg, Bg):
+
+#############################################
+# a nicer wrapper func
+def mask_with_convex_shape(AreaA, AreaB, ForegroundChar, BackgroundChar):
+    FuncProcessor = processor_mask_with_convex_shape
+    return process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar)
+
+# TODO: TEST IT # make decision at one pixel
+def processor_mask_with_convex_shape(X, Y, AreaFired, AreaConvex, AreaResult, Fg, Bg):
     Pixel = Bg
     if AreaConvex[X][Y] == Fg:
         Pixel = AreaFired[X][Y]
     AreaResult[X][Y] = Pixel
 
-# TODO: TEST IT
+# TODO: TEST IT. General processor function
 def process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar):
     Width, Height = width_height_get(AreaB)
     AreaResult = make_empty(Width, Height, BackgroundChar)
@@ -28,6 +35,7 @@ def process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar):
         for X in range(0, Width):
             FuncProcessor(X, Y, AreaA, AreaB, AreaResult, ForegroundChar, BackgroundChar)
     return AreaResult
+#############################################
 
 # how many separated block is in the Area?
 # the func return with size of separated blocks, too, with one of its coordinates
