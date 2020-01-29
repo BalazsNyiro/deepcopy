@@ -18,10 +18,11 @@ import copy, sys
 # a nicer wrapper func
 def mask_with_convex_shape(AreaA, AreaB, ForegroundChar, BackgroundChar):
     FuncProcessor = processor_mask_with_area
-    return process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar)
+    AreaResult, _Accumulator = process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar)
+    return AreaResult
 
 # TODO: TEST IT # make decision at one pixel
-def processor_mask_with_area(X, Y, AreaSrc, AreaMask, AreaResult, Fg, Bg):
+def processor_mask_with_area(X, Y, AreaSrc, AreaMask, AreaResult, Fg, Bg, Accumulator=None):
     Pixel = Bg
     if AreaMask[X][Y] == Fg:
         Pixel = AreaSrc[X][Y]
@@ -35,11 +36,16 @@ def process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar):
         # TODO: correct error message
         print("process pixels, AreaA dimensions <> AreaB dimensions")
         sys.exit(1)
+
+    Accumulator = dict() # a global area where the processor fun can leave information
+                         # between different pixel position processing and maybe as a return value
+                         # if a simple Area is not enough
+
     AreaResult = make_empty(WidthB, HeightB, BackgroundChar)
     for Y in range(0, HeightB):
         for X in range(0, WidthB):
-            FuncProcessor(X, Y, AreaA, AreaB, AreaResult, ForegroundChar, BackgroundChar)
-    return AreaResult
+            FuncProcessor(X, Y, AreaA, AreaB, AreaResult, ForegroundChar, BackgroundChar, Accumulator=Accumulator)
+    return (AreaResult, Accumulator)
 #############################################
 
 # how many separated block is in the Area?
