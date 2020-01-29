@@ -17,22 +17,27 @@ import copy, sys
 #############################################
 # a nicer wrapper func
 def mask_with_convex_shape(AreaA, AreaB, ForegroundChar, BackgroundChar):
-    FuncProcessor = processor_mask_with_convex_shape
+    FuncProcessor = processor_mask_with_area
     return process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar)
 
 # TODO: TEST IT # make decision at one pixel
-def processor_mask_with_convex_shape(X, Y, AreaFired, AreaConvex, AreaResult, Fg, Bg):
+def processor_mask_with_area(X, Y, AreaSrc, AreaMask, AreaResult, Fg, Bg):
     Pixel = Bg
-    if AreaConvex[X][Y] == Fg:
-        Pixel = AreaFired[X][Y]
+    if AreaMask[X][Y] == Fg:
+        Pixel = AreaSrc[X][Y]
     AreaResult[X][Y] = Pixel
 
-# TODO: TEST IT. General processor function
+# TESTED. General processor function
 def process_pixels(AreaA, AreaB, FuncProcessor, ForegroundChar, BackgroundChar):
-    Width, Height = width_height_get(AreaB)
-    AreaResult = make_empty(Width, Height, BackgroundChar)
-    for Y in range(0, Height):
-        for X in range(0, Width):
+    WidthA, HeightA = width_height_get(AreaA)
+    WidthB, HeightB = width_height_get(AreaB)
+    if WidthA != WidthB or HeightA != HeightB:
+        # TODO: correct error message
+        print("process pixels, AreaA dimensions <> AreaB dimensions")
+        sys.exit(1)
+    AreaResult = make_empty(WidthB, HeightB, BackgroundChar)
+    for Y in range(0, HeightB):
+        for X in range(0, WidthB):
             FuncProcessor(X, Y, AreaA, AreaB, AreaResult, ForegroundChar, BackgroundChar)
     return AreaResult
 #############################################

@@ -1,6 +1,30 @@
 # -*- coding: utf-8 -*-
 import unittest, mark_util, area
 
+class AreaProcessors(unittest.TestCase):
+    def test_area_process_pixels(self):
+        Bg = mark_util.MarkBg
+        Fg = mark_util.MarkFg
+        Width = 3
+        Height = 2
+        AreaA = area.make_empty(Width, Height, Bg)
+        # P as point
+        AreaA[0][0] = AreaA[0][1] = AreaA[1][0] = AreaA[1][1] = "P"
+
+        AreaB = area.make_empty(Width, Height, Bg)
+        AreaB[0][0] = AreaB[1][1] = Fg
+
+        # the coordinate usage is important here, because process_pixels
+        # loop over X,Y values and I want to test the fact of looping
+        def processor_test(X, Y, _AreaA, _AreaB, AreaResult, _Fg, _Bg):
+            AreaResult[X][Y] = X*10+Y
+
+        AreaResult = area.process_pixels(AreaA, AreaB, processor_test, Fg, Bg)
+        Wanted = [ [0, 1], [10, 11], [20, 21] ]
+        self.assertEqual(AreaResult, Wanted)
+
+        # test_processor_mask_with_convex_shape(self):
+
 class Area(unittest.TestCase):
     def test_count_separated_blocks(self):
         Bg = mark_util.MarkBg
