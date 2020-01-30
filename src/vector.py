@@ -1,32 +1,6 @@
+# -*- coding: utf-8 -*-
 
-#     ....111222O...
-#     ..OO1*12*2EE..
-#     .O*5111222E*O.
-#     .O55OO..OOAAA.
-#     XXXX......A*AO
-#     X*XX......AAAO
-#     XXXXCCDDEEOOBB
-#     XXXXC*DD*EOOB*
-#     444...........
-#     4*4+..........
-#     444O..........
-#     .66777O...O+O.
-#     .6*7*7888999+.
-#     ..O7778*89*9O.
-#     ....+O888999..
-
-# hand-vectorised letter e:
-#           *  *
-#        *        *
-#
-#                 *
-#       *
-#
-#           *  *    *
-#
-#       *
-#
-#
-#        * *
-#             *  *
+def block_search_in_mark(Mark):
+    BlockWidth = min(Mark["Width"], Mark["Height"])
+    print("Block max width:", BlockWidth)
 

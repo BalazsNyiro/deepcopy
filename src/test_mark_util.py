@@ -98,7 +98,7 @@ class MarkUtil(unittest.TestCase):
         self.assertEqual(AreaWanted, area.to_string(AreaConvexGenerated))
 
 def run_all_tests(P):
-    print("run all tests")
+    print("run all tests: test_mark_util")
     global Prg
     Prg = P
     # exec all test:

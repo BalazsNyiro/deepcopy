@@ -24,7 +24,7 @@ Prg = {"Os": "",
        }
 
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
-import util, test_mark_collect, test_mark_util, test_area
+import util, test_mark_collect, test_mark_util, test_area, test_vector
 
 util.dir_create_if_necessary(Prg, Prg["PathTempDir"])
 
@@ -40,6 +40,7 @@ if "testonly" in sys.argv:
 test_mark_collect.run_all_tests(Prg)
 test_mark_util.run_all_tests(Prg)
 test_area.run_all_tests(Prg)
+test_vector.run_all_tests(Prg)
 if TestOnly:
        sys.exit(0)
 
