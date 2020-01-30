@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import util, area
+import util, area, sys
 
 MarkBg = "." # the sigh of background area, no active pixel
 MarkFg = "O" # if active pixel is in the mark
@@ -95,6 +95,34 @@ def mark_to_area(Prg, Mark):
 def mark_to_string(Prg, Mark):
     return area.to_string(mark_to_area(Prg, Mark))
 
+def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0):
+    if len(Txt) % Width != 0:
+        sys.exit("mark_from_string, incorrect width: string length / Width has a remainder")
+
+    Mark = {"Coords":{}}
+    Xmin=Ymin=Xmax=Ymax=None
+
+    for Id, Char in enumerate(Txt):
+        Y = Id // Width
+        X = Id % Width
+        if Char == MarkChar:
+            if Xmin is None:
+                Xmin = Xmax = X
+                Ymin = Ymax = Y
+            Mark["Coords"][(X,Y)] = MarkValueInserted
+            if X < Xmin: Xmin = X
+            if Y < Ymin: Ymin = Y
+            if X > Xmax: Xmax = X
+            if Y > Ymax: Ymax = Y
+
+
+    Mark["Width"] = Xmax - Xmin + 1
+    Mark["Height"] = Ymax - Ymin + 1
+    Mark["Xmin"] = Xmin
+    Mark["Ymin"] = Ymin
+    Mark["Xmax"] = Xmax
+    Mark["Ymax"] = Ymax
+    return Mark
 
 # TESTED
 def markstats_insert_id(MarkStats, MarkId):

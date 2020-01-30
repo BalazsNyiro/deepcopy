@@ -4,7 +4,17 @@ import area
 
 
 class MarkUtil(unittest.TestCase):
-
+    def test_mark_from_string(self):
+        Txt = ("..."
+               ".X."
+               "X.."
+               "X..")
+        MarkGenerated = mark_util.mark_from_string(Txt, 3, "X")
+        MarkWanted = {"Coords":{(1,1):0, (0,2):0, (0,3):0},
+                      "Width":2, "Height":3,
+                      "Xmin":0, "Ymin":1,
+                      "Xmax":1, "Ymax":3}
+        self.assertEqual(MarkGenerated, MarkWanted)
 
     # this is a developer tool to check the status
     # of marks, display informations about them
