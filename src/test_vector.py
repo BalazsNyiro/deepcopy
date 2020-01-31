@@ -29,6 +29,27 @@ class VectorTests(unittest.TestCase):
                             (2, 2), (3, 2), (0, 3), (1, 3), (2, 3)]}
         self.assertEqual(BlocksInMark, BlocksWanted)
 
+    def test_block_nonoverlap_search_in_mark__letter_e(self):
+        Letter = ("    OOOOOOO   "
+                  "  OOOOOOOOOO  "
+                  " OOOOOOOOOOOO "
+                  " OOOOO  OOOOO "
+                  "OOOO      OOOO"
+                  "OOOO      OOOO"
+                  "OOOOOOOOOOOOOO"
+                  "OOOOOOOOOOOOOO"
+                  "OOO           "
+                  "OOOO          "
+                  "OOOO          "
+                  " OOOOOO   OOO "
+                  " OOOOOOOOOOOO "
+                  "  OOOOOOOOOOO "
+                  "    OOOOOOOO  ")
+        MarkGenerated = mark_util.mark_from_string(Letter, 14, "O")
+        BlocksInMark = vector.block_nonoverlap_search_in_mark(MarkGenerated)
+
+        # TODO: display the blocks with colors and finish the test
+
 def run_all_tests(P):
     print("run all tests: Vector")
     global Prg
