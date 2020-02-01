@@ -13,7 +13,7 @@ def mark_area_select_closed_empty_area(Prg, Marks, MarkId, MarkStats):
     Bg = mark_util.MarkBg
 
     Mark = Marks[MarkId]
-    AreaFired = mark_util.mark_to_area(Prg, Mark)
+    AreaFired = mark_util.mark_to_area(Mark)
 
     #                   on right side you can find the closed empty areas:
     #     ....OOOOOOO...       signed with '.' chars,                         FFFFOOOOOOOFFF

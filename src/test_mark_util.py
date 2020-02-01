@@ -39,7 +39,7 @@ class MarkUtil(unittest.TestCase):
         Wanted = ( "OOO\n"
                    ".O.\n"
                    "OO."  )
-        self.assertEqual(Wanted, mark_util.mark_to_string(Prg, Mark))
+        self.assertEqual(Wanted, mark_util.mark_to_string(Mark))
 
     def test_markstats_insert_id(self):
         MarkStats = dict()

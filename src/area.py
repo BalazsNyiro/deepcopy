@@ -234,7 +234,7 @@ def width_height_get(Area):
 # I know that OneLine is an alias for a separator,
 # but from caller's side it's easier to use OneLine only
 # TESTED. Array like data structure, with foreground/background pixels
-def to_string(Area, OneLine=False, Separator="\n"):
+def to_string(Area, OneLine=False, Separator="\n", Prefix=""):
     if OneLine:
         Separator = ""
 
@@ -245,7 +245,7 @@ def to_string(Area, OneLine=False, Separator="\n"):
         Row = []
         for X in range(0, Width):
             Row.append(Area[X][Y])
-        Rows.append("".join(Row))
+        Rows.append(Prefix + "".join(Row))
     return Separator.join(Rows)
 
 # TESTED

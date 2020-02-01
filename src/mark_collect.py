@@ -19,7 +19,7 @@ def text_block_analyse(Prg,
     print("Num of Marks:", len(Marks.keys()))
 
     print("TODO: convert marks to text")
-    print(mark_util.mark_to_string(Prg, Marks[1]))
+    print(mark_util.mark_to_string(Marks[1]))
 
 # the root dir is the program's parent dir
 # TESTED

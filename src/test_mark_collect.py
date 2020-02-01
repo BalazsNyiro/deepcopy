@@ -367,7 +367,7 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, Append
         # example: D = {0:"A", 3:"B", 5, "C"}
         # so we loop over on detected keys and always take the next element from the test -
         # the two dict's keys can be different but the order of the keys are fixed
-        MarkDetected = mark_util.mark_to_string(Prg, MarksNowDetected[Key])
+        MarkDetected = mark_util.mark_to_string(MarksNowDetected[Key])
 
         MarkWanted = TestWantedResults.get(WantedKeys.pop(0), "Key not in Wanted results: " + str(Key))
 

@@ -7,9 +7,6 @@ MarkFg = "O" # if active pixel is in the mark
 def markstats_init():
     return {"keywords_len_max": 0}
 
-
-
-
 # return with info about Marks
 def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParserFuns=[]):
     Result = []
@@ -39,7 +36,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             Result.append("\n") # empty line
             Result.append("Mark id: " + str(MarkId))
             Result.append("") # empty line
-            Result.append(mark_to_string(Prg, Mark))
+            Result.append(mark_to_string(Mark))
 
             if MarkStats[MarkId]:
                 Stats = []
@@ -85,15 +82,15 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
 #        - the bg pixels exists in the strutcture
 #        - an area can represent an unreal set of points,
 #          for example area_convex. Those pixels don't exists
-def mark_to_area(Prg, Mark):
+def mark_to_area(Mark):
     Area = area.make_empty(Mark["Width"], Mark["Height"], MarkBg)
     # print(Mark)
     area.coords_insert_from_mark(Area, Mark, MarkFg, Xshift= -Mark["Xmin"], Yshift= -Mark["Ymin"])
     return Area
 
 # TESTED
-def mark_to_string(Prg, Mark):
-    return area.to_string(mark_to_area(Prg, Mark))
+def mark_to_string(Mark):
+    return area.to_string(mark_to_area(Mark))
 
 def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0):
     if len(Txt) % Width != 0:
