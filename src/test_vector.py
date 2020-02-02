@@ -11,34 +11,43 @@ class VectorTests(unittest.TestCase):
         # print(Mark)
 
         ######### DOWN: #################
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1),
-                                                  "CounterClockwise", "Down")
+        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "CounterClockwise", "Down")
         #print("Spiral CounterClockwise Down:", SpiralDetected)
         SpiralWanted = [(2, 1), (2, 2), (3, 2), (3, 1), (3, 0),
                         (2, 0), (1, 0), (1, 1), (1, 2), (1, 3), (2, 3), (3, 3)]
         self.assertEqual(SpiralDetected, SpiralWanted)
 
                     ######### opposite direction
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1),
-                                                  "Clockwise", "Down")
+        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "Clockwise", "Down")
         #print("Spiral Clockwise, Down:", SpiralDetected)
         SpiralWanted = [(2, 1), (2, 2), (1, 2), (1, 1), (1, 0), (2, 0),
                         (3, 0), (3, 1), (3, 2), (3, 3), (2, 3), (1, 3), (0, 3)]
         self.assertEqual(SpiralDetected, SpiralWanted)
 
         ##################### UP ###########################################
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1),
-                                                  "CounterClockwise", "Up")
+        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "CounterClockwise", "Up")
         #print("Spiral CounterClockwise Up:", SpiralDetected)
         SpiralWanted = [(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (3, 2), (3, 1), (3, 0)]
         self.assertEqual(SpiralDetected, SpiralWanted)
 
                     ######### opposite direction
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1),
-                                                  "Clockwise", "Up")
+        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "Clockwise", "Up")
         SpiralWanted = [(2, 1), (2, 0), (3, 0), (3, 1), (3, 2), (2, 2), (1, 2), (1, 1), (1, 0)]
         self.assertEqual(SpiralDetected, SpiralWanted)
         # print("Spiral clockwise, up:", SpiralDetected)
+
+        ############# MAX tests ###################################
+        SpiralMax = vector.spiral_max_from_coord(Mark["Coords"], (2, 1))
+        SpiralWanted = [(2, 1), (2, 2), (1, 2), (1, 1), (1, 0), (2, 0), (3, 0),
+                        (3, 1), (3, 2), (3, 3), (2, 3), (1, 3), (0, 3)]
+        self.assertEqual(SpiralMax, SpiralWanted)
+        # print("SpiralMax:", SpiralMax)
+
+        SpiralMax = vector.spiral_max_from_coord(Mark["Coords"], (2, 2))
+        SpiralWanted = [(2, 2), (2, 1), (1, 1), (1, 2), (1, 3), (2, 3), (3, 3), (3, 2), (3, 1), (3, 0),
+                        (2, 0), (1, 0), (0, 0), (0, 1)]
+        self.assertEqual(SpiralMax, SpiralWanted)
+        # print("SpiralMax:", SpiralMax)
 
     def test_spiral_nonoverlap_search_in_mark__letter_e(self):
         Letter = ("    OOOOOOO   "

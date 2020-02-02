@@ -20,6 +20,11 @@ SpiralOperators = {"CounterClockwise": {
                        "Up"   : [Up, Right, Down, Left],
                        "Right": [Right, Down, Left, Up] }}
 
+# Spiral search from point 1, Clockwise, Down start:
+#                  5   56  567  567  567  567  567  567   567   567   567  g567
+#    1  1   1  41  41  41  41   418  418  418  418  418   418   418  f418  f418
+#       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
+#                                           a   ba  cba  dcba  dcba  dcba  dcba
 def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
     DirectionOperators = copy.deepcopy(SpiralOperators[Direction][Start])
 
@@ -64,11 +69,31 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
 
     return SpiralCoords
 
-# Spiral search from point 1, Clockwise:
-#                  5   56  567  567  567  567  567  567   567   567   567  g567
-#    1  1   1  41  41  41  41   418  418  418  418  418   418   418  f418  f418
-#       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
-#                                           a   ba  cba  dcba  dcba  dcba  dcba
+def spiral_max_from_coord(MarkCoords, Coord):
+    Spirals = dict()
+
+    Spirals["ClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Up")
+    Spirals["ClockwiseDown"]  = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Down")
+    Spirals["ClockwiseLeft"]  = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Left")
+    Spirals["ClockwiseRight"] = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Right")
+
+    Spirals["CounterClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Up")
+    Spirals["CounterClockwiseDown"]  = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Down")
+    Spirals["CounterClockwiseLeft"]  = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Left")
+    Spirals["CounterClockwiseRight"] = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Right")
+
+    DirectionKeyLongest = "-"
+    CoordsLongest = []
+    # print("")
+    for DirectionKey, CoordsSpiral in Spirals.items():
+        if len(CoordsSpiral) > len(CoordsLongest):
+            # print("spiral", DirectionKeyLongest, len(CoordsLongest), "->", DirectionKey, len(CoordsSpiral))
+            CoordsLongest = CoordsSpiral
+            DirectionKeyLongest = DirectionKey # for print info
+        # else:
+        #     print("  small", DirectionKey, len(CoordsSpiral))
+
+    return CoordsLongest
 
 def spiral_nonoverlap_search_in_mark(Mark):
     SpiralsInMark = {}
