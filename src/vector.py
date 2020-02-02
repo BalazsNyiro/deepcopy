@@ -1,25 +1,68 @@
 # -*- coding: utf-8 -*-
 import copy
 
-# start_down: x modify, y modify,  step 2 xmodify, ymodify...
-_Up = (0, -1)
-_Down = (0, 1)
-_Left = (-1, 0)
-_Right = (1, 0)
-_SpiralOperators = {
-    "StartDown" : [_Down, _Right, _Up, _Left],
-    "StartRight": [_Right, _Up, _Left, _Down],
-    "StartUp"   : [_Up, _Left, _Down, _Right],
-    "StartLeft" : [_Left, _Down, _Right, _Up]
-}
+def spiral_generator(Direction="D"):
+    pass
 
-def spiral_max_from_coord(Mark, Coord):
-    DirectionOperators = copy.deepcopy(_SpiralOperators["StartDown"])
-    SpiralCoords = []
-    SpiralCoords.append(Coord)
+
+Up    = ( 0,-1)
+Down  = ( 0, 1)
+Left  = (-1, 0)
+Right = ( 1, 0)
+SpiralOperators = {"CounterClockwise": {
+                        "Down" : [Down, Right, Up, Left],
+                        "Right": [Right, Up, Left, Down],
+                        "Up"   : [Up, Left, Down, Right],
+                        "Left" : [Left, Down, Right, Up] },
+                   "Clockwise": {
+                       "Down" : [Down, Left, Up, Right],
+                       "Left" : [Left, Up, Right, Down],
+                       "Up"   : [Up, Right, Down, Left],
+                       "Right": [Right, Down, Left, Up] }}
+
+def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
+    DirectionOperators = copy.deepcopy(SpiralOperators[Direction][Start])
+
+    def op_shift():
+        OperatorFirst = DirectionOperators.pop(0)
+        OperatorSecond = DirectionOperators.pop(0)
+        DirectionOperators.append(OperatorFirst)
+        DirectionOperators.append(OperatorSecond)
+        return OperatorFirst, OperatorSecond
+
+    SpiralCoords = [(Coord)]
+    X, Y = Coord
+    Repetition = 1
+
+    Continue = True
+    while Continue:
+
+        OperatorFirst, OperatorSecond = op_shift()
+        print("operators", OperatorFirst, OperatorSecond)
+
+        if True: # I don't want to refactor it into a function because it's difficult
+            for Rep in range(0, Repetition): # to follow and understand
+                X += OperatorFirst[0]
+                Y += OperatorFirst[1]
+                if (X, Y) in MarkCoords:
+                    SpiralCoords.append((X, Y))
+                else:
+                    Continue = False
+
+        if Continue:
+            for Rep in range(0, Repetition):
+                X += OperatorSecond[0]
+                Y += OperatorSecond[1]
+                if (X, Y) in MarkCoords:
+                    SpiralCoords.append((X, Y))
+                else:
+                    Continue = False
+
+        Repetition += 1
+
     return SpiralCoords
 
-# Spiral search from point 1:
+# Spiral search from point 1, Clockwise:
 #                  5   56  567  567  567  567  567  567   567   567   567  g567
 #    1  1   1  41  41  41  41   418  418  418  418  418   418   418  f418  f418
 #       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
