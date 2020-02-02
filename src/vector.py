@@ -38,7 +38,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
     while Continue:
 
         OperatorFirst, OperatorSecond = op_shift()
-        print("operators", OperatorFirst, OperatorSecond)
+        # print("operators", OperatorFirst, OperatorSecond)
 
         if Continue: # I don't want to refactor it into a function because it's difficult
             for Rep in range(0, Repetition): # to follow and understand
