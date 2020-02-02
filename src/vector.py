@@ -105,14 +105,13 @@ def spiral_nonoverlap_search_in_mark(Mark):
         SpiralBiggestCoords = [] # the order of coords are important to represent the spiral
 
         for Coord in CoordsTry:
-            SpiralMaxNow = sprial_max_from_coord(Coord)
+            SpiralMaxNow = spiral_max_from_coord(CoordsTry, Coord)
             if len(SpiralMaxNow) > len(SpiralBiggestCoords):
                 SpiralBiggestCoords = SpiralMaxNow
                 SpiralBiggestCoordStart = Coord
 
         SpiralsInMark[SpiralBiggestCoordStart] = SpiralBiggestCoords
         coords_delete(CoordsTry, SpiralBiggestCoords)
-
 
     return SpiralsInMark
 
