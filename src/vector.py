@@ -40,23 +40,25 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         OperatorFirst, OperatorSecond = op_shift()
         print("operators", OperatorFirst, OperatorSecond)
 
-        if True: # I don't want to refactor it into a function because it's difficult
+        if Continue: # I don't want to refactor it into a function because it's difficult
             for Rep in range(0, Repetition): # to follow and understand
-                X += OperatorFirst[0]
-                Y += OperatorFirst[1]
-                if (X, Y) in MarkCoords:
-                    SpiralCoords.append((X, Y))
-                else:
-                    Continue = False
+                if Continue:
+                    X += OperatorFirst[0]
+                    Y += OperatorFirst[1]
+                    if (X, Y) in MarkCoords:
+                        SpiralCoords.append((X, Y))
+                    else:
+                        Continue = False
 
         if Continue:
             for Rep in range(0, Repetition):
-                X += OperatorSecond[0]
-                Y += OperatorSecond[1]
-                if (X, Y) in MarkCoords:
-                    SpiralCoords.append((X, Y))
-                else:
-                    Continue = False
+                if Continue:
+                    X += OperatorSecond[0]
+                    Y += OperatorSecond[1]
+                    if (X, Y) in MarkCoords:
+                        SpiralCoords.append((X, Y))
+                    else:
+                        Continue = False
 
         Repetition += 1
 
