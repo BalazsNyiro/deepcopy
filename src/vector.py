@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import copy
+import copy, area, time
 
 def spiral_generator(Direction="D"):
     pass
@@ -117,21 +117,56 @@ def spiral_nonoverlap_search_in_mark(Mark):
 
 def coords_delete(CoordsDict, CoordsDeletedList):
     for CoordDel in CoordsDeletedList:
-        print("  del:", CoordDel)
+        # print("  del:", CoordDel)
         del CoordsDict[CoordDel]
 
 # these chars have colors in Linux terminal, I hope in windows there are colored chars, too
 # https://apps.timwhitlock.info/emoji/tables/unicode
 
-CharBg = "🔸" #small orange diamond
-CharsetColorful = [
-    "", # the [0] size isn't in blocks
-    "🔅",  # low brightness symbol
-    "🌑", # new moon symbol
-    "💜", #purple heart
-    "🔴", #large red circle
-    "🔵", #large blue circle,
-    "🔆", # high brightness symbol
-    "🔘", #radio button,
-]
+def spirals_display(Spirals, Width, Height, SleepTime=0, Prefix="", PauseAtEnd=0):
+    CharBg = "🔸" #small orange diamond
+    CharsetColorful = [
+        "😎", # smiling face with sunglasses
+        "🔘", #radio button,
+        "🌼",
+        "🍀",
+        "🐙",
+        "🎃", # jack-o-lantern
+        "🐸",  # frog face
+        "🎅", # father christmas
+        "🐨",  # koala
+        "🎁",  # Wrapped present,
+        "🌷",  # tulip
+        "🏀",  # basketball and hoop
+        "😈", # smiling face with horns
+        "🕐",  # clock face, one o'clock
+        "🔴", #large red circle
+        "🔵", #large blue circle,
+        "🔆", # high brightness symbol
+        "💜", #purple heart
+        "🔅",  # low brightness symbol
+        "🌑", # new moon symbol
+        "💡",  # electric light bulb
+
+    ]
+
+    Area = area.make_empty(Width, Height, CharBg)
+    print(area.to_string(Area, Prefix=Prefix, AfterString="\n\n", BeforeString="\n" * 33))
+    time.sleep(5)
+
+    for Coords in Spirals.values():
+        CharColorful = CharsetColorful.pop(0)
+        CharsetColorful.append(CharColorful)  # shifting elements in Colorful chars
+
+        for X, Y in Coords:
+            Area[X][Y] = CharColorful
+            print(area.to_string(Area, Prefix=Prefix, AfterString="\n\n", BeforeString="\n"*33))
+            if SleepTime:
+                time.sleep(SleepTime)
+
+    if PauseAtEnd:
+        time.sleep(PauseAtEnd)
+
+
+
 
