@@ -376,8 +376,8 @@ def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, Append
             if AppendToFileIfDifference:
                 util.file_append(Prg, os.path.join(*AppendToFileIfDifference), "\n\n" + MarkDetected)
             else:
-                PathDetected = os.path.join(Prg["PathTempDir"], "test_detected_"+str(Key)+".txt")
-                PathWanted   = os.path.join(Prg["PathTempDir"], "test_wanted_"+str(Key)+".txt")
+                PathDetected = os.path.join(Prg["DirTmpPath"], "test_detected_"+str(Key)+".txt")
+                PathWanted   = os.path.join(Prg["DirTmpPath"], "test_wanted_"+str(Key)+".txt")
                 util.file_write(Prg, PathDetected, MarkDetected)
                 util.file_write(Prg, PathWanted, MarkWanted)
                 # theoretically all tests has been ok in released versions, this case happens only in dev time

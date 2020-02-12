@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import copy, area, time
+import copy, area, time, util, os
 
 def spiral_generator(Direction="D"):
     pass
@@ -123,7 +123,9 @@ def coords_delete(CoordsDict, CoordsDeletedList):
 # these chars have colors in Linux terminal, I hope in windows there are colored chars, too
 # https://apps.timwhitlock.info/emoji/tables/unicode
 
-def spirals_display(Spirals, Width, Height, SleepTime=0, Prefix="", PauseAtEnd=0):
+def spirals_display(Prg, Spirals, Width, Height, SleepTime=0, Prefix="", PauseAtEnd=0, PauseAtStart=0, SaveAsFilename=None):
+    SaveAsTxt = []
+
     CharBg = "🔸" #small orange diamond
     CharsetColorful = [
         "😎", # smiling face with sunglasses
@@ -152,7 +154,7 @@ def spirals_display(Spirals, Width, Height, SleepTime=0, Prefix="", PauseAtEnd=0
 
     Area = area.make_empty(Width, Height, CharBg)
     print(area.to_string(Area, Prefix=Prefix, AfterString="\n\n", BeforeString="\n" * 33))
-    time.sleep(5)
+    time.sleep(PauseAtStart)
 
     for Coords in Spirals.values():
         CharColorful = CharsetColorful.pop(0)
@@ -160,13 +162,17 @@ def spirals_display(Spirals, Width, Height, SleepTime=0, Prefix="", PauseAtEnd=0
 
         for X, Y in Coords:
             Area[X][Y] = CharColorful
-            print(area.to_string(Area, Prefix=Prefix, AfterString="\n\n", BeforeString="\n"*33))
+            AreaTxt = area.to_string(Area, Prefix=Prefix, AfterString="\n\n", BeforeString="\n"*33)
+            SaveAsTxt.append(AreaTxt)
+            print(AreaTxt)
             if SleepTime:
                 time.sleep(SleepTime)
 
     if PauseAtEnd:
         time.sleep(PauseAtEnd)
 
+    if SaveAsFilename:
+        util.file_write(Prg, os.path.join(Prg["DirTmpPath"], SaveAsFilename), "".join(SaveAsTxt))
 
 
 

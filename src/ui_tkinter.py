@@ -189,9 +189,9 @@ def img_parent_label_refresh(ParentLabel, Img):
         ParentLabel.imageSaved = ImageTkPhotoImage
 
 def files_selector(Prg):
-    Dir = Prg["PathDefaultFileSelectDir"]
+    Dir = Prg["DirDefaultFileSelectPath"]
     print(Dir)
-    return FileDialog.askopenfilenames(initialdir=Prg["PathDefaultFileSelectDir"], title="Select file",
+    return FileDialog.askopenfilenames(initialdir=Prg["DirDefaultFileSelectPath"], title="Select file",
                                        filetypes=(
                                        ("png files", "*.png"), ("jpeg files", "*.jpg"), ("all files", "*.*")))
 

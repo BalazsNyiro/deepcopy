@@ -11,11 +11,11 @@ Prg = {"Os": "",
        "UiThumbnailSize": (256, 256),
        "UiTextSelectPreviewSize": (1024, 768),
        "DirPrgParent":  DirPrgParent,
+       "DirTmpPath": os.path.join(DirPrgParent, "tmp"),
        "DirsDeleteAfterRun": [],
        "FilesDeleteAfterRun": [],
-       "PathDefaultFileSelectDir": os.path.abspath(__file__),
+       "DirDefaultFileSelectPath": os.path.abspath(__file__),
        "PathPrgExec" : os.path.realpath(__file__),
-       "PathTempDir": os.path.join(DirPrgParent, "tmp"),
        "Color": {"TextSelectFrame": (255, 0, 0)},
 
        "ImagesLoaded": {},
@@ -26,7 +26,7 @@ Prg = {"Os": "",
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
 import util, test_mark_collect, test_mark_util, test_area, test_vector
 
-util.dir_create_if_necessary(Prg, Prg["PathTempDir"])
+util.dir_create_if_necessary(Prg, Prg["DirTmpPath"])
 
 util.ui_msg_init(Prg)
 util.installed_environment_detect(Prg)

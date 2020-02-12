@@ -90,7 +90,7 @@ class VectorTests(unittest.TestCase):
             (7, 14)  : [(7, 14)]
         }
         self.assertEqual(SpiralsInMark, SpiralsWanted)
-        vector.spirals_display(SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.1, Prefix="  ", PauseAtEnd=25)
+        vector.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
         #print("\n" + vector.block_to_string(MarkGenerated, BlocksInMark, Prefix=" ") + "\n")
         # TODO: display the blocks with colors and finish the test
 
