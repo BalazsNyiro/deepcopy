@@ -20,12 +20,9 @@ def spiral_operators(): return  {"CounterClockwise": {
                                      "Up"   : [Up, Right, Down, Left],
                                      "Right": [Right, Down, Left, Up] }}
 
-_operator_next_counter = 0
-def _operator_next(DirectionOperators):
-    global _operator_next_counter
-    Operator = DirectionOperators[_operator_next_counter % len(DirectionOperators)]
-    _operator_next_counter += 1
-    return Operator
+def _operator_next(DirectionOperators, OperatorNextCounter):
+    OperatorX, OperatorY = DirectionOperators[OperatorNextCounter % 4] # we always use 4 operators
+    return OperatorX, OperatorY, OperatorNextCounter+1
 
 _Ranges = dict() # cached ranges, I don't want to recreate them always
 
@@ -35,8 +32,7 @@ _Ranges = dict() # cached ranges, I don't want to recreate them always
 #       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
 #                                           a   ba  cba  dcba  dcba  dcba  dcba
 def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
-    global _operator_next_counter
-    _operator_next_counter = 0
+    OperatorNextCounter = 0
     DirectionOperators = spiral_operators()[Direction][Start]
 
     SpiralCoords = [(Coord)]
@@ -47,7 +43,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         if Repetition not in _Ranges:
             _Ranges[Repetition] = range(0, Repetition) # cached ranges to avoid nonstop range creation
 
-        OperatorDeltaX, OperatorDeltaY = _operator_next(DirectionOperators)
+        OperatorDeltaX, OperatorDeltaY, OperatorNextCounter = _operator_next(DirectionOperators, OperatorNextCounter)
         for _Rep in _Ranges[Repetition]: # to follow and understand
             X += OperatorDeltaX
             Y += OperatorDeltaY
@@ -57,7 +53,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
             else:
                 return SpiralCoords
 
-        OperatorDeltaX, OperatorDeltaY = _operator_next(DirectionOperators)
+        OperatorDeltaX, OperatorDeltaY, OperatorNextCounter = _operator_next(DirectionOperators, OperatorNextCounter)
         for _Rep in _Ranges[Repetition]:
             X += OperatorDeltaX
             Y += OperatorDeltaY
