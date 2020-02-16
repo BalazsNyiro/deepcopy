@@ -20,6 +20,13 @@ def spiral_operators(): return  {"CounterClockwise": {
                                      "Up"   : [Up, Right, Down, Left],
                                      "Right": [Right, Down, Left, Up] }}
 
+
+def _operator_next(DirectionOperators):
+    Operator = DirectionOperators.pop(0)
+    DirectionOperators.append(Operator)
+    return Operator
+
+
 _Ranges = dict() # cached ranges, I don't want to recreate it always
 # Spiral search from point 1, Clockwise, Down start:
 #                  5   56  567  567  567  567  567  567   567   567   567  g567
@@ -29,22 +36,16 @@ _Ranges = dict() # cached ranges, I don't want to recreate it always
 def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
     DirectionOperators = spiral_operators()[Direction][Start]
 
-    def op_shift():
-        Operator = DirectionOperators.pop(0)
-        DirectionOperators.append(Operator)
-        return Operator
-
     SpiralCoords = [(Coord)]
     X, Y = Coord
     Repetition = 1
 
     while True:
         if Repetition not in _Ranges:
-            _Ranges[Repetition] = range(0, Repetition)
-        RangeRepetition = _Ranges[Repetition]
+            _Ranges[Repetition] = range(0, Repetition) # cached ranges to avoid nonstop range creation
 
-        OperatorDeltaX, OperatorDeltaY  = op_shift()
-        for _Rep in RangeRepetition: # to follow and understand
+        OperatorDeltaX, OperatorDeltaY = _operator_next(DirectionOperators)
+        for _Rep in _Ranges[Repetition]: # to follow and understand
             X += OperatorDeltaX
             Y += OperatorDeltaY
             CoordNew = (X, Y)
@@ -53,8 +54,8 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
             else:
                 return SpiralCoords
 
-        OperatorDeltaX, OperatorDeltaY  = op_shift()
-        for _Rep in RangeRepetition:
+        OperatorDeltaX, OperatorDeltaY = _operator_next(DirectionOperators)
+        for _Rep in _Ranges[Repetition]:
             X += OperatorDeltaX
             Y += OperatorDeltaY
             CoordNew = (X, Y)
