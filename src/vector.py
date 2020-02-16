@@ -20,20 +20,23 @@ def spiral_operators(): return  {"CounterClockwise": {
                                      "Up"   : [Up, Right, Down, Left],
                                      "Right": [Right, Down, Left, Up] }}
 
-
+_operator_next_counter = 0
 def _operator_next(DirectionOperators):
-    Operator = DirectionOperators.pop(0)
-    DirectionOperators.append(Operator)
+    global _operator_next_counter
+    Operator = DirectionOperators[_operator_next_counter % len(DirectionOperators)]
+    _operator_next_counter += 1
     return Operator
 
+_Ranges = dict() # cached ranges, I don't want to recreate them always
 
-_Ranges = dict() # cached ranges, I don't want to recreate it always
 # Spiral search from point 1, Clockwise, Down start:
 #                  5   56  567  567  567  567  567  567   567   567   567  g567
 #    1  1   1  41  41  41  41   418  418  418  418  418   418   418  f418  f418
 #       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
 #                                           a   ba  cba  dcba  dcba  dcba  dcba
 def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
+    global _operator_next_counter
+    _operator_next_counter = 0
     DirectionOperators = spiral_operators()[Direction][Start]
 
     SpiralCoords = [(Coord)]
