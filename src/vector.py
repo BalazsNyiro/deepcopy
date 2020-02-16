@@ -9,16 +9,16 @@ Up    = ( 0,-1)
 Down  = ( 0, 1)
 Left  = (-1, 0)
 Right = ( 1, 0)
-SpiralOperators = {"CounterClockwise": {
-                        "Down" : [Down, Right, Up, Left],
-                        "Right": [Right, Up, Left, Down],
-                        "Up"   : [Up, Left, Down, Right],
-                        "Left" : [Left, Down, Right, Up] },
-                   "Clockwise": {
-                       "Down" : [Down, Left, Up, Right],
-                       "Left" : [Left, Up, Right, Down],
-                       "Up"   : [Up, Right, Down, Left],
-                       "Right": [Right, Down, Left, Up] }}
+def spiral_operators(): return  {"CounterClockwise": {
+                                      "Down" : [Down, Right, Up, Left],
+                                      "Right": [Right, Up, Left, Down],
+                                      "Up"   : [Up, Left, Down, Right],
+                                      "Left" : [Left, Down, Right, Up] },
+                                 "Clockwise": {
+                                     "Down" : [Down, Left, Up, Right],
+                                     "Left" : [Left, Up, Right, Down],
+                                     "Up"   : [Up, Right, Down, Left],
+                                     "Right": [Right, Down, Left, Up] }}
 
 # Spiral search from point 1, Clockwise, Down start:
 #                  5   56  567  567  567  567  567  567   567   567   567  g567
@@ -26,27 +26,27 @@ SpiralOperators = {"CounterClockwise": {
 #       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
 #                                           a   ba  cba  dcba  dcba  dcba  dcba
 def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
-    DirectionOperators = copy.deepcopy(SpiralOperators[Direction][Start])
+    DirectionOperators = spiral_operators()[Direction][Start]
 
     def op_shift():
-        OperatorFirst = DirectionOperators.pop(0)
-        OperatorSecond = DirectionOperators.pop(0)
-        DirectionOperators.append(OperatorFirst)
-        DirectionOperators.append(OperatorSecond)
-        return OperatorFirst, OperatorSecond
+        Operator = DirectionOperators.pop(0)
+        DirectionOperators.append(Operator)
+        return Operator
 
     SpiralCoords = [(Coord)]
     X, Y = Coord
-    Repetition = 1
+    SpiralLength = 1
 
     Continue = True
     while Continue:
 
-        OperatorFirst, OperatorSecond = op_shift()
+        OperatorFirst  = op_shift()
+        OperatorSecond = op_shift()
         # print("operators", OperatorFirst, OperatorSecond)
 
+        RangeRepetition = range(0, SpiralLength)
         if Continue: # I don't want to refactor it into a function because it's difficult
-            for Rep in range(0, Repetition): # to follow and understand
+            for _Rep in RangeRepetition: # to follow and understand
                 if Continue:
                     X += OperatorFirst[0]
                     Y += OperatorFirst[1]
@@ -56,7 +56,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
                         Continue = False
 
         if Continue:
-            for Rep in range(0, Repetition):
+            for _Rep in RangeRepetition:
                 if Continue:
                     X += OperatorSecond[0]
                     Y += OperatorSecond[1]
@@ -65,7 +65,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
                     else:
                         Continue = False
 
-        Repetition += 1
+        SpiralLength += 1
 
     return SpiralCoords
 
@@ -82,16 +82,10 @@ def spiral_max_from_coord(MarkCoords, Coord):
     Spirals["CounterClockwiseLeft"]  = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Left")
     Spirals["CounterClockwiseRight"] = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Right")
 
-    DirectionKeyLongest = "-"
     CoordsLongest = []
-    # print("")
     for DirectionKey, CoordsSpiral in Spirals.items():
         if len(CoordsSpiral) > len(CoordsLongest):
-            # print("spiral", DirectionKeyLongest, len(CoordsLongest), "->", DirectionKey, len(CoordsSpiral))
             CoordsLongest = CoordsSpiral
-            DirectionKeyLongest = DirectionKey # for print info
-        # else:
-        #     print("  small", DirectionKey, len(CoordsSpiral))
 
     return CoordsLongest
 
