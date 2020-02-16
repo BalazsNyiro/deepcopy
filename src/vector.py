@@ -20,6 +20,7 @@ def spiral_operators(): return  {"CounterClockwise": {
                                      "Up"   : [Up, Right, Down, Left],
                                      "Right": [Right, Down, Left, Up] }}
 
+_Ranges = dict() # cached ranges, I don't want to recreate it always
 # Spiral search from point 1, Clockwise, Down start:
 #                  5   56  567  567  567  567  567  567   567   567   567  g567
 #    1  1   1  41  41  41  41   418  418  418  418  418   418   418  f418  f418
@@ -35,39 +36,35 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
 
     SpiralCoords = [(Coord)]
     X, Y = Coord
-    SpiralLength = 1
+    Repetition = 1
 
-    Continue = True
-    while Continue:
+    while True:
+        if Repetition not in _Ranges:
+            _Ranges[Repetition] = range(0, Repetition)
+        RangeRepetition = _Ranges[Repetition]
 
-        OperatorFirst  = op_shift()
-        OperatorSecond = op_shift()
-        # print("operators", OperatorFirst, OperatorSecond)
+        OperatorDeltaX, OperatorDeltaY  = op_shift()
+        for _Rep in RangeRepetition: # to follow and understand
+            X += OperatorDeltaX
+            Y += OperatorDeltaY
+            CoordNew = (X, Y)
+            if CoordNew in MarkCoords:
+                SpiralCoords.append(CoordNew)
+            else:
+                return SpiralCoords
 
-        RangeRepetition = range(0, SpiralLength)
-        if Continue: # I don't want to refactor it into a function because it's difficult
-            for _Rep in RangeRepetition: # to follow and understand
-                if Continue:
-                    X += OperatorFirst[0]
-                    Y += OperatorFirst[1]
-                    if (X, Y) in MarkCoords:
-                        SpiralCoords.append((X, Y))
-                    else:
-                        Continue = False
+        OperatorDeltaX, OperatorDeltaY  = op_shift()
+        for _Rep in RangeRepetition:
+            X += OperatorDeltaX
+            Y += OperatorDeltaY
+            CoordNew = (X, Y)
+            if CoordNew in MarkCoords:
+                SpiralCoords.append(CoordNew)
+            else:
+                return SpiralCoords
 
-        if Continue:
-            for _Rep in RangeRepetition:
-                if Continue:
-                    X += OperatorSecond[0]
-                    Y += OperatorSecond[1]
-                    if (X, Y) in MarkCoords:
-                        SpiralCoords.append((X, Y))
-                    else:
-                        Continue = False
+        Repetition += 1
 
-        SpiralLength += 1
-
-    return SpiralCoords
 
 def spiral_max_from_coord(MarkCoords, Coord):
     Spirals = dict()
