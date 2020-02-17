@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import copy, area, time, util, os
 
-def spiral_generator(Direction="D"):
+# TODO: detect the neighbourhoods, from the tails
+def spiral_find_neighbours(Spirals):
     pass
-
 
 Up    = ( 0,-1)
 Down  = ( 0, 1)
 Left  = (-1, 0)
 Right = ( 1, 0)
+
 def spiral_operators(): return  {"CounterClockwise": {
                                       "Down" : [Down, Right, Up, Left],
                                       "Right": [Right, Up, Left, Down],
@@ -46,7 +47,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         # I have to repeat twice this step to create the spiral
         for _ in ["TurnFirstOperator", "TurnSecondOperator"]:
             OperatorDeltaX, OperatorDeltaY, OperatorNextCounter = _operator_next(DirectionOperators, OperatorNextCounter)
-            for _Rep in _Ranges[Repetition]: # to follow and understand
+            for _ in _Ranges[Repetition]: # to follow and understand
                 X += OperatorDeltaX
                 Y += OperatorDeltaY
                 CoordNew = (X, Y)
@@ -58,11 +59,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         Repetition += 1
 
 def spiral_max_from_coord(MarkCoords, Coord):
-    # TODO: maybe it can be faster if you save only the longest immediately instead of storing in dict
-
     CoordsLongest = []
-    # Spirals["ClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Up")
-
     Variations = [  ("Clockwise", "Up"),
                     ("Clockwise", "Down"),
                     ("Clockwise", "Left"),
