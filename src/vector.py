@@ -59,22 +59,24 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
 
 def spiral_max_from_coord(MarkCoords, Coord):
     # TODO: maybe it can be faster if you save only the longest immediately instead of storing in dict
-    Spirals = dict()
-
-    Spirals["ClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Up")
-    Spirals["ClockwiseDown"]  = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Down")
-    Spirals["ClockwiseLeft"]  = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Left")
-    Spirals["ClockwiseRight"] = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Right")
-
-    Spirals["CounterClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Up")
-    Spirals["CounterClockwiseDown"]  = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Down")
-    Spirals["CounterClockwiseLeft"]  = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Left")
-    Spirals["CounterClockwiseRight"] = spiral_from_coord(MarkCoords, Coord, "CounterClockwise", "Right")
 
     CoordsLongest = []
-    for DirectionKey, CoordsSpiral in Spirals.items():
-        if len(CoordsSpiral) > len(CoordsLongest):
-            CoordsLongest = CoordsSpiral
+    # Spirals["ClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Up")
+
+    Variations = [  ("Clockwise", "Up"),
+                    ("Clockwise", "Down"),
+                    ("Clockwise", "Left"),
+                    ("Clockwise", "Right"),
+
+                    ("CounterClockwise", "Up"),
+                    ("CounterClockwise", "Down"),
+                    ("CounterClockwise", "Left"),
+                    ("CounterClockwise", "Right") ]
+
+    for Clock, Direction in Variations:
+        Spiral = spiral_from_coord(MarkCoords, Coord, Clock, Direction)
+        if len(Spiral) > len(CoordsLongest):
+            CoordsLongest = Spiral
 
     return CoordsLongest
 
