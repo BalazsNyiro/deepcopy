@@ -43,30 +43,22 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         if Repetition not in _Ranges:
             _Ranges[Repetition] = range(0, Repetition) # cached ranges to avoid nonstop range creation
 
-        OperatorDeltaX, OperatorDeltaY, OperatorNextCounter = _operator_next(DirectionOperators, OperatorNextCounter)
-        for _Rep in _Ranges[Repetition]: # to follow and understand
-            X += OperatorDeltaX
-            Y += OperatorDeltaY
-            CoordNew = (X, Y)
-            if CoordNew in MarkCoords:
-                SpiralCoords.append(CoordNew)
-            else:
-                return SpiralCoords
-
-        OperatorDeltaX, OperatorDeltaY, OperatorNextCounter = _operator_next(DirectionOperators, OperatorNextCounter)
-        for _Rep in _Ranges[Repetition]:
-            X += OperatorDeltaX
-            Y += OperatorDeltaY
-            CoordNew = (X, Y)
-            if CoordNew in MarkCoords:
-                SpiralCoords.append(CoordNew)
-            else:
-                return SpiralCoords
+        # I have to repeat twice this step to create the spiral
+        for _ in ["TurnFirstOperator", "TurnSecondOperator"]:
+            OperatorDeltaX, OperatorDeltaY, OperatorNextCounter = _operator_next(DirectionOperators, OperatorNextCounter)
+            for _Rep in _Ranges[Repetition]: # to follow and understand
+                X += OperatorDeltaX
+                Y += OperatorDeltaY
+                CoordNew = (X, Y)
+                if CoordNew in MarkCoords:
+                    SpiralCoords.append(CoordNew)
+                else:
+                    return SpiralCoords
 
         Repetition += 1
 
-
 def spiral_max_from_coord(MarkCoords, Coord):
+    # TODO: maybe it can be faster if you save only the longest immediately instead of storing in dict
     Spirals = dict()
 
     Spirals["ClockwiseUp"]    = spiral_from_coord(MarkCoords, Coord, "Clockwise", "Up")
