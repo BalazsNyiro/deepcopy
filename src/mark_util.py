@@ -8,14 +8,14 @@ def markstats_init():
     return {"keywords_len_max": 0}
 
 # return with info about Marks
-def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParserFuns=[]):
-    Result = []
+def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParserFuns=list()):
+    Result = list()
 
     Source = Marks.items()
-    Errors = []
+    Errors = list()
     MarkStats = markstats_init()
 
-    NotImportantInfoKeys = {}
+    NotImportantInfoKeys = dict()
 
     if WantedIdNums and isinstance(WantedIdNums, list):
         MarksWanted = dict()
@@ -39,7 +39,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
             Result.append(mark_to_string(Mark))
 
             if MarkStats[MarkId]:
-                Stats = []
+                Stats = list()
                 for K, V in MarkStats[MarkId].items():
                     if K in NotImportantInfoKeys:
                         continue
@@ -96,7 +96,7 @@ def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0):
     if len(Txt) % Width != 0:
         sys.exit("mark_from_string, incorrect width: string length / Width has a remainder")
 
-    Mark = {"Coords":{}}
+    Mark = {"Coords":dict()}
     Xmin=Ymin=Xmax=Ymax=None
 
     for Id, Char in enumerate(Txt):
@@ -130,7 +130,7 @@ def markstats_insert_id(MarkStats, MarkId):
 def mark_area_convex(Prg, Mark, PointsWanted=False):
     AreaConvex = area.make_empty(Mark["Width"], Mark["Height"], MarkBg)
 
-    ConnectionPointLines = []
+    ConnectionPointLines = list()
     # naive implementation, it based on Mark's special attributes: there aren't gaps in marks.
     # I want to revise it later.
     # TODO: maybe if we have more time: Gift Wrapping Algorithm (Convex Hull)

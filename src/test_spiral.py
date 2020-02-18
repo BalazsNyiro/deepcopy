@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import unittest, vector, mark_util
+import unittest, spiral, mark_util
 
 class VectorTests(unittest.TestCase):
     def test_spiral_from_coord(self):
@@ -11,39 +11,39 @@ class VectorTests(unittest.TestCase):
         # print(Mark)
 
         ######### DOWN: #################
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "CounterClockwise", "Down")
+        SpiralDetected = spiral.spiral_from_coord(Mark["Coords"], (2, 1), "CounterClockwise", "Down")
         #print("Spiral CounterClockwise Down:", SpiralDetected)
         SpiralWanted = [(2, 1), (2, 2), (3, 2), (3, 1), (3, 0),
                         (2, 0), (1, 0), (1, 1), (1, 2), (1, 3), (2, 3), (3, 3)]
         self.assertEqual(SpiralDetected, SpiralWanted)
 
                     ######### opposite direction
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "Clockwise", "Down")
+        SpiralDetected = spiral.spiral_from_coord(Mark["Coords"], (2, 1), "Clockwise", "Down")
         #print("Spiral Clockwise, Down:", SpiralDetected)
         SpiralWanted = [(2, 1), (2, 2), (1, 2), (1, 1), (1, 0), (2, 0),
                         (3, 0), (3, 1), (3, 2), (3, 3), (2, 3), (1, 3), (0, 3)]
         self.assertEqual(SpiralDetected, SpiralWanted)
 
         ##################### UP ###########################################
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "CounterClockwise", "Up")
+        SpiralDetected = spiral.spiral_from_coord(Mark["Coords"], (2, 1), "CounterClockwise", "Up")
         #print("Spiral CounterClockwise Up:", SpiralDetected)
         SpiralWanted = [(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (3, 2), (3, 1), (3, 0)]
         self.assertEqual(SpiralDetected, SpiralWanted)
 
                     ######### opposite direction
-        SpiralDetected = vector.spiral_from_coord(Mark["Coords"], (2, 1), "Clockwise", "Up")
+        SpiralDetected = spiral.spiral_from_coord(Mark["Coords"], (2, 1), "Clockwise", "Up")
         SpiralWanted = [(2, 1), (2, 0), (3, 0), (3, 1), (3, 2), (2, 2), (1, 2), (1, 1), (1, 0)]
         self.assertEqual(SpiralDetected, SpiralWanted)
         # print("Spiral clockwise, up:", SpiralDetected)
 
         ############# MAX tests ###################################
-        SpiralMax = vector.spiral_max_from_coord(Mark["Coords"], (2, 1))
+        SpiralMax = spiral.spiral_max_from_coord(Mark["Coords"], (2, 1))
         SpiralWanted = [(2, 1), (2, 2), (1, 2), (1, 1), (1, 0), (2, 0), (3, 0),
                         (3, 1), (3, 2), (3, 3), (2, 3), (1, 3), (0, 3)]
         self.assertEqual(SpiralMax, SpiralWanted)
         # print("SpiralMax:", SpiralMax)
 
-        SpiralMax = vector.spiral_max_from_coord(Mark["Coords"], (2, 2))
+        SpiralMax = spiral.spiral_max_from_coord(Mark["Coords"], (2, 2))
         SpiralWanted = [(2, 2), (2, 1), (1, 1), (1, 2), (1, 3), (2, 3), (3, 3), (3, 2), (3, 1), (3, 0),
                         (2, 0), (1, 0), (0, 0), (0, 1)]
         self.assertEqual(SpiralMax, SpiralWanted)
@@ -86,18 +86,29 @@ class VectorTests(unittest.TestCase):
                   "  OOOOOOOOOOO "
                   "    OOOOOOOO  ")
         MarkGenerated = mark_util.mark_from_string(Letter, 14, "O")
-        SpiralsInMark = vector.spiral_nonoverlap_search_in_mark(MarkGenerated)
+        SpiralsInMark = spiral.spiral_nonoverlap_search_in_mark(MarkGenerated)
         # for CoordStart, CoordsSpiral in SpiralsInMark.items():
         #     print("SpiralStart ", CoordStart, " -> ", CoordsSpiral)
 
         SpiralsWanted = self.spirals_letter_e()
         self.assertEqual(SpiralsInMark, SpiralsWanted)
-        #vector.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
+        spiral.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
         #print("\n" + vector.block_to_string(MarkGenerated, BlocksInMark, Prefix=" ") + "\n")
         # TODO: display the blocks with colors and finish the test
+
+    def test_spirals_find_neighbours(self):
+        NeighboursDetected = spiral.spiral_find_neighbours(self.spirals_letter_e())
+        print(NeighboursDetected)
+        NeighboursWanted = {(1, 5): [(2, 1), (6, 1), (5, 6), (1, 9)],
+                            (12, 5): [(11, 1), (9, 1), (8, 6)],
+                            (4, 12): [(7, 12), (7, 14), (3, 9), (1, 9), (1, 12)],
+                            (6, 1): [(2, 1), (1, 5), (9, 1)],
+                            (9, 13): [(12, 11), (12, 13), (7, 12), (7, 14)],
+                            (9, 1): [(12, 5), (6, 1), (11, 1)], (1, 9): [(1, 12), (3, 9), (4, 12), (1, 5)], (5, 6): [(1, 5), (8, 6)], (8, 6): [(5, 6), (12, 5)], (2, 1): [(1, 5), (6, 1)], (11, 1): [(12, 5), (9, 1)], (1, 12): [(4, 12), (1, 9)], (3, 9): [(1, 9), (4, 12)], (12, 11): [(9, 13)], (7, 12): [(4, 12), (9, 13)], (12, 13): [(9, 13), (12, 11)], (7, 14): [(4, 12), (7, 12), (9, 13)]}
+        self.assertEqual(NeighboursDetected, NeighboursWanted)
 
 def run_all_tests(P):
     print("run all tests: Vector")
     global Prg
     Prg = P
-    unittest.main(module="test_vector", verbosity=2, exit=False)
+    unittest.main(module="test_spiral", verbosity=2, exit=False)

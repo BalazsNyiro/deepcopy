@@ -115,7 +115,7 @@ def mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
 # TESTED
 def mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
                                         InkPixelCoords_and_MarkId):
-    MarkIdsInNeighbourhood = []  # if in the neighbours are a known mark, connect the current pixel into that mark
+    MarkIdsInNeighbourhood = list() # if in the neighbours are a known mark, connect the current pixel into that mark
 
     for CoordNeighbour in util.coords_neighbours(Coord):
         markid_of_coord_append_if_unknown(CoordNeighbour,

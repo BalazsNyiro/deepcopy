@@ -42,7 +42,7 @@ def ui_msg(Prg, MsgPath, TestCase=False):
 
     # it can handle one path or list of paths
     if isinstance(MsgPath, list):
-        Texts = []
+        Texts = list()
         for Path in MsgPath:
             Texts.append(ui_msg(Prg, Path, TestCase=TestCase))
         return Texts
@@ -100,7 +100,7 @@ def file_read_all(Prg, Fname="", Mode="r"): # if you want read binary, write "rb
 def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
     if isinstance(Fname, list):
         Files = Fname
-        Out = []
+        Out = list()
         for File in Files:
             Out.extend(file_read_lines(Prg, File, ErrMsgNoFile=ErrMsgNoFile, ErrExit=ErrExit, Strip=Strip))
         return Out
@@ -117,7 +117,7 @@ def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
             error_display(ErrMsgNoFile, "file_read_all, if ErrExit=True")
         else:
             warning_display(ErrMsgNoFile, "file_read_all, if ErrExit=False")
-    return []
+    return list()
 
 # TESTED
 def file_test(Prg, Fn="", MsgErr="", ErrExit=False, MsgOk=""):
@@ -297,7 +297,7 @@ def connect_coords(Ax, Ay, Bx, By):
         StepX = -1
 
 
-    Points = []
+    Points = list()
     # print("\n>>>", Ax, Ay, ",  ", Bx, By)
 
     RangeX = range(Ax, Bx + StepX, StepX)
@@ -347,7 +347,7 @@ def connect_coords(Ax, Ay, Bx, By):
 
 # TESTED
 def multiline_txt_insert_prefix(Prg, Lines, Prefix=">> "):
-    Formatted = []
+    Formatted = list()
     for Line in Lines.split("\n"):
         Formatted.append(Prefix + Line)
     return "\n".join(Formatted)

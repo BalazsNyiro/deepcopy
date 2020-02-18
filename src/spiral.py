@@ -1,9 +1,31 @@
 # -*- coding: utf-8 -*-
-import copy, area, time, util, os
+import area, time, util, os
 
-# TODO: detect the neighbourhoods, from the tails
 def spiral_find_neighbours(Spirals):
-    pass
+    SpiralConnections= dict()
+    Point_ParentSpiral = dict()
+
+    # init: create Point->Spiral pairs and SpiralConnections base data struct
+    for SpiralStartPoint in Spirals:
+        for Point in Spirals[SpiralStartPoint]:
+            Point_ParentSpiral[Point] = SpiralStartPoint
+
+    Deltas = [(-1,-1), (-1, 0), (-1, 1), (0, -1), (1, -1), (1, 0), (1, 1), (0, -1)]
+    for SpiralStartPoint, SpiralPointsFromCenterToTail in Spirals.items():
+        SpiralPointsFromTailToCenter = SpiralPointsFromCenterToTail[::-1]
+        Neighbours = list()
+        for PointX, PointY in SpiralPointsFromTailToCenter:
+            for DeltaX, DeltaY in Deltas:
+                TestedX = PointX + DeltaX
+                TestedY = PointY + DeltaY
+                TestedPoint = (TestedX, TestedY)
+                if TestedPoint in Point_ParentSpiral:
+                    SpiralOfTestedPoint = Point_ParentSpiral[TestedPoint]
+                    if SpiralOfTestedPoint not in Neighbours:
+                        if SpiralOfTestedPoint != SpiralStartPoint:
+                            Neighbours.append(SpiralOfTestedPoint)
+        SpiralConnections[SpiralStartPoint] = Neighbours
+    return SpiralConnections
 
 Up    = ( 0,-1)
 Down  = ( 0, 1)
@@ -59,7 +81,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         Repetition += 1
 
 def spiral_max_from_coord(MarkCoords, Coord):
-    CoordsLongest = []
+    CoordsLongest = list()
     Variations = [  ("Clockwise", "Up"),
                     ("Clockwise", "Down"),
                     ("Clockwise", "Left"),
@@ -78,13 +100,13 @@ def spiral_max_from_coord(MarkCoords, Coord):
     return CoordsLongest
 
 def spiral_nonoverlap_search_in_mark(Mark):
-    SpiralsInMark = {}
+    SpiralsInMark = dict()
     CoordsTry = dict(Mark["Coords"])
 
     while CoordsTry:
 
         SpiralBiggestCoordStart = (-1, -1)
-        SpiralBiggestCoords = [] # the order of coords are important to represent the spiral
+        SpiralBiggestCoords = list() # the order of coords are important to represent the spiral
 
         for Coord in CoordsTry:
             SpiralMaxNow = spiral_max_from_coord(CoordsTry, Coord)
@@ -106,7 +128,7 @@ def coords_delete(CoordsDict, CoordsDeletedList):
 # https://apps.timwhitlock.info/emoji/tables/unicode
 
 def spirals_display(Prg, Spirals, Width, Height, SleepTime=0, Prefix="", PauseAtEnd=0, PauseAtStart=0, SaveAsFilename=None):
-    SaveAsTxt = []
+    SaveAsTxt = list()
 
     CharBg = "🔸" #small orange diamond
     CharsetColorful = [

@@ -2,7 +2,7 @@
 import util, os, time, mark_collect
 
 PrgGlobal = None
-ErrorsLocal = []
+ErrorsLocal = list()
 
 try:
     import tkinter as Tkinter
@@ -27,7 +27,7 @@ def window_main(Prg):
     global PrgGlobal
     PrgGlobal = Prg
 
-    Prg["Tkinter"] = {}
+    Prg["Tkinter"] = dict()
 
     MainWidth = 1200
     MainHeight = 800

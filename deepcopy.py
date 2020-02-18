@@ -12,19 +12,19 @@ Prg = {"Os": "",
        "UiTextSelectPreviewSize": (1024, 768),
        "DirPrgParent":  DirPrgParent,
        "DirTmpPath": os.path.join(DirPrgParent, "tmp"),
-       "DirsDeleteAfterRun": [],
-       "FilesDeleteAfterRun": [],
+       "DirsDeleteAfterRun": list(),
+       "FilesDeleteAfterRun": list(),
        "DirDefaultFileSelectPath": os.path.abspath(__file__),
        "PathPrgExec" : os.path.realpath(__file__),
        "Color": {"TextSelectFrame": (255, 0, 0)},
 
-       "ImagesLoaded": {},
+       "ImagesLoaded": dict(),
        "ImageIdSelected": ""
 
        }
 
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
-import util, test_mark_collect, test_mark_util, test_area, test_vector
+import util, test_mark_collect, test_mark_util, test_area, test_spiral
 
 util.dir_create_if_necessary(Prg, Prg["DirTmpPath"])
 
@@ -40,7 +40,7 @@ if "testonly" in sys.argv:
 test_mark_collect.run_all_tests(Prg)
 test_mark_util.run_all_tests(Prg)
 test_area.run_all_tests(Prg)
-test_vector.run_all_tests(Prg)
+test_spiral.run_all_tests(Prg)
 if TestOnly:
        sys.exit(0)
 

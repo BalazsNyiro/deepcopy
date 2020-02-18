@@ -270,7 +270,7 @@ class TestMethodsAnalysed(unittest.TestCase):
 class TestMethods(unittest.TestCase):
 
     def test_module_available(self):
-        PrgEmpty = {}
+        PrgEmpty = dict()
         self.assertFalse(util.module_available(PrgEmpty, "unknown_module", "please install unknown module :-)"))
         self.assertTrue(util.module_available(PrgEmpty, "os", "Please install os module if you want to reach files"))
 
@@ -352,7 +352,7 @@ def run_all_tests(P):
 
 
 if __name__ == '__main__':
-    run_all_tests({})
+    run_all_tests(dict())
 
 # TODO: a more general diff display in console without linux vimdiff
 def difference_display(Prg, SelfObj, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=None):
@@ -395,7 +395,7 @@ def marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult):
 def test_results_load_from_mark_detection(Prg, FileResultPathElems):
     Marks = dict()
     MarkId = 0
-    MarkLines = []
+    MarkLines = list()
     FileResultPath =os.path.join(Prg["DirPrgParent"], *FileResultPathElems)
 
     print("File result path:", FileResultPath)
@@ -404,7 +404,7 @@ def test_results_load_from_mark_detection(Prg, FileResultPathElems):
         if mark_util.MarkBg not in Line and mark_util.MarkFg not in Line:
             if MarkLines:
                 Marks[MarkId] = "\n".join(MarkLines)
-                MarkLines = []
+                MarkLines = list()
                 MarkId += 1
         else:
             MarkLines.append(Line)

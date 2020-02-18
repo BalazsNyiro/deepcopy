@@ -84,7 +84,7 @@ def pattern_position_find_first(Area, Pattern):
 # WantedPatterns example = ["Pattern1", "P2"]
 # TESTED
 # it's slow if you count once the chars and later loop over the whole Area to find their positions
-def pattern_count(Area, WantedPatterns=[], UnwantedPatterns=[]):
+def pattern_count(Area, WantedPatterns=list(), UnwantedPatterns=list()):
     # if you define wanted patterns, you search specific patterns.
     # if you use Unwanted patterns, then you find everything that is not unwanted
     if WantedPatterns and UnwantedPatterns:
@@ -120,7 +120,7 @@ def pattern_count(Area, WantedPatterns=[], UnwantedPatterns=[]):
 
             if PatternFounded:
                 if Pattern not in Result["Coords"]:
-                    Result["Coords"][Pattern] = []
+                    Result["Coords"][Pattern] = list()
                 Result["Coords"][Pattern].append((X, Y))
 
     return Result
@@ -213,10 +213,10 @@ def fire(Area, CoordsFireStart, CharsBlocking, Directions=None, CharFire="F"):
 
 # TESTED
 def make_empty(Width, Height, Bg):
-    OneColumn = []
+    OneColumn = list()
     for I in range(0, Height):
         OneColumn.append(Bg)
-    Columns = []
+    Columns = list()
     for I in range(0, Width):
         Columns.append(list(OneColumn)) # we have to duplicate OneColumn, not insert same one
     return Columns
@@ -240,9 +240,9 @@ def to_string(Area, OneLine=False, Separator="\n", Prefix="", AfterString="", Be
 
     Width, Height = width_height_get(Area)
 
-    Rows = []
+    Rows = list()
     for Y in range(0, Height):
-        Row = []
+        Row = list()
         for X in range(0, Width):
             Row.append(Area[X][Y])
         Rows.append(Prefix + "".join(Row))
