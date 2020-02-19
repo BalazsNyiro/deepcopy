@@ -15,19 +15,29 @@ def spiral_find_neighbours(Spirals):
         SpiralPointsFromTailToCenter = SpiralPointsFromCenterToTail[::-1]
         Neighbours = list()
         for PointX, PointY in SpiralPointsFromTailToCenter:
-            # TODO: you don't have to check all point from tail
+
+            # you don't have to check all point from tail
             # to center: you can stop if you have only original parent points
             # around the tested
-            #  if you want to imporove performance, develop it
+            PointsFromSameSpiral = 0
+
             for DeltaX, DeltaY in Deltas:
                 TestedX = PointX + DeltaX
                 TestedY = PointY + DeltaY
                 TestedPoint = (TestedX, TestedY)
                 if TestedPoint in Point_ParentSpiral:
                     SpiralOfTestedPoint = Point_ParentSpiral[TestedPoint]
-                    if SpiralOfTestedPoint not in Neighbours:
-                        if SpiralOfTestedPoint != SpiralStartPoint:
+
+                    # if: we found a real neighbour
+                    if SpiralOfTestedPoint != SpiralStartPoint:
+                        if SpiralOfTestedPoint not in Neighbours:
                             Neighbours.append(SpiralOfTestedPoint)
+                    else: # we found a point from same spiral
+                        PointsFromSameSpiral += 1
+
+            if PointsFromSameSpiral == 8:
+                break # you can finish, the next points to the center
+                      # are INSIDE of the spiral, you won't find new neighbours
         SpiralConnections[SpiralStartPoint] = Neighbours
     print("connections: ", SpiralConnections)
     return SpiralConnections
