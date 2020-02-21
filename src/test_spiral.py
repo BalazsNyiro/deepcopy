@@ -94,18 +94,32 @@ class VectorTests(unittest.TestCase):
         self.assertEqual(SpiralsInMark, SpiralsWanted)
         spiral.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
         #print("\n" + vector.block_to_string(MarkGenerated, BlocksInMark, Prefix=" ") + "\n")
-        # TODO: display the blocks with colors and finish the test
 
     def test_spirals_find_neighbours(self):
         NeighboursDetected = spiral.spiral_find_neighbours(self.spirals_letter_e())
         print(NeighboursDetected)
-        NeighboursWanted = {(1, 5): [(2, 1), (6, 1), (5, 6), (1, 9)],
-                            (12, 5): [(11, 1), (9, 1), (8, 6)],
+        NeighboursWanted = {
+                            (1, 5): [(2, 1), (6, 1), (5, 6), (1, 9)],
+                            (1, 9): [(1, 12), (3, 9), (4, 12), (1, 5)],
+                            (1, 12): [(4, 12), (1, 9)],
+                            (2, 1): [(1, 5), (6, 1)],
+                            (3, 9): [(1, 9), (4, 12)],
                             (4, 12): [(7, 12), (7, 14), (3, 9), (1, 9), (1, 12)],
+                            (5, 6): [(1, 5), (8, 6)],
                             (6, 1): [(2, 1), (1, 5), (9, 1)],
+                            (7, 12): [(4, 12), (9, 13)],
+                            (7, 14): [(4, 12), (7, 12), (9, 13)],
+                            (8, 6): [(5, 6), (12, 5)],
+                            (9, 1): [(12, 5), (6, 1), (11, 1)],
                             (9, 13): [(12, 11), (12, 13), (7, 12), (7, 14)],
-                            (9, 1): [(12, 5), (6, 1), (11, 1)], (1, 9): [(1, 12), (3, 9), (4, 12), (1, 5)], (5, 6): [(1, 5), (8, 6)], (8, 6): [(5, 6), (12, 5)], (2, 1): [(1, 5), (6, 1)], (11, 1): [(12, 5), (9, 1)], (1, 12): [(4, 12), (1, 9)], (3, 9): [(1, 9), (4, 12)], (12, 11): [(9, 13)], (7, 12): [(4, 12), (9, 13)], (12, 13): [(9, 13), (12, 11)], (7, 14): [(4, 12), (7, 12), (9, 13)]}
+                            (11, 1): [(12, 5), (9, 1)], (12, 11): [(9, 13)],
+                            (12, 13): [(9, 13), (12, 11)],
+                            (12, 5): [(11, 1), (9, 1), (8, 6)]
+        }
         self.assertEqual(NeighboursDetected, NeighboursWanted)
+
+    # TODO: now you know the connections. understand the vectors to identify the letters
+
 
 def run_all_tests(P):
     print("run all tests: Vector")
