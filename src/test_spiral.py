@@ -117,7 +117,7 @@ class VectorTests(unittest.TestCase):
                             (12, 13): [(9, 13), (12, 11)]
         }
         self.assertEqual(NeighboursDetected, NeighboursWanted)
-        char.neighbours_to_svg(Prg, NeighboursDetected)
+        char.neighbours_to_svg(Prg, NeighboursDetected, self.spirals_letter_e())
     # TODO: now you know the connections. understand the vectors to identify the letters
 
 

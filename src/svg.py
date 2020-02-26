@@ -44,7 +44,7 @@ def dot(SvgObj, Coord, FillColor="black", StrokeColor="red", StrokeWidth=2, R=2)
     X, Y = Coord
     X = SvgObj["Margin"] + X * SvgObj["Scale"]
     Y = SvgObj["Margin"] + Y * SvgObj["Scale"]
-    R = R * SvgObj["Scale"]//6 # I don't want real scale in R
+    R = R * 2 #SvgObj["Scale"]//20 # I don't want real scale in R
     # StrokeWidth = StrokeWidth * SvgObj["Scale"]
     obj_set_width_height(SvgObj, (X+R+StrokeWidth//2, Y+R+StrokeWidth//2))
 
