@@ -47,7 +47,7 @@ Down  = ( 0, 1)
 Left  = (-1, 0)
 Right = ( 1, 0)
 
-def spiral_operators(): return  {"CounterClockwise": {
+def _spiral_operators(): return  {"CounterClockwise": {
                                       "Down" : [Down, Right, Up, Left],
                                       "Right": [Right, Up, Left, Down],
                                       "Up"   : [Up, Left, Down, Right],
@@ -69,9 +69,10 @@ _Ranges = dict() # cached ranges, I don't want to recreate them always
 #    1  1   1  41  41  41  41   418  418  418  418  418   418   418  f418  f418
 #       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
 #                                           a   ba  cba  dcba  dcba  dcba  dcba
+# TESTED
 def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
     OperatorNextCounter = 0
-    DirectionOperators = spiral_operators()[Direction][Start]
+    DirectionOperators = _spiral_operators()[Direction][Start]
 
     SpiralCoords = [(Coord)]
     X, Y = Coord
@@ -95,6 +96,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
 
         Repetition += 1
 
+# TESTED
 def spiral_max_from_coord(MarkCoords, Coord):
     CoordsLongest = list()
     Variations = [  ("Clockwise", "Up"),
@@ -114,6 +116,7 @@ def spiral_max_from_coord(MarkCoords, Coord):
 
     return CoordsLongest
 
+# TESTED
 def spiral_nonoverlap_search_in_mark(Mark):
     SpiralsInMark = dict()
     CoordsTry = dict(Mark["Coords"])
@@ -130,11 +133,11 @@ def spiral_nonoverlap_search_in_mark(Mark):
                 SpiralBiggestCoordStart = Coord
 
         SpiralsInMark[SpiralBiggestCoordStart] = SpiralBiggestCoords
-        coords_delete(CoordsTry, SpiralBiggestCoords)
+        _coords_delete(CoordsTry, SpiralBiggestCoords)
 
     return SpiralsInMark
 
-def coords_delete(CoordsDict, CoordsDeletedList):
+def _coords_delete(CoordsDict, CoordsDeletedList):
     for CoordDel in CoordsDeletedList:
         # print("  del:", CoordDel)
         del CoordsDict[CoordDel]
