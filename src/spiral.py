@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
 import area, time, util, os
 
-def spiral_find_neighbours(Spirals):
+# algorithm: keep the two strongest neighbour as connection
+def find_path_in_char(Spirals):
+    Path = []
+    SpiralConnections = find_neighbours(Spirals)
+    for Spiral in SpiralConnections:
+        print("Spiral", Spiral)
+    return Path
+
+def find_neighbours(Spirals):
     SpiralConnections= dict()
     Point_ParentSpiral = dict()
 

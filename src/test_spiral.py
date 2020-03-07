@@ -95,7 +95,7 @@ class VectorTests(unittest.TestCase):
         spiral.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
 
     def test_spirals_find_neighbours(self):
-        NeighboursDetected = spiral.spiral_find_neighbours(self.spirals_letter_e())
+        NeighboursDetected = spiral.find_neighbours(self.spirals_letter_e())
         print(NeighboursDetected)
         NeighboursWanted = {
                             (1, 5): [(2, 1), (6, 1), (5, 6), (1, 9)],
@@ -118,8 +118,12 @@ class VectorTests(unittest.TestCase):
         }
         self.assertEqual(NeighboursDetected, NeighboursWanted)
         char.neighbours_to_svg(Prg, NeighboursDetected, self.spirals_letter_e())
-    # TODO: now you know the connections. understand the vectors to identify the letters
 
+    # TODO: now you know the connections. understand the vectors to identify the letters
+    def test_spiral_find_path_in_char(self):
+        NeighboursDetected = spiral.find_neighbours(self.spirals_letter_e())
+        Path = spiral.find_path_in_char(NeighboursDetected)
+        print(Path)
 
 def run_all_tests(P):
     print("run all tests: Vector")

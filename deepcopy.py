@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, sys, importlib
+import os, sys, importlib, argparse
 
 DirPrgParent = os.path.dirname(os.path.realpath(__file__))
 Prg = {"Os": "",
@@ -32,16 +32,19 @@ util.ui_msg_init(Prg)
 util.installed_environment_detect(Prg)
 util.os_detect(Prg)
 
-TestOnly = False
-print(sys.argv)
-if "testonly" in sys.argv:
-       TestOnly = True
-       sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a prg param so I hide it, temporary solution
+parser = argparse.ArgumentParser(prog="DeepCopy", description="Character recognition")
+parser.add_argument("--testonly", help="execute only tests", action='store_true')
+args = parser.parse_args()
+
+SysArgvOrig = sys.argv
+sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a prg param so I hide it, temporary solution
+
 test_mark_collect.run_all_tests(Prg)
 test_mark_util.run_all_tests(Prg)
 test_area.run_all_tests(Prg)
 test_spiral.run_all_tests(Prg)
-if TestOnly:
+
+if args.testonly:
        sys.exit(0)
 
 
