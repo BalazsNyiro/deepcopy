@@ -1,14 +1,35 @@
 # -*- coding: utf-8 -*-
 import area, time, util, os
 
-# algorithm: keep the two strongest neighbour as connection
-def find_path_in_char(Spirals):
+
+
+# TESTED
+# algorithm: keep the two strongest neighbour group as connection
+from util import dict_display_simple_data
+
+
+def find_path_in_char_with_spirals(Spirals):
     Path = []
-    SpiralConnections = find_neighbours(Spirals)
-    for Spiral in SpiralConnections:
-        print("Spiral", Spiral)
+    SpiralsAndNeighbours = find_neighbours(Spirals)
+    print("SpiralsAndNeighbours, ", SpiralsAndNeighbours)
+    for Spiral, Neighbours in SpiralsAndNeighbours.items():
+        print("Spiral, neighbours:", Spiral, Neighbours)
+        print("    neighbours len:", _sort_neighbours_by_len(Spirals, Neighbours))
     return Path
 
+def _sort_neighbours_by_len(Spirals, Neighbours):
+    dict_display_simple_data(Spirals, "_sort, Spirals: ")
+    Sorted = dict()
+    for Neighbour in Neighbours:
+        NeighbourLen = len(Spirals[Neighbour])
+        if NeighbourLen not in Sorted:
+            Sorted[NeighbourLen] = []
+        Sorted[NeighbourLen].append(Neighbour)
+    print("Sorted neighbour:", Sorted)
+    return 0
+
+
+# TESTED
 def find_neighbours(Spirals):
     SpiralConnections= dict()
     Point_ParentSpiral = dict()
@@ -47,7 +68,7 @@ def find_neighbours(Spirals):
                 break # you can finish, the next points to the center
                       # are INSIDE of the spiral, you won't find new neighbours
         SpiralConnections[SpiralStartPoint] = Neighbours
-    print("connections: ", SpiralConnections)
+    # print("connections: ", SpiralConnections)
     return SpiralConnections
 
 Up    = ( 0,-1)
@@ -78,7 +99,7 @@ _Ranges = dict() # cached ranges, I don't want to recreate them always
 #       2  32  32  32  32  32   32   329  329  329  329   329  e329  e329  e329
 #                                           a   ba  cba  dcba  dcba  dcba  dcba
 # TESTED
-def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
+def _spiral_coords_list_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
     OperatorNextCounter = 0
     DirectionOperators = _spiral_operators()[Direction][Start]
 
@@ -105,7 +126,7 @@ def spiral_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Do
         Repetition += 1
 
 # TESTED
-def spiral_max_from_coord(MarkCoords, Coord):
+def _spiral_max_coords_list_from_coord(MarkCoords, Coord):
     CoordsLongest = list()
     Variations = [  ("Clockwise", "Up"),
                     ("Clockwise", "Down"),
@@ -118,7 +139,7 @@ def spiral_max_from_coord(MarkCoords, Coord):
                     ("CounterClockwise", "Right") ]
 
     for Clock, Direction in Variations:
-        Spiral = spiral_from_coord(MarkCoords, Coord, Clock, Direction)
+        Spiral = _spiral_coords_list_from_coord(MarkCoords, Coord, Clock, Direction)
         if len(Spiral) > len(CoordsLongest):
             CoordsLongest = Spiral
 
@@ -135,7 +156,7 @@ def spiral_nonoverlap_search_in_mark(Mark):
         SpiralBiggestCoords = list() # the order of coords are important to represent the spiral
 
         for Coord in CoordsTry:
-            SpiralMaxNow = spiral_max_from_coord(CoordsTry, Coord)
+            SpiralMaxNow = _spiral_max_coords_list_from_coord(CoordsTry, Coord)
             if len(SpiralMaxNow) > len(SpiralBiggestCoords):
                 SpiralBiggestCoords = SpiralMaxNow
                 SpiralBiggestCoordStart = Coord

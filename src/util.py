@@ -351,3 +351,16 @@ def multiline_txt_insert_prefix(Prg, Lines, Prefix=">> "):
     for Line in Lines.split("\n"):
         Formatted.append(Prefix + Line)
     return "\n".join(Formatted)
+
+def dict_display_simple_data(Dict, Title="",Prefix="  "):
+    if Title:
+        print(Title)
+
+    KeyMaxLen = 0
+    for Key in Dict:
+        KeyLen = len(str(Key))
+        if KeyLen > KeyMaxLen:
+            KeyMaxLen = KeyLen
+
+    for Key, Values in Dict.items():
+        print("{:s}{:>{Width}}{:s}{:s}".format(Prefix, str(Key), " -> ", str(Values), Width=KeyMaxLen))
