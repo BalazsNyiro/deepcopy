@@ -7,11 +7,11 @@ import area, time, util, os
 # algorithm: keep the two strongest neighbour group as connection
 
 
-def find_path_in_char_with_spirals(Spirals):
+def find_path_in_char_with_spirals(Spirals, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
     Path = dict()
     SpiralsAndNeighbours = find_neighbours(Spirals)
     for Spiral, Neighbours in SpiralsAndNeighbours.items():
-        NeighboursByLen = _sort_neighbours_by_len(Spirals, Neighbours)
+        NeighboursByLen = _sort_neighbours_by_len(Spirals, Neighbours, ReturnObj=ReturnObj)
 
         # it can happen that Length: [5, 6, 11, 14], but in len 14 there are more than one spiral
         # I want the two biggest one
@@ -20,12 +20,15 @@ def find_path_in_char_with_spirals(Spirals):
             Path[Spiral] = []
         if NeighboursByLen:
             if len(NeighboursByLen) == 1:
-                Path[Spiral] = NeighboursByLen[0]
+                Path[Spiral].append(NeighboursByLen[0])
             else:
                 Path[Spiral].extend(NeighboursByLen[-2:])
+
+        # TODO: REMOVE unwanted small elements from the path
+
     return Path
 
-def _sort_neighbours_by_len(Spirals, Neighbours):
+def _sort_neighbours_by_len(Spirals, Neighbours, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
     Sorted = dict()
     for Neighbour in Neighbours:
         NeighbourLen = len(Spirals[Neighbour])
@@ -39,8 +42,12 @@ def _sort_neighbours_by_len(Spirals, Neighbours):
     NeighboursSortedByLen = []
     for Len in LengthSortedKeys:
         while Sorted[Len]:
-            OneElemFromLengthGroup = Sorted[Len].pop()
-            NeighboursSortedByLen.append({"Len":Len, "Spiral": OneElemFromLengthGroup})
+            OneSpiralFromLengthGroup = Sorted[Len].pop()
+            if ReturnObj == "DetailedInfo":
+                NeighboursSortedByLen.append({"Len":Len, "Spiral": OneSpiralFromLengthGroup})
+            else:
+                NeighboursSortedByLen.append(OneSpiralFromLengthGroup)
+
     # print("NeighboursSortedByLen", NeighboursSortedByLen)
     return NeighboursSortedByLen
 

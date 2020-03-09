@@ -24,6 +24,17 @@ def pack(SvgObj):
               </body>
               </html>""".format(Width, Height, Src)
 
+def text(SvgObj, Coord, Text, Color="black", ShiftXAbs=0):
+    X, Y = Coord
+    X = SvgObj["Margin"] + X * SvgObj["Scale"]
+    Y = SvgObj["Margin"] + Y * SvgObj["Scale"]
+
+    X = X + ShiftXAbs # Absolute shift, without scaling
+
+    obj_set_width_height(SvgObj, (X, Y))
+
+    SvgObj["Src"].append("""<text x="{:d}" y="{:d}" fill="rgb({:s})">{:s}</text>""".format(X, Y, Colors[Color], Text))
+
 def line(SvgObj, Coord1, Coord2, Color="red", StrokeWidth=2):
 
     X1, Y1 = Coord1

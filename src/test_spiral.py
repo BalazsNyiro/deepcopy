@@ -130,9 +130,9 @@ class VectorTests(unittest.TestCase):
 
     # TODO: now you know the connections. understand the vectors to identify the letters
     def test_spiral_find_path_in_char(self):
-        print("Find path")
-        Path = spiral.find_path_in_char_with_spirals(self.spirals_letter_e())
-        print(Path)
+        Path = spiral.find_path_in_char_with_spirals(self.spirals_letter_e(), ReturnObj="SimpleSpirals")
+        print("Path neighbours:", Path)
+        char.neighbours_to_svg(Prg, Path, self.spirals_letter_e(), Fname="test_spiral_find_path_in_char.html")
 
 def run_all_tests(P):
     print("run all tests: Vector")
