@@ -22,9 +22,12 @@ def find_path_in_char_with_spirals(Spirals, ReturnObj="DetailedInfo"): # Detaile
             if len(NeighboursByLen) == 1:
                 Path[Spiral].append(NeighboursByLen[0])
             else:
+
+
+                # TODO: WRONG CONCEPTION: don't choose the two bigger closest elem.
+                # CHOOSE the direction where the summa of others is the biggest
                 Path[Spiral].extend(NeighboursByLen[-2:])
 
-        # TODO: REMOVE unwanted small elements from the path
 
     return Path
 

@@ -35,7 +35,7 @@ def text(SvgObj, Coord, Text, Color="black", ShiftXAbs=0):
 
     SvgObj["Src"].append("""<text x="{:d}" y="{:d}" fill="rgb({:s})">{:s}</text>""".format(X, Y, Colors[Color], Text))
 
-def line(SvgObj, CoordFrom, CoordTo, Color="red", StrokeWidth=2, StrokeDashArray="", HalfLine=False):
+def line(SvgObj, CoordFrom, CoordTo, Color="red", StrokeWidth=2, HalfLine=False):
 
     XFrom, YFrom = CoordFrom
     XTo, YTo = CoordTo
@@ -53,9 +53,7 @@ def line(SvgObj, CoordFrom, CoordTo, Color="red", StrokeWidth=2, StrokeDashArray
     obj_set_width_height(SvgObj, (XFrom, YFrom))
     obj_set_width_height(SvgObj, (XTo, YTo))
 
-    if StrokeDashArray:
-        StrokeDashArray = ' stroke-dasharray="' + StrokeDashArray + '"'
-    SvgObj["Src"].append("""<line x1="{:d}" y1="{:d}" x2="{:d}" y2="{:d}" style="stroke:rgb({:s});stroke-width:{:d} {:s}" />""".format(XFrom, YFrom, XTo, YTo, Colors[Color], StrokeWidth, StrokeDashArray))
+    SvgObj["Src"].append("""<line x1="{:d}" y1="{:d}" x2="{:d}" y2="{:d}" style="stroke:rgb({:s});stroke-width:{:d}" />""".format(XFrom, YFrom, XTo, YTo, Colors[Color], StrokeWidth))
 
 def dot(SvgObj, Coord, FillColor="black", StrokeColor="red", StrokeWidth=2, R=2):
 
