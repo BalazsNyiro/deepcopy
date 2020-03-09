@@ -35,20 +35,27 @@ def text(SvgObj, Coord, Text, Color="black", ShiftXAbs=0):
 
     SvgObj["Src"].append("""<text x="{:d}" y="{:d}" fill="rgb({:s})">{:s}</text>""".format(X, Y, Colors[Color], Text))
 
-def line(SvgObj, Coord1, Coord2, Color="red", StrokeWidth=2):
+def line(SvgObj, CoordFrom, CoordTo, Color="red", StrokeWidth=2, StrokeDashArray="", HalfLine=False):
 
-    X1, Y1 = Coord1
-    X2, Y2 = Coord2
+    XFrom, YFrom = CoordFrom
+    XTo, YTo = CoordTo
     # SCALING and Left + Top Margin
-    X1 = SvgObj["Margin"] + X1 * SvgObj["Scale"]
-    Y1 = SvgObj["Margin"] + Y1 * SvgObj["Scale"]
-    X2 = SvgObj["Margin"] + X2 * SvgObj["Scale"]
-    Y2 = SvgObj["Margin"] + Y2 * SvgObj["Scale"]
+    XFrom = SvgObj["Margin"] + XFrom * SvgObj["Scale"]
+    YFrom = SvgObj["Margin"] + YFrom * SvgObj["Scale"]
 
-    obj_set_width_height(SvgObj, (X1, Y1))
-    obj_set_width_height(SvgObj, (X2, Y2))
+    XTo = SvgObj["Margin"] + XTo * SvgObj["Scale"]
+    YTo = SvgObj["Margin"] + YTo * SvgObj["Scale"]
 
-    SvgObj["Src"].append("""<line x1="{:d}" y1="{:d}" x2="{:d}" y2="{:d}" style="stroke:rgb({:s});stroke-width:{:d}" />""".format(X1, Y1, X2, Y2, Colors[Color], StrokeWidth))
+    if HalfLine:
+        XTo = int((XFrom + XTo)/2)
+        YTo = int((YFrom + YTo)/2)
+
+    obj_set_width_height(SvgObj, (XFrom, YFrom))
+    obj_set_width_height(SvgObj, (XTo, YTo))
+
+    if StrokeDashArray:
+        StrokeDashArray = ' stroke-dasharray="' + StrokeDashArray + '"'
+    SvgObj["Src"].append("""<line x1="{:d}" y1="{:d}" x2="{:d}" y2="{:d}" style="stroke:rgb({:s});stroke-width:{:d} {:s}" />""".format(XFrom, YFrom, XTo, YTo, Colors[Color], StrokeWidth, StrokeDashArray))
 
 def dot(SvgObj, Coord, FillColor="black", StrokeColor="red", StrokeWidth=2, R=2):
 

@@ -4,7 +4,9 @@ def neighbours_to_svg(Prg, NeighBours, Spirals, Fname="svg_neighbours.html"):
     for CoordSpiralCenter, CoordsConnected in NeighBours.items():
         for CoordConnected in CoordsConnected:
             # print(Fname, "Debug:", CoordSpiralCenter, CoordConnected)
-            svg.line(SvgObj, CoordSpiralCenter, CoordConnected, StrokeWidth=len(Spirals[CoordSpiralCenter]))
+            SpiralLen = len(Spirals[CoordSpiralCenter])
+            # Dash = str(SpiralLen) + "," + str(SpiralLen)
+            svg.line(SvgObj, CoordSpiralCenter, CoordConnected, StrokeWidth=SpiralLen, HalfLine=True)
 
     # the dot has to cover the lines
     for CoordSpiralCenter, CoordsConnected in NeighBours.items():

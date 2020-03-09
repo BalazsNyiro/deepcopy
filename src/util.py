@@ -364,3 +364,9 @@ def dict_display_simple_data(Dict, Title="",Prefix="  "):
 
     for Key, Values in Dict.items():
         print("{:s}{:>{Width}}{:s}{:s}".format(Prefix, str(Key), " -> ", str(Values), Width=KeyMaxLen))
+
+# find the middle of two coordinates
+def coord_middle(CoordA, CoordB):
+    XA, YA = CoordA
+    XB, YB = CoordB
+    return(int((XA+XB)/2), int((YA+YB)/2))
