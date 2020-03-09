@@ -5,28 +5,44 @@ import area, time, util, os
 
 # TESTED
 # algorithm: keep the two strongest neighbour group as connection
-from util import dict_display_simple_data
 
 
 def find_path_in_char_with_spirals(Spirals):
-    Path = []
+    Path = dict()
     SpiralsAndNeighbours = find_neighbours(Spirals)
-    print("SpiralsAndNeighbours, ", SpiralsAndNeighbours)
     for Spiral, Neighbours in SpiralsAndNeighbours.items():
-        print("Spiral, neighbours:", Spiral, Neighbours)
-        print("    neighbours len:", _sort_neighbours_by_len(Spirals, Neighbours))
+        NeighboursByLen = _sort_neighbours_by_len(Spirals, Neighbours)
+
+        # it can happen that Length: [5, 6, 11, 14], but in len 14 there are more than one spiral
+        # I want the two biggest one
+        # print("Length:", LengthSorted)
+        if Spiral not in Path:
+            Path[Spiral] = []
+        if NeighboursByLen:
+            if len(NeighboursByLen) == 1:
+                Path[Spiral] = NeighboursByLen[0]
+            else:
+                Path[Spiral].extend(NeighboursByLen[-2:])
     return Path
 
 def _sort_neighbours_by_len(Spirals, Neighbours):
-    dict_display_simple_data(Spirals, "_sort, Spirals: ")
     Sorted = dict()
     for Neighbour in Neighbours:
         NeighbourLen = len(Spirals[Neighbour])
         if NeighbourLen not in Sorted:
             Sorted[NeighbourLen] = []
         Sorted[NeighbourLen].append(Neighbour)
-    print("Sorted neighbour:", Sorted)
-    return 0
+
+    LengthSortedKeys = list(Sorted.keys())
+    LengthSortedKeys.sort()
+
+    NeighboursSortedByLen = []
+    for Len in LengthSortedKeys:
+        while Sorted[Len]:
+            OneElemFromLengthGroup = Sorted[Len].pop()
+            NeighboursSortedByLen.append({"Len":Len, "Spiral": OneElemFromLengthGroup})
+    # print("NeighboursSortedByLen", NeighboursSortedByLen)
+    return NeighboursSortedByLen
 
 
 # TESTED

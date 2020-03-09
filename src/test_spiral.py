@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import unittest, spiral, mark_util, char
+import unittest, spiral, mark_util, char, util
 
 class VectorTests(unittest.TestCase):
     def test_spiral_from_coord(self):
@@ -124,11 +124,12 @@ class VectorTests(unittest.TestCase):
         Spirals = self.spirals_letter_e()
         NeighboursDetected = spiral.find_neighbours(Spirals)
         NeighboursSorted = spiral._sort_neighbours_by_len(Spirals, NeighboursDetected)
-        print("test neighbours sorted:", NeighboursSorted)
+        # util.dict_display_simple_data(NeighboursSorted, "test_spiral_sort_neighbours_by_len")
+        Wanted = [{'Len': 1, 'Spiral': (12, 13)}, {'Len': 1, 'Spiral': (7, 14)}, {'Len': 2, 'Spiral': (12, 11)}, {'Len': 2, 'Spiral': (7, 12)}, {'Len': 2, 'Spiral': (3, 9)}, {'Len': 3, 'Spiral': (11, 1)}, {'Len': 3, 'Spiral': (1, 12)}, {'Len': 5, 'Spiral': (2, 1)}, {'Len': 6, 'Spiral': (8, 6)}, {'Len': 6, 'Spiral': (5, 6)}, {'Len': 11, 'Spiral': (9, 1)}, {'Len': 11, 'Spiral': (1, 9)}, {'Len': 14, 'Spiral': (9, 13)}, {'Len': 14, 'Spiral': (6, 1)}, {'Len': 15, 'Spiral': (4, 12)}, {'Len': 19, 'Spiral': (12, 5)}, {'Len': 19, 'Spiral': (1, 5)}]
+        self.assertEqual(NeighboursSorted, Wanted)
 
     # TODO: now you know the connections. understand the vectors to identify the letters
     def test_spiral_find_path_in_char(self):
-        return
         print("Find path")
         Path = spiral.find_path_in_char_with_spirals(self.spirals_letter_e())
         print(Path)
