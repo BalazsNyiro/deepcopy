@@ -23,7 +23,7 @@ def find_path_in_char_with_spirals(Spirals, ReturnObj="DetailedInfo"): # Detaile
                 Path[Spiral].append(NeighboursByLen[0])
             else:
 
-
+                # TODO: REPRESENT the closed empty areas
                 # TODO: WRONG CONCEPTION: don't choose the two bigger closest elem.
                 # CHOOSE the direction where the summa of others is the biggest
                 Path[Spiral].extend(NeighboursByLen[-2:])
