@@ -1,14 +1,15 @@
 
-def find_all_possible_path(SpiralCoord, Neighbours, Path, Spirals):
-    print(" path_find_next_spirals")
-    return []
+def find_all_possible_path(PathAll, PathNow, Neighbours, Spirals):
+    print("PathNow:", PathNow)
+    SpiralCoordActual = PathNow[-1]
 
-    if not NeighboursUsed: NeighboursUsed = {}
-    NeighboursUsed = dict(NeighboursUsed) # duplicate it
+    for Connection in Neighbours[SpiralCoordActual]:
 
-    for Connection in Neighbours[SpiralCoord]:
-        if Connection not in NeighboursUsed:
-            Next[Connection] = {}
-            NeighboursUsed[Connection] = {}
+        if Connection not in PathNow:
+            PathNew = list(PathNow)
+            PathNew.append(Connection)
+            find_all_possible_path(PathAll, PathNew, Neighbours, Spirals)
 
-    return Next, NeighboursUsed
+        else: # Connection in PathNow:
+            PathAll.append(PathNow)
+
