@@ -129,14 +129,13 @@ class VectorTests(unittest.TestCase):
         self.assertEqual(NeighboursSorted, Wanted)
 
     def test_path_find_next_spirals(self):
-        print("\n========== TODO  I am here ==============")
         Spirals = self.spirals_letter_e()
         Coord=list(Spirals.keys())[0]
         NeighboursDetected = spiral.find_neighbours(Spirals)
-        PathAll = []
-        path.find_all_possible_path(PathAll, [Coord], NeighboursDetected, Spirals)
-        print(PathAll)
-        print("========== TODO  I am here ==============")
+        PathAll = path.find_all_possible_path([Coord], NeighboursDetected, Spirals)
+        PathWanted = [{'PathTotalPointNumber': 24, 'Path': [(1, 5), (2, 1)]},
+                      {'PathTotalPointNumber': 38, 'Path': [(1, 5), (2, 1), (6, 1)]}]
+        self.assertEqual(PathAll[:2], PathWanted)
 
     # TODO: now you know the connections. understand the vectors to identify the letters
     def test_spiral_find_path_in_char(self):
