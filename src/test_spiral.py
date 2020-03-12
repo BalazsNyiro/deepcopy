@@ -132,15 +132,17 @@ class VectorTests(unittest.TestCase):
         Spirals = self.spirals_letter_e()
         Coord=list(Spirals.keys())[0]
         NeighboursDetected = spiral.find_neighbours(Spirals)
-        PathAll = path.find_all_possible_path([Coord], NeighboursDetected, Spirals)
+        PathAll, PathLongest = path.find_all_possible_path([Coord], NeighboursDetected, Spirals)
         PathWanted = [{'PathTotalPointNumber': 24, 'Path': [(1, 5), (2, 1)]},
                       {'PathTotalPointNumber': 38, 'Path': [(1, 5), (2, 1), (6, 1)]}]
         self.assertEqual(PathAll[:2], PathWanted)
+        print("PathLongest, avoid is empty:", PathLongest)
         print("===============")
-        PathAll = path.find_all_possible_path([Coord], NeighboursDetected, Spirals, SpiralsSkippedAvoidThem=[(6, 1)])
+        PathAll, PathLongest = path.find_all_possible_path([Coord], NeighboursDetected, Spirals, SpiralsSkippedAvoidThem=[(6, 1)])
         PathWanted = [{'PathTotalPointNumber': 24, 'Path': [(1, 5), (2, 1)]},
                       {'PathTotalPointNumber': 25, 'Path': [(1, 5), (5, 6)]}]
         self.assertEqual(PathAll[:2], PathWanted)
+        print("PathLongest Skip spirals:", PathLongest)
 
     # TODO: now you know the connections. understand the vectors to identify the letters
     def test_spiral_find_path_in_char(self):
