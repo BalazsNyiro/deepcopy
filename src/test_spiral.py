@@ -136,12 +136,14 @@ class VectorTests(unittest.TestCase):
         PathWanted = [{'PathTotalPointNumber': 24, 'Path': [(1, 5), (2, 1)]},
                       {'PathTotalPointNumber': 38, 'Path': [(1, 5), (2, 1), (6, 1)]}]
         self.assertEqual(PathAll[:2], PathWanted)
+        self.assertEqual(PathLongest["PathTotalPointNumber"], 83)
         print("PathLongest, avoid is empty:", PathLongest)
         print("===============")
         PathAll, PathLongest = path.find_all_possible_path([Coord], NeighboursDetected, Spirals, SpiralsSkippedAvoidThem=[(6, 1)])
         PathWanted = [{'PathTotalPointNumber': 24, 'Path': [(1, 5), (2, 1)]},
                       {'PathTotalPointNumber': 25, 'Path': [(1, 5), (5, 6)]}]
         self.assertEqual(PathAll[:2], PathWanted)
+        self.assertEqual(PathLongest["PathTotalPointNumber"], 68)
         print("PathLongest Skip spirals:", PathLongest)
 
     # TODO: now you know the connections. understand the vectors to identify the letters
