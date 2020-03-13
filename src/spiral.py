@@ -2,32 +2,31 @@
 import area, time, util, os
 
 
+# THIS FUNC DOESNT't work properly, I have to create in path module
+# def find_longest_path_with_unused_spirals(Spirals, UnusedSpirals):
 
 # TESTED
 # algorithm: keep the two strongest neighbour group as connection
-
-
 def find_path_in_char_with_spirals(Spirals, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
-    Path = dict()
+    Path = []
     SpiralsAndNeighbours = find_neighbours(Spirals)
-    for Spiral, Neighbours in SpiralsAndNeighbours.items():
-        NeighboursByLen = _sort_neighbours_by_len(Spirals, Neighbours, ReturnObj=ReturnObj)
 
-        # it can happen that Length: [5, 6, 11, 14], but in len 14 there are more than one spiral
-        # I want the two biggest one
-        # print("Length:", LengthSorted)
-        if Spiral not in Path:
-            Path[Spiral] = []
-        if NeighboursByLen:
-            if len(NeighboursByLen) == 1:
-                Path[Spiral].append(NeighboursByLen[0])
-            else:
+    SpiralsUnused = list(Spirals)
 
-                # TODO: REPRESENT the closed empty areas
-                # TODO: WRONG CONCEPTION: don't choose the two bigger closest elem.
-                # CHOOSE the direction where the summa of others is the biggest
-                Path[Spiral].extend(NeighboursByLen[-2:])
+    while SpiralsUnused:
+        PathAll, PathNewLongest = path.find_all_possible_path_from_one_Spiral([Coord], NeighboursDetected, Spirals, SpiralsSkippedAvoidThem=[(6, 1)])
+        # PathNew = find the longest path with unused Spirals
+        # if not Path:
+        #   Path.append(PathNew)
+        # else:
+        #   connect_with_previous_path: PathNew
 
+        # SpiralsUnused = SpiralsUnused - Spirals_in_PathNew
+
+        if Spiral not in Path: Path[Spiral] = []
+        if NeighboursUnused:
+            if len(NeighboursUnused) == 1:
+                Path[Spiral].append(NeighboursUnused[0])
 
     return Path
 

@@ -1,8 +1,20 @@
-def find_all_possible_path(PathNow, Neighbours, Spirals, PathTotalPointNumber=0,
-                           PathAll = None,
-                           SpiralsSkippedAvoidThem = None,
-                           PathLongest = None
-                          ):
+import spiral
+
+def find_longest_path_with_unused_spirals(Spirals, UnusedSpirals=None):
+    if UnusedSpirals is None: UnusedSpirals = []
+    print("")
+    SpiralsAndNeighbours = spiral.find_neighbours(Spirals)
+    for Spiral, Neighbours in SpiralsAndNeighbours.items():
+        print(">> Neighbours:", Neighbours)
+        PathAll, PathLongest = find_all_possible_path_from_one_Spiral([Spiral], Neighbours, Spirals)
+        print(Spiral, ">> Path Longest:", PathLongest)
+
+
+def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTotalPointNumber=0,
+                                           PathAll = None,
+                                           SpiralsSkippedAvoidThem = None,
+                                           PathLongest = None
+                                           ):
 
     if PathAll is None: PathAll = []
     if SpiralsSkippedAvoidThem is None: SpiralsSkippedAvoidThem = []
@@ -19,7 +31,7 @@ def find_all_possible_path(PathNow, Neighbours, Spirals, PathTotalPointNumber=0,
             if Connection not in PathNow:
                 PathNew = list(PathNow)
                 PathNew.append(Connection)
-                find_all_possible_path(PathNew, Neighbours, Spirals, PathTotalPointNumber + len(Spirals[Connection]), PathAll=PathAll, SpiralsSkippedAvoidThem=SpiralsSkippedAvoidThem, PathLongest=PathLongest)
+                find_all_possible_path_from_one_Spiral(PathNew, Neighbours, Spirals, PathTotalPointNumber + len(Spirals[Connection]), PathAll=PathAll, SpiralsSkippedAvoidThem=SpiralsSkippedAvoidThem, PathLongest=PathLongest)
 
             else: # Connection in PathNow:
                 PathAll.append({"PathTotalPointNumber": PathTotalPointNumber, "Path": PathNow})
