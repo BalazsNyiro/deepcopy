@@ -1,12 +1,12 @@
 import spiral
 
+# TODO: TEST it very carefully
 def find_longest_path_with_unused_spirals(Spirals, UnusedSpirals=None):
     if UnusedSpirals is None: UnusedSpirals = []
     print("")
     SpiralsAndNeighbours = spiral.find_neighbours(Spirals)
-    for Spiral, Neighbours in SpiralsAndNeighbours.items():
-        print(">> Neighbours:", Neighbours)
-        PathAll, PathLongest = find_all_possible_path_from_one_Spiral([Spiral], Neighbours, Spirals)
+    for Spiral in SpiralsAndNeighbours:
+        PathAll, PathLongest = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals)
         print(Spiral, ">> Path Longest:", PathLongest)
 
 
