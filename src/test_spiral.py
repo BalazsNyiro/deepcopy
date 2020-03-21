@@ -50,21 +50,7 @@ class SpiralTests(unittest.TestCase):
         # print("SpiralMax:", SpiralMax)
 
     def test_spiral_nonoverlap_search_in_mark__letter_e(self):
-        Letter = ("    OOOOOOO   "
-                  "  OOOOOOOOOO  "
-                  " OOOOOOOOOOOO "
-                  " OOOOO  OOOOO "
-                  "OOOO      OOOO"
-                  "OOOO      OOOO"
-                  "OOOOOOOOOOOOOO"
-                  "OOOOOOOOOOOOOO"
-                  "OOO           "
-                  "OOOO          "
-                  "OOOO          "
-                  " OOOOOO   OOO "
-                  " OOOOOOOOOOOO "
-                  "  OOOOOOOOOOO "
-                  "    OOOOOOOO  ")
+        Letter = util_test.letter_e_string()
         MarkGenerated = mark_util.mark_from_string(Letter, 14, "O")
         SpiralsInMark = spiral.spiral_nonoverlap_search_in_mark(MarkGenerated)
         # for CoordStart, CoordsSpiral in SpiralsInMark.items():

@@ -18,3 +18,19 @@ def spirals_letter_e(): return {
     (12, 13): [(12, 13)]
 }
 
+def letter_e_string():
+    return ( "    OOOOOOO   "
+             "  OOOOOOOOOO  "
+             " OOOOOOOOOOOO "
+             " OOOOO  OOOOO "
+             "OOOO      OOOO"
+             "OOOO      OOOO"
+             "OOOOOOOOOOOOOO"
+             "OOOOOOOOOOOOOO"
+             "OOO           "
+             "OOOO          "
+             "OOOO          "
+             " OOOOOO   OOO "
+             " OOOOOOOOOOOO "
+             "  OOOOOOOOOOO "
+             "    OOOOOOOO  ")
