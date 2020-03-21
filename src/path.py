@@ -15,25 +15,42 @@ def find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsAndNeigh
         AvoidThem = list()
         AvoidThem.extend(SpiralsUsed)
 
-        PathAll, PathAnow = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals, SpiralsSkippedAvoidThem=AvoidThem)
-        print(Spiral, ">> Path Longest 1:", PathAnow)
+        if Spiral not in AvoidThem:
 
-        AvoidThem.extend(list(PathAnow["Path"])) # to find the second longest path, avoid the first path elems
-        # print("Avoid them: ", AvoidThem)
-        PathAll, PathBnow = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals, SpiralsSkippedAvoidThem=AvoidThem)
-        print(Spiral, ">> Path Longest 2:", PathBnow)
+            PathAll, PathAnow = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals, SpiralsSkippedAvoidThem=AvoidThem)
+            # print(Spiral, ">> Path Longest 1:", PathAnow)
 
-        PathLenSumma = PathAnow["PathTotalPointNumber"] + PathBnow["PathTotalPointNumber"]
-        print(Spiral, ">> Path Longest A+B:", PathLenSumma)
+            AvoidThem.extend(list(PathAnow["Path"])) # to find the second longest path, avoid the first path elems
+            # print("Avoid them: ", AvoidThem)
+            PathAll, PathBnow = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals, SpiralsSkippedAvoidThem=AvoidThem)
+            if PathBnow["Path"]:
+                PathFirstElem = PathBnow["Path"].pop(0)
+                PathBnow["PathTotalPointNumber"] -= len(Spirals[PathFirstElem])
 
-        if PathLenSumma > MaxLen:
-            MaxLen = PathLenSumma
-            SpiralWithMaxLen_AB = Spiral
-            PathAfromSpiral = PathAnow
-            PathBfromSpiral = PathBnow
+            # Path A: Spiral -> Elems of A
+            # Path B: Spiral -> Elems of B,  Start spiral is removed.
+            # Join the two list:
+            # PathB reversed, Spiral -> Path A - this is a continuous path
+            PathBnow["Path"].reverse() # and Spiral will be in the center as a CONNECTION POINT
 
+            #print(Spiral, ">> Path Longest 2:", PathBnow)
+
+            PathLenSumma = PathAnow["PathTotalPointNumber"] + PathBnow["PathTotalPointNumber"]
+            #print(Spiral, ">> Path Longest B->Spiral->A:", PathLenSumma)
+
+            if PathLenSumma > MaxLen:
+                MaxLen = PathLenSumma
+                SpiralWithMaxLen_AB = Spiral
+                PathAfromSpiral = PathAnow
+                PathBfromSpiral = PathBnow
+
+    PathJoined = list()
+    # we travel from PathB -> Spiral -> PathA direction
+    if PathBfromSpiral["Path"]: PathJoined.extend(PathBfromSpiral["Path"])
+    if PathAfromSpiral["Path"]: PathJoined.extend(PathAfromSpiral["Path"])
+    PathTotal = {"PathTotalPointNumber": MaxLen, "Path": PathJoined}
     # print("Spiral with longest path A + path B =", MaxLen, SpiralWithMaxLen_AB)
-    return SpiralWithMaxLen_AB, MaxLen, PathAfromSpiral, PathBfromSpiral
+    return SpiralWithMaxLen_AB, MaxLen, PathTotal
 
 # TODO: test it
 def path_total_spiral_weight(Path, Spirals):
@@ -56,7 +73,7 @@ def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTot
 
     if PathLongest is None:
         PathDefault = [SpiralCoordActual]
-        PathLongest = {"PathTotalPointNumber": path_total_spiral_weight(PathDefault, Spirals), "Path": PathDefault} # the len of first elem is not used because we are there.
+        PathLongest = {"PathTotalPointNumber": path_total_spiral_weight(PathDefault, Spirals), "Path": PathDefault}
 
     for Connection in Neighbours[SpiralCoordActual]:
 

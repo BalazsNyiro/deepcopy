@@ -28,24 +28,23 @@ class PathTests(unittest.TestCase):
     def test_find_spiral_with_longest_summarised_pathA_and_PathB(self):
         print("")
         Spirals = util_test.spirals_letter_e()
-        SpiralWithMaxLen_AB_1, MaxLen1, PathA1, PathB1 = path.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals)
-        self.assertEqual(MaxLen1, 151)
+        SpiralWithMaxLen_AB_1, MaxLen1, PathTotal1 = path.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals)
+        self.assertEqual(MaxLen1, 132)
         self.assertEqual(SpiralWithMaxLen_AB_1, (1, 5))
-        print("Spiral1 with longest Path A+B: ", SpiralWithMaxLen_AB_1, MaxLen1, PathA1, PathB1)
+        print("Spiral1 with longest Path B->Spiral1->A: ", SpiralWithMaxLen_AB_1, MaxLen1, PathTotal1)
 
-        SpiralsUsed = []
-        SpiralsUsed.extend(PathA1["Path"])
-        SpiralsUsed.extend(PathB1["Path"])
+        SpiralsUsed = list(PathTotal1["Path"])
         print("SpiralsUsed:", SpiralsUsed)
         for Spiral in Spirals:
             if Spiral not in SpiralsUsed:
-                print("Spiral is not used: ", Spiral)
+                # print("Spiral is not used: ", Spiral)
+                pass
 
         # TODO:
         # if Spiral is not used:  (3, 9) then why it isn't in this search?
 
-        SpiralWithMaxLen_AB_2, MaxLen2, PathA2, PathB2 = path.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsUsed=SpiralsUsed)
-        print("Spiral2 with longest Path A+B: ", SpiralWithMaxLen_AB_2, MaxLen2, PathA2, PathB2)
+        SpiralWithMaxLen_AB_2, MaxLen2, PathTotal2 = path.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsUsed=SpiralsUsed)
+        print("Spiral2 with longest Path B->Spiral2->A: ", SpiralWithMaxLen_AB_2, MaxLen2, PathTotal2)
 
 
 
