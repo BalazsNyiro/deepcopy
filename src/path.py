@@ -16,15 +16,15 @@ def find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsAndNeigh
         AvoidThem.extend(SpiralsUsed)
 
         PathAll, PathAnow = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals, SpiralsSkippedAvoidThem=AvoidThem)
-        # print(Spiral, ">> Path Longest 1:", PathAnow)
+        print(Spiral, ">> Path Longest 1:", PathAnow)
 
         AvoidThem.extend(list(PathAnow["Path"])) # to find the second longest path, avoid the first path elems
         # print("Avoid them: ", AvoidThem)
         PathAll, PathBnow = find_all_possible_path_from_one_Spiral([Spiral], SpiralsAndNeighbours, Spirals, SpiralsSkippedAvoidThem=AvoidThem)
-        # print(Spiral, ">> Path Longest 2:", PathBnow)
+        print(Spiral, ">> Path Longest 2:", PathBnow)
 
         PathLenSumma = PathAnow["PathTotalPointNumber"] + PathBnow["PathTotalPointNumber"]
-        # print(Spiral, ">> Path Longest A+B:", PathLenSumma)
+        print(Spiral, ">> Path Longest A+B:", PathLenSumma)
 
         if PathLenSumma > MaxLen:
             MaxLen = PathLenSumma
@@ -35,19 +35,28 @@ def find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsAndNeigh
     # print("Spiral with longest path A + path B =", MaxLen, SpiralWithMaxLen_AB)
     return SpiralWithMaxLen_AB, MaxLen, PathAfromSpiral, PathBfromSpiral
 
+# TODO: test it
+def path_total_spiral_weight(Path, Spirals):
+    PathTotalPointNumber = 0
+    for Spiral in Path:
+        PathTotalPointNumber += len(Spirals[Spiral])
+    return PathTotalPointNumber
 
-def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTotalPointNumber=0,
+def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTotalPointNumber=None,
                                            PathAll = None,
                                            SpiralsSkippedAvoidThem = None,
                                            PathLongest = None
                                            ):
     if PathAll is None: PathAll = []
     if SpiralsSkippedAvoidThem is None: SpiralsSkippedAvoidThem = []
-    if PathLongest is None: PathLongest = {"PathTotalPointNumber": 0, "Path": []}
 
     SpiralCoordActual = PathNow[-1]
-    if not PathTotalPointNumber:
-        PathTotalPointNumber = len(Spirals[SpiralCoordActual])
+    if PathTotalPointNumber is None:
+        PathTotalPointNumber = path_total_spiral_weight(PathNow, Spirals)
+
+    if PathLongest is None:
+        PathDefault = [SpiralCoordActual]
+        PathLongest = {"PathTotalPointNumber": path_total_spiral_weight(PathDefault, Spirals), "Path": PathDefault} # the len of first elem is not used because we are there.
 
     for Connection in Neighbours[SpiralCoordActual]:
 
