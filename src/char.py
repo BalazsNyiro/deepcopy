@@ -16,3 +16,24 @@ def neighbours_to_svg(Prg, NeighBours, Spirals, Fname="svg_neighbours.html"):
     SvgSrc = svg.pack(SvgObj)
     # print(SvgSrc)
     util.file_write(Prg, Fname=Fname, Content=SvgSrc)
+
+def path_in_char_to_svg(Prg, Paths, Spirals, Fname="svg_paths_in_char.html"):
+    SvgObj = svg.new_object()
+
+    # the dot has to cover the lines
+    print("")
+    print("Paths:", Paths)
+    for Path in Paths:
+        SpiralPrev = None
+        for Spiral in Path:
+            if SpiralPrev:
+                svg.line(SvgObj, Spiral, SpiralPrev, StrokeWidth=5)
+
+            print("path in char, svg, Spiral: ", Spiral)
+            svg.dot(SvgObj, Spiral, R=len(Spirals[Spiral]))
+            svg.text(SvgObj, Spiral, str(Spiral), Color="green", ShiftXAbs=-20)
+            SpiralPrev = Spiral
+
+    SvgSrc = svg.pack(SvgObj)
+    # print(SvgSrc)
+    util.file_write(Prg, Fname=Fname, Content=SvgSrc)

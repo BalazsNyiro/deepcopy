@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import unittest, spiral, path, util_test, util
+import unittest, spiral, path, util_test, util, char
 
 class PathTests(unittest.TestCase):
     def test_path_find_next_spirals(self):
@@ -40,12 +40,10 @@ class PathTests(unittest.TestCase):
                 # print("Spiral is not used: ", Spiral)
                 pass
 
-        # TODO:
-        # if Spiral is not used:  (3, 9) then why it isn't in this search?
-
         SpiralWithMaxLen_AB_2, MaxLen2, PathTotal2 = path.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsUsed=SpiralsUsed)
         print("Spiral2 with longest Path B->Spiral2->A: ", SpiralWithMaxLen_AB_2, MaxLen2, PathTotal2)
 
+        char.path_in_char_to_svg(Prg, [PathTotal1["Path"], PathTotal2["Path"]], Spirals)
 
 
 
