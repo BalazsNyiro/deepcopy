@@ -363,7 +363,8 @@ def dict_display_simple_data(Dict, Title="",Prefix="  "):
             KeyMaxLen = KeyLen
 
     for Key, Values in Dict.items():
-        print("{:s}{:>{Width}}{:s}{:s}".format(Prefix, str(Key), " -> ", str(Values), Width=KeyMaxLen))
+        LengthInfo = " " + str(len(Values)) + " elem -> "
+        print("{:s}{:>{Width}}{:>{WidthLenInfo}}{:s}".format(Prefix, str(Key), LengthInfo, str(Values), WidthLenInfo=12, Width=KeyMaxLen))
 
 # find the middle of two coordinates
 def coord_middle(CoordA, CoordB):

@@ -9,7 +9,7 @@ import area, time, util, os
 # algorithm: keep the two strongest neighbour group as connection
 def find_path_in_char_with_spirals(Spirals, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
     Path = []
-    SpiralsAndNeighbours = find_neighbours(Spirals)
+    SpiralsAndNeighbours = find_neighbours_for_all_spiral(Spirals)
 
     SpiralsUnused = list(Spirals)
 
@@ -55,7 +55,7 @@ def _sort_neighbours_by_len(Spirals, Neighbours, ReturnObj="DetailedInfo"): # De
 
 
 # TESTED
-def find_neighbours(Spirals):
+def find_neighbours_for_all_spiral(Spirals):
     SpiralConnections= dict()
     Point_ParentSpiral = dict()
 

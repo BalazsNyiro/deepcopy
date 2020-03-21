@@ -63,7 +63,7 @@ class SpiralTests(unittest.TestCase):
         # spiral.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
 
     def test_spirals_find_neighbours(self):
-        NeighboursDetected = spiral.find_neighbours(util_test.spirals_letter_e())
+        NeighboursDetected = spiral.find_neighbours_for_all_spiral(util_test.spirals_letter_e())
         NeighboursWanted = {
                             (1, 5): [(2, 1), (6, 1), (5, 6), (1, 9)],
                             (1, 9): [(1, 12), (3, 9), (4, 12), (1, 5)],
@@ -88,7 +88,7 @@ class SpiralTests(unittest.TestCase):
 
     def test_spiral_sort_neighbours_by_len(self):
         Spirals = util_test.spirals_letter_e()
-        NeighboursDetected = spiral.find_neighbours(Spirals)
+        NeighboursDetected = spiral.find_neighbours_for_all_spiral(Spirals)
         NeighboursSorted = spiral._sort_neighbours_by_len(Spirals, NeighboursDetected)
         # util.dict_display_simple_data(NeighboursSorted, "test_spiral_sort_neighbours_by_len")
         Wanted = [{'Len': 1, 'Spiral': (12, 13)}, {'Len': 1, 'Spiral': (7, 14)}, {'Len': 2, 'Spiral': (12, 11)}, {'Len': 2, 'Spiral': (7, 12)}, {'Len': 2, 'Spiral': (3, 9)}, {'Len': 3, 'Spiral': (11, 1)}, {'Len': 3, 'Spiral': (1, 12)}, {'Len': 5, 'Spiral': (2, 1)}, {'Len': 6, 'Spiral': (8, 6)}, {'Len': 6, 'Spiral': (5, 6)}, {'Len': 11, 'Spiral': (9, 1)}, {'Len': 11, 'Spiral': (1, 9)}, {'Len': 14, 'Spiral': (9, 13)}, {'Len': 14, 'Spiral': (6, 1)}, {'Len': 15, 'Spiral': (4, 12)}, {'Len': 19, 'Spiral': (12, 5)}, {'Len': 19, 'Spiral': (1, 5)}]
