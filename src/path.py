@@ -15,7 +15,6 @@ def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTot
                                            SpiralsSkippedAvoidThem = None,
                                            PathLongest = None
                                            ):
-
     if PathAll is None: PathAll = []
     if SpiralsSkippedAvoidThem is None: SpiralsSkippedAvoidThem = []
     if PathLongest is None: PathLongest = {"PathTotalPointNumber": 0, "Path": []}
