@@ -9,39 +9,39 @@ import mark_util
 class UtilFuncs(unittest.TestCase):
     def test_multiline_txt_insert_prefix(self):
         Lines = "A\nB\nC"
-        Formatted = util.multiline_txt_insert_prefix(Prg, Lines, ">>")
+        Formatted = util.txt_multiline_insert_prefix(Lines, ">>")
         self.assertEqual(Formatted, ">>A\n>>B\n>>C")
 
     def test_connect_coords(self):
-        Points = util.connect_coords(2, 2, 4, 2)
+        Points = util.coords_connect_fromA_toB_with_points(2, 2, 4, 2)
         self.assertEqual(Points, [(2,2), (3,2), (4,2)])
 
-        Points = util.connect_coords(3, 3, 1, 3)
+        Points = util.coords_connect_fromA_toB_with_points(3, 3, 1, 3)
         self.assertEqual(Points, [(3,3), (2,3), (1,3)])
 
-        Points = util.connect_coords(2, 2,  2, 5)
+        Points = util.coords_connect_fromA_toB_with_points(2, 2, 2, 5)
         self.assertEqual(Points, [(2,2), (2,3), (2,4), (2,5)])
 
-        Points = util.connect_coords(2, 5,  2, 2)
+        Points = util.coords_connect_fromA_toB_with_points(2, 5, 2, 2)
         self.assertEqual(Points, [(2, 5), (2, 4), (2, 3), (2, 2)])
 
-        Points = util.connect_coords(2, 2,  4, 6)
+        Points = util.coords_connect_fromA_toB_with_points(2, 2, 4, 6)
         self.assertEqual(Points, [(2, 2), (2, 3), (3, 4), (4, 5), (4, 6)])
 
-        Points = util.connect_coords(4, 6, 2, 2)
+        Points = util.coords_connect_fromA_toB_with_points(4, 6, 2, 2)
         self.assertEqual(Points, [(4, 6), (4, 5), (3, 4), (2, 3), (2, 2)])
 
         # difficult case:
-        Points = util.connect_coords(8, 8, 11, 15)
+        Points = util.coords_connect_fromA_toB_with_points(8, 8, 11, 15)
         self.assertEqual(Points, [(8, 8), (8, 9), (9, 10), (9, 11), (10, 12), (10, 13), (11, 14), (11, 15)])
 
-        Points = util.connect_coords(11, 15, 7, 6)
+        Points = util.coords_connect_fromA_toB_with_points(11, 15, 7, 6)
         self.assertEqual(Points, [(11, 15), (11, 14), (10, 13), (10, 12), (9, 11), (9, 10), (8, 9), (8, 8), (7, 7), (7, 6)])
 
-        Points = util.connect_coords(2, 1, 1, 4)
+        Points = util.coords_connect_fromA_toB_with_points(2, 1, 1, 4)
         self.assertEqual(Points, [(2, 1), (2, 2), (1, 3), (1, 4)])
 
-        Points = util.connect_coords(1, 2,  4, 1)
+        Points = util.coords_connect_fromA_toB_with_points(1, 2, 4, 1)
         self.assertEqual(Points, [(1, 2), (2, 2), (3, 1), (4, 1)])
 
 
@@ -56,7 +56,7 @@ class UtilFuncs(unittest.TestCase):
         #   B F
         #   AHG
         PossibleNeighbours = [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2)]
-        self.assertEqual(util.coords_neighbours((1, 1)), PossibleNeighbours)
+        self.assertEqual(util.coords_neighbour_points((1, 1)), PossibleNeighbours)
 
 class OcrBusinessFuncs(unittest.TestCase):
 
@@ -147,7 +147,7 @@ class Ocr(unittest.TestCase):
         FilePathElems = ["test", "test_img_rgb_color_levels.png"]
         Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
 
-        self.assertEqual(util.is_rgb(Img), True)
+        self.assertEqual(util.img_is_rgb(Img), True)
         # Bg == Background
 
         ColorBgRMin = 0
@@ -196,7 +196,7 @@ class Ocr(unittest.TestCase):
         ColorBackgroundGrayMin = 10
         ColorBackgroundGrayMax = 240
 
-        self.assertEqual(util.is_grayscale(Img), True)
+        self.assertEqual(util.img_is_grayscale(Img), True)
         self.assertEqual(mark_collect.is_mark_grayscale(Img, 0, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
         self.assertEqual(mark_collect.is_mark_grayscale(Img, 1, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), False)
         self.assertEqual(mark_collect.is_mark_grayscale(Img, 2, 0, ColorBackgroundGrayMin, ColorBackgroundGrayMax), True)
@@ -210,31 +210,31 @@ class Ocr(unittest.TestCase):
 
     def test_is_rgb_pixel_datasize_field_missing(self):
         Img = dict()
-        self.assertEqual(util.is_rgb(Img), False)
+        self.assertEqual(util.img_is_rgb(Img), False)
 
     def test_is_rgb_pixel_datasize_field_is_zero(self):
         Img = dict()
         Img["PixelDataSize"] = 0
-        self.assertEqual(util.is_rgb(Img), False)
+        self.assertEqual(util.img_is_rgb(Img), False)
 
     def test_is_rgb_pixel_datasize_field_is_one(self):
         Img = dict()
         Img["PixelDataSize"] = 3
-        self.assertEqual(util.is_rgb(Img), True)
+        self.assertEqual(util.img_is_rgb(Img), True)
 
     def test_is_grayscale_pixel_datasize_field_missing(self):
         Img = dict()
-        self.assertEqual(util.is_grayscale(Img), False)
+        self.assertEqual(util.img_is_grayscale(Img), False)
 
     def test_is_grayscale_pixel_datasize_field_is_zero(self):
         Img = dict()
         Img["PixelDataSize"] = 0
-        self.assertEqual(util.is_grayscale(Img), False)
+        self.assertEqual(util.img_is_grayscale(Img), False)
 
     def test_is_grayscale_pixel_datasize_field_is_one(self):
         Img = dict()
         Img["PixelDataSize"] = 1
-        self.assertEqual(util.is_grayscale(Img), True)
+        self.assertEqual(util.img_is_grayscale(Img), True)
 
 class TestMarkIdsSetForPixel(unittest.TestCase):
     def test_mark_ids_set_for_pixels_debug(self):

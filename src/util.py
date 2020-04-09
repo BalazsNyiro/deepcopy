@@ -2,7 +2,7 @@
 
 import platform, json, os, importlib, gzip
 
-def installed_environment_detect(Prg):
+def installed_environment_detect():
     Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
 
     if Major < 3:
@@ -16,7 +16,7 @@ def installed_environment_detect(Prg):
 # Real situation: PIL is available but ImageTk is not.
 # so module_available is not totally enough to successful import.
 # TESTED
-def module_available(Prg, ModuleName, Msg):
+def module_available(ModuleName, Msg):
     if not importlib.util.find_spec(ModuleName):
         warning_display(Msg, "util:module_available")
         return False
@@ -87,6 +87,22 @@ def list_display(List, Title):
     print("== {:s} ==".format(Title))
     for L in List:
         print(L)
+
+# DOC: naive formatted dictionary display
+def dict_display_simple_data(Dict, Title="",Prefix="  "):
+    if Title:
+        print(Title)
+
+    KeyMaxLen = 0
+    # find Max length in keys
+    for Key in Dict:
+        KeyLen = len(str(Key))
+        if KeyLen > KeyMaxLen:
+            KeyMaxLen = KeyLen
+
+    for Key, Values in Dict.items():
+        LengthInfo = " " + str(len(Values)) + " elem -> "
+        print("{:s}{:>{Width}}{:>{WidthLenInfo}}{:s}".format(Prefix, str(Key), LengthInfo, str(Values), WidthLenInfo=12, Width=KeyMaxLen))
 ##################################
 
 # TESTED
@@ -168,7 +184,7 @@ def file_write(Prg, Fname="", Content="", Mode="w", Gzipped=False, CompressLevel
         warning_display("file_write error: " + Fname, "util:file_write, except")
         return False
 
-def dir_create_if_necessary(Prg, Path):
+def dir_create_if_necessary(Path):
     if not os.path.isdir(Path):
         os.mkdir(Path)
 
@@ -247,12 +263,25 @@ def img_generate_id_for_loaded_list(Prg, PreFix="", PostFix=""):
     if PostFix: PostFix = "_" + PostFix
     return "{:s}{:d}{:s}".format(PreFix, NumOfLoadedPics + 1, PostFix)
 
+# TESTED
+def img_is_rgb(Img):
+    Size = Img.get("PixelDataSize", -1)
+    if Size == 3:
+        return True
+    return False
+
+# TESTED
+def img_is_grayscale(Img):
+    Size = Img.get("PixelDataSize", -1)
+    if Size == 1:
+        return True
+    return False
 
 # TESTED, neighbour coord order:
 #   CDE
 #   B F
 #   AHG
-def coords_neighbours(Coord):
+def coords_neighbour_points(Coord):
     X, Y = Coord
     return [
         (X - 1, Y + 1),
@@ -265,25 +294,11 @@ def coords_neighbours(Coord):
         (X,     Y + 1),
     ]
 
-# TESTED
-def is_rgb(Img):
-    Size = Img.get("PixelDataSize", -1)
-    if Size == 3:
-        return True
-    return False
-
-# TESTED
-def is_grayscale(Img):
-    Size = Img.get("PixelDataSize", -1)
-    if Size == 1:
-        return True
-    return False
-
 # it's a very often used func.
 # I want to avoid extract values so I didn't receive
 # coords as a tuple.
 # TESTED
-def connect_coords(Ax, Ay, Bx, By):
+def coords_connect_fromA_toB_with_points(Ax, Ay, Bx, By):
 
     DeltaX = Bx - Ax
     DeltaY = By - Ay
@@ -295,7 +310,6 @@ def connect_coords(Ax, Ay, Bx, By):
     StepX = 1
     if Ax > Bx:
         StepX = -1
-
 
     Points = list()
     # print("\n>>>", Ax, Ay, ",  ", Bx, By)
@@ -345,29 +359,17 @@ def connect_coords(Ax, Ay, Bx, By):
 
     return Points
 
-# TESTED
-def multiline_txt_insert_prefix(Prg, Lines, Prefix=">> "):
-    Formatted = list()
-    for Line in Lines.split("\n"):
-        Formatted.append(Prefix + Line)
-    return "\n".join(Formatted)
-
-def dict_display_simple_data(Dict, Title="",Prefix="  "):
-    if Title:
-        print(Title)
-
-    KeyMaxLen = 0
-    for Key in Dict:
-        KeyLen = len(str(Key))
-        if KeyLen > KeyMaxLen:
-            KeyMaxLen = KeyLen
-
-    for Key, Values in Dict.items():
-        LengthInfo = " " + str(len(Values)) + " elem -> "
-        print("{:s}{:>{Width}}{:>{WidthLenInfo}}{:s}".format(Prefix, str(Key), LengthInfo, str(Values), WidthLenInfo=12, Width=KeyMaxLen))
-
 # find the middle of two coordinates
 def coord_middle(CoordA, CoordB):
     XA, YA = CoordA
     XB, YB = CoordB
     return(int((XA+XB)/2), int((YA+YB)/2))
+
+# TESTED
+def txt_multiline_insert_prefix(TextWithNewlines, Prefix=">> "):
+    Formatted = list()
+    for Line in TextWithNewlines.split("\n"):
+        Formatted.append(Prefix + Line)
+    return "\n".join(Formatted)
+
+

@@ -206,6 +206,8 @@ def window_new(Prg, TitleKey=""):
         Window.title(util.ui_msg(Prg, TitleKey))
     return Window
 
+def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
+    return ImageTk.PhotoImage(image_file_load(Prg, Path, ThumbnailSize=ThumbnailSize))
 
 def image_file_load(Prg, Path, ThumbnailSize=None, PixelReturn=False):
     if not os.path.isfile(Path):
@@ -221,9 +223,6 @@ def image_file_load(Prg, Path, ThumbnailSize=None, PixelReturn=False):
         return Img.load()
 
     return Img
-
-def image_file_load_to_tk(Prg, Path, ThumbnailSize=None):
-    return ImageTk.PhotoImage(image_file_load(Prg, Path, ThumbnailSize=ThumbnailSize))
 
 
 def marks_collect_from_page():

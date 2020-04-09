@@ -47,7 +47,7 @@ def marks_info_table(Prg, Marks, WantedIdNums=None, OutputType="txt", MarkParser
                     Vformatted = str(V)
                     Kformatted = "{txt: >{fill}}".format(txt=K, fill=MarkStats["keywords_len_max"]) # maybe f strings?
                     if isinstance(V, str) and "\n" in V:
-                        Vformatted = util.multiline_txt_insert_prefix(Prg, V, Prefix=" "*(MarkStats["keywords_len_max"]+2))
+                        Vformatted = util.txt_multiline_insert_prefix(V, Prefix=" " * (MarkStats["keywords_len_max"] + 2))
 
                     Stats.append(str(Kformatted) + ": " + Vformatted)
                 Result.append("")
@@ -140,7 +140,7 @@ def mark_area_convex(Prg, Mark, PointsWanted=False):
     while PixelCoords:
         FromX, FromY = PixelCoords.pop(0)
         for ToX, ToY in PixelCoords:
-            Points = util.connect_coords(FromX, FromY, ToX, ToY)
+            Points = util.coords_connect_fromA_toB_with_points(FromX, FromY, ToX, ToY)
             if PointsWanted:
                 ConnectionPointLines.append(Points)
             for ConnectionPointX, ConnectionPointY in Points:

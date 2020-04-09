@@ -35,10 +35,10 @@ class PathTests(unittest.TestCase):
 
         SpiralsUsed = list(PathTotal1["Path"])
         print("SpiralsUsed:", SpiralsUsed)
-        for Spiral in Spirals:
-            if Spiral not in SpiralsUsed:
-                # print("Spiral is not used: ", Spiral)
-                pass
+        # for Spiral in Spirals:
+        #     if Spiral not in SpiralsUsed:
+        #         # print("Spiral is not used: ", Spiral)
+        #         pass
 
         SpiralWithMaxLen_AB_2, MaxLen2, PathTotal2 = path.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsUsed=SpiralsUsed)
         print("Spiral2 with longest Path B->Spiral2->A: ", SpiralWithMaxLen_AB_2, MaxLen2, PathTotal2)

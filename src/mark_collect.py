@@ -117,7 +117,7 @@ def mark_ids_collect_from_neighbourhood(Coord, MarkIdIfNoNeighbour,
                                         InkPixelCoords_and_MarkId):
     MarkIdsInNeighbourhood = list() # if in the neighbours are a known mark, connect the current pixel into that mark
 
-    for CoordNeighbour in util.coords_neighbours(Coord):
+    for CoordNeighbour in util.coords_neighbour_points(Coord):
         markid_of_coord_append_if_unknown(CoordNeighbour,
                                           MarkIdsInNeighbourhood,
                                           InkPixelCoords_and_MarkId)
@@ -134,7 +134,7 @@ def mark_pixels_select_from_img(Prg, Img,
                                 ColorBlockBackgroundGray,
                                 ColorBlockBackgroundGrayDelta):
 
-    if not util.is_rgb(Img) and not util.is_grayscale(Img):
+    if not util.img_is_rgb(Img) and not util.img_is_grayscale(Img):
         print(util.ui_msg(Prg, "ocr.pixel_data_size_unknown"))
         PixelDataSize = Img.get("PixelDataSize", -1)
         sys.exit(PixelDataSize)
@@ -153,13 +153,13 @@ def mark_pixels_select_from_img(Prg, Img,
     BgGrayMin = ColorBlockBackgroundGray - ColorBlockBackgroundGrayDelta
     BgGrayMax = ColorBlockBackgroundGray + ColorBlockBackgroundGrayDelta
 
-    if util.is_rgb(Img):
+    if util.img_is_rgb(Img):
         def is_mark(Img, X, Y):
             if is_mark_rgb(Img, X, Y, BgRedMin, BgRedMax, BgGreenMin, BgGreenMax, BgBlueMin, BgBlueMax):
                 return True
             return False
 
-    if util.is_grayscale(Img):
+    if util.img_is_grayscale(Img):
         def is_mark(Img, X, Y):
             if is_mark_grayscale(Img, X, Y, BgGrayMin, BgGrayMax):
                 return True
