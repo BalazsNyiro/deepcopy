@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import unittest, util, os, mark_collect
+import unittest, util, os, mark_collect, util_test
 
 import mark_util
 
 
-class UtilFuncs(unittest.TestCase):
+class UtilFuncs(util_test.DeepCopyTest):
     def test_multiline_txt_insert_prefix(self):
         Lines = "A\nB\nC"
         Formatted = util.txt_multiline_insert_prefix(Lines, ">>")
@@ -58,7 +58,7 @@ class UtilFuncs(unittest.TestCase):
         PossibleNeighbours = [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2)]
         self.assertEqual(util.coords_neighbour_points((1, 1)), PossibleNeighbours)
 
-class OcrBusinessFuncs(unittest.TestCase):
+class OcrBusinessFuncs(util_test.DeepCopyTest):
 
     def test_mark_ids_collect_from_neighbourhood__mark_ids_set_for_pixel(self):
         # the second test uses the result of the first one.
@@ -82,7 +82,7 @@ class OcrBusinessFuncs(unittest.TestCase):
         MarkIdCurrentPixel = MarkIdsInNeighbourhood.pop(0) # select first id from the possible list
 
         FilePathElems = ["test", "test_mark_ids_set_for_pixels_gray.png"]
-        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(self.Prg, FilePathElems)
         mark_collect.mark_ids_set_for_pixels(Marks, MarkIdCurrentPixel,
                                              InkPixelCoords_and_MarkId,
                                              MarkIdsInNeighbourhood, Img, Coord)
@@ -104,10 +104,10 @@ class OcrBusinessFuncs(unittest.TestCase):
         ColorBlockBackgroundGrayDelta = 128  # between 225+Delta - 225-Delta pixels are bg pixels
 
         FilePathElems = ["test", "test_color_scale_rgb.png"]
-        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(self.Prg, FilePathElems)
 
         InkPixelCoords_and_MarkId = mark_collect.mark_pixels_select_from_img(
-            Prg, Img,
+            self.Prg, Img,
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
             ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
 
@@ -116,14 +116,14 @@ class OcrBusinessFuncs(unittest.TestCase):
 
         # test with grayscale img
         FilePathElems = ["test", "test_color_scale_gray.png"]
-        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
-        # util.file_write(Prg, "log.txt", str(Img))
+        Img, _ImgId = util.img_load_into_prg_structure__get_imgid(self.Prg, FilePathElems)
+        # util.file_write(self.Prg, "log.txt", str(Img))
         InkPixelCoords_and_MarkId = mark_collect.mark_pixels_select_from_img(
-            Prg, Img,
+            self.Prg, Img,
             ColorBlockBackgroundRgb, ColorBlockBackgroundRgbDelta,
             ColorBlockBackgroundGray, ColorBlockBackgroundGrayDelta)
 
-        # util.file_write(Prg, "log.txt", str(InkPixelCoords_and_MarkId))
+        # util.file_write(self.Prg, "log.txt", str(InkPixelCoords_and_MarkId))
         WantedPixels = {(7, 0): None, (8, 0): None, (9, 0): None, (10, 0): None}
         self.assertEqual(InkPixelCoords_and_MarkId, WantedPixels)
 
@@ -142,10 +142,10 @@ class OcrBusinessFuncs(unittest.TestCase):
             self.assertEqual(MarkIdWanted in MarkIdsPossible, True)
 
 
-class Ocr(unittest.TestCase):
+class Ocr(util_test.DeepCopyTest):
     def test_is_mark_rgb(self):
         FilePathElems = ["test", "test_img_rgb_color_levels.png"]
-        Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        Img, ImgId = util.img_load_into_prg_structure__get_imgid(self.Prg, FilePathElems)
 
         self.assertEqual(util.img_is_rgb(Img), True)
         # Bg == Background
@@ -191,7 +191,7 @@ class Ocr(unittest.TestCase):
 
     def test_is_mark_grayscale(self):
         FilePathElems = ["test", "test_img_grayscale_color_levels.png"]
-        Img, ImgId = util.img_load_into_prg_structure__get_imgid(Prg, FilePathElems)
+        Img, ImgId = util.img_load_into_prg_structure__get_imgid(self.Prg, FilePathElems)
 
         ColorBackgroundGrayMin = 10
         ColorBackgroundGrayMax = 240
@@ -236,7 +236,7 @@ class Ocr(unittest.TestCase):
         Img["PixelDataSize"] = 1
         self.assertEqual(util.img_is_grayscale(Img), True)
 
-class TestMarkIdsSetForPixel(unittest.TestCase):
+class TestMarkIdsSetForPixel(util_test.DeepCopyTest):
     def test_mark_ids_set_for_pixels_debug(self):
         Marks = {22: {"Coords":{(2, 2): 22},             "Xmin": 2, "Xmax": 2, "Ymin": 2, "Ymax": 2, "Width": 1, "Height": 1},
                  42: {"Coords":{(4, 2): 42, (5, 2): 52}, "Xmin": 4, "Xmax": 5, "Ymin": 2, "Ymax": 2, "Width": 2, "Height": 1},
@@ -257,17 +257,17 @@ class TestMarkIdsSetForPixel(unittest.TestCase):
 
         self.assertEqual(Marks, WantedMarksPixelInserted_and_IdsMerged)
 
-class TestMethodsAnalysed(unittest.TestCase):
+class TestMethodsAnalysed(util_test.DeepCopyTest):
     def test_mark_collect___base_abc_ubuntu(self):
 
         FilePathImg      = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_abc_basic__font_ubuntu_24pt_result.txt"]
 
-        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        #difference_display(Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
-        difference_display(Prg, self, MarksNowDetected, TestWantedResults)
+        MarksNowDetected, TestWantedResults = marks_results_from_img_and_result_files(self.Prg, FilePathImg, FileWantedResult)
+        #difference_display(self.Prg, self, MarksNowDetected, TestWantedResults, AppendToFileIfDifference=FileWantedResult)
+        difference_display(self.Prg, self, MarksNowDetected, TestWantedResults)
 
-class TestMethods(unittest.TestCase):
+class TestMethods(util_test.DeepCopyTest):
 
     def test_module_available(self):
         self.assertFalse(util.module_available("unknown_module", "please install unknown module :-)"))
@@ -321,27 +321,33 @@ class TestMethods(unittest.TestCase):
 
     def test_file_read_all(self):
         TxtRaw = "  Test Line 1\n\n  Test Line 3"
-        Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
-        self.assertEqual(TxtRaw, util.file_read_all(Prg, Path))
+        Path = os.path.join(self.Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
+        self.assertEqual(TxtRaw, util.file_read_all(self.Prg, Path))
 
     def test_file_funcs(self):
-        self.assertFalse(util.file_test(Prg, "unknown_file"))
-        Path = os.path.join(Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
-        self.assertTrue(util.file_test(Prg, Path))
+        self.assertFalse(util.file_test(self.Prg, "unknown_file"))
+        Path = os.path.join(self.Prg["DirPrgParent"], "test", "test_file_read_lines.txt")
+        self.assertTrue(util.file_test(self.Prg, Path))
 
     def test_mark_collect___word_the(self):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
         FileWantedResult = ["test", "test_mark_finding_word_the__font_ubuntu_24pt_result.txt"]
-        Marks, TestWantedResults = marks_results_from_img_and_result_files(Prg, FilePathImg, FileWantedResult)
-        difference_display(Prg, self, Marks, TestWantedResults)
+        Marks, TestWantedResults = marks_results_from_img_and_result_files(self.Prg, FilePathImg, FileWantedResult)
+        difference_display(self.Prg, self, Marks, TestWantedResults)
 
 
 # if you want to execute only the tests:
 # ./deepcopy.py testonly
-def run_all_tests(P):
+def run_all_tests(Prg):
     print("run all tests")
-    global Prg
-    Prg = P
+
+    UtilFuncs.Prg = Prg
+    OcrBusinessFuncs.Prg = Prg
+    Ocr.Prg = Prg
+    TestMarkIdsSetForPixel.Prg = Prg
+    TestMethodsAnalysed.Prg = Prg
+    TestMethods.Prg = Prg
+
     # exec all test:
     unittest.main(module="test_mark_collect", verbosity=2, exit=False)
 

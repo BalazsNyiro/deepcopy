@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import unittest, mark_util, area
+import unittest, mark_util, area, util_test
 
-class AreaProcessors(unittest.TestCase):
+class AreaProcessors(util_test.DeepCopyTest):
     def test_area_process_pixels(self):
         Bg = mark_util.MarkBg
         Fg = mark_util.MarkFg
@@ -29,7 +29,7 @@ class AreaProcessors(unittest.TestCase):
         Wanted = [['P', '.'], ['.', 'P'], ['.', '.']]
         self.assertEqual(AreaResult, Wanted)
 
-class Area(unittest.TestCase):
+class Area(util_test.DeepCopyTest):
     def test_count_separated_blocks(self):
         Bg = mark_util.MarkBg
         Fg = mark_util.MarkFg
@@ -299,8 +299,9 @@ class Area(unittest.TestCase):
         WantedRows = [WantedColumn, WantedColumn]
         self.assertEqual(WantedRows, Result)
 
-def run_all_tests(P):
+def run_all_tests(Prg):
     print("run all tests")
-    global Prg
-    Prg = P
+    Area.Prg = Prg
+    AreaProcessors.Prg = Prg
+
     unittest.main(module="test_area", verbosity=2, exit=False)

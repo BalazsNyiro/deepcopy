@@ -7,7 +7,6 @@ def spirals_sort_by_len(SpiralsAll, SpiralsSelected, ReturnObj="DetailedInfo"): 
     SortedGroups = dict()
     for Selected in SpiralsSelected:
         SelectedLen = len(SpiralsAll[Selected])
-        print("SpiralsSelected:", Selected, "len:", SelectedLen)
         if SelectedLen not in SortedGroups:
             SortedGroups[SelectedLen] = []
         SortedGroups[SelectedLen].append(Selected)
@@ -16,11 +15,9 @@ def spirals_sort_by_len(SpiralsAll, SpiralsSelected, ReturnObj="DetailedInfo"): 
     LengthSortedKeys.sort()
 
     util.dict_with_lists_display_simple_data(SortedGroups, Title="SortedGroups")
-    print("LengthSortedKeys", LengthSortedKeys)
 
     SortedSpirals = []
     for Len in LengthSortedKeys:
-        print("LenNow", Len, "SortedGroups[Len]", SortedGroups[Len])
         while SortedGroups[Len]:
             OneSpiralFromLengthGroup = SortedGroups[Len].pop()
             if ReturnObj == "DetailedInfo":
@@ -30,7 +27,6 @@ def spirals_sort_by_len(SpiralsAll, SpiralsSelected, ReturnObj="DetailedInfo"): 
 
     # print("SortedGroups", SortedGroups)
     return SortedSpirals
-
 
 # TESTED
 def neighbours_find_for_all_spirals(Spirals):

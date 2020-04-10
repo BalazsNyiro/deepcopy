@@ -1,9 +1,7 @@
-import unittest, mark_collect, mark_util, mark_parse
-
+import unittest, mark_collect, mark_util, mark_parse, util_test
 import area
 
-
-class MarkUtil(unittest.TestCase):
+class MarkUtil(util_test.DeepCopyTest):
     def test_mark_from_string(self):
         Txt = ("..."
                ".X."
@@ -20,13 +18,13 @@ class MarkUtil(unittest.TestCase):
     # of marks, display informations about them
     def test_marks_info_table(self):
         FilePathImg = ["test", "test_mark_finding_word_the__font_ubuntu_24pt.png"]
-        Marks = mark_collect.mark_collect_from_img_file(Prg, FilePathImg)
+        Marks = mark_collect.mark_collect_from_img_file(self.Prg, FilePathImg)
 
         MarkParserFuns = [mark_parse.mark_info_basic,
                           mark_parse.mark_area_convex,
                           mark_parse.mark_area_select_closed_empty_area
                           ] # these functions analyses the Marks one by one
-        print(mark_util.marks_info_table(Prg, Marks, MarkParserFuns=MarkParserFuns,
+        print(mark_util.marks_info_table(self.Prg, Marks, MarkParserFuns=MarkParserFuns,
                                          WantedIdNums=[0, 2, 3], OutputType="txt"))
 
         self.assertTrue(True)
@@ -49,7 +47,7 @@ class MarkUtil(unittest.TestCase):
 
     def test_mark_area_convex(self):
         Mark = {"Coords":{(1,1):1, (2,2):2, (3,3):3, (1,3):4}, "Width":3, "Height":3, "Xmin":1, "Ymin":1, "Xmax":3, "Ymax":3}
-        AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
+        AreaConvexGenerated = mark_util.mark_area_convex(self.Prg, Mark)
         AreaWanted = ("O..\n"
                       "OO.\n"
                       "OOO")
@@ -65,7 +63,7 @@ class MarkUtil(unittest.TestCase):
                 "Width": 5, "Height": 5, "Xmin": 1, "Ymin": 1, "Xmax": 5, "Ymax": 5
                 }
 
-        AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
+        AreaConvexGenerated = mark_util.mark_area_convex(self.Prg, Mark)
         AreaWanted = ("OOO..\n"
                       "OOOO.\n"
                       "OOOO.\n"
@@ -86,7 +84,7 @@ class MarkUtil(unittest.TestCase):
             },
             "Width": 7, "Height": 7, "Xmin": 0, "Ymin": 2, "Xmax": 6, "Ymax": 8
         }
-        AreaConvexGenerated = mark_util.mark_area_convex(Prg, Mark)
+        AreaConvexGenerated = mark_util.mark_area_convex(self.Prg, Mark)
         AreaWanted = ("...O...\n"
                       "..OOO..\n"
                       ".OOOOO.\n"
@@ -97,10 +95,9 @@ class MarkUtil(unittest.TestCase):
                       )
         self.assertEqual(AreaWanted, area.to_string(AreaConvexGenerated))
 
-def run_all_tests(P):
+def run_all_tests(Prg):
     print("run all tests: test_mark_util")
-    global Prg
-    Prg = P
+    MarkUtil.Prg = Prg
     # exec all test:
     unittest.main(module="test_mark_util", verbosity=2, exit=False)
     # unittest.main(TestMethodsAnalysed())
