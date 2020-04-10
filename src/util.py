@@ -103,7 +103,13 @@ def dict_display_simple_data(Dict, Title="",Prefix="  "):
     for Key, Values in Dict.items():
         LengthInfo = " " + str(len(Values)) + " elem -> "
         print("{:s}{:>{Width}}{:>{WidthLenInfo}}{:s}".format(Prefix, str(Key), LengthInfo, str(Values), WidthLenInfo=12, Width=KeyMaxLen))
+
+def dict_delete_keys(Dict, KeysRemove):
+    for Key in KeysRemove:
+        # print("  del:", Key)
+        del Dict[Key]
 ##################################
+
 
 # TESTED
 def file_read_all(Prg, Fname="", Mode="r"): # if you want read binary, write "rb"

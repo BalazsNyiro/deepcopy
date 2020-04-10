@@ -1,4 +1,4 @@
-def new_object():
+def obj_new():
     return {    "Width": 0,
                 "Height": 0,
                 "Src": [],

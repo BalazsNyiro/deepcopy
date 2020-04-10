@@ -101,16 +101,16 @@ Down  = ( 0, 1)
 Left  = (-1, 0)
 Right = ( 1, 0)
 
-def _spiral_operators(): return  {"CounterClockwise": {
-                                      "Down" : [Down, Right, Up, Left],
-                                      "Right": [Right, Up, Left, Down],
-                                      "Up"   : [Up, Left, Down, Right],
-                                      "Left" : [Left, Down, Right, Up] },
-                                 "Clockwise": {
-                                     "Down" : [Down, Left, Up, Right],
-                                     "Left" : [Left, Up, Right, Down],
-                                     "Up"   : [Up, Right, Down, Left],
-                                     "Right": [Right, Down, Left, Up] }}
+SpiralOperators = {"CounterClockwise": {
+                              "Down" : [Down, Right, Up, Left],
+                              "Right": [Right, Up, Left, Down],
+                              "Up"   : [Up, Left, Down, Right],
+                              "Left" : [Left, Down, Right, Up] },
+                         "Clockwise": {
+                             "Down" : [Down, Left, Up, Right],
+                             "Left" : [Left, Up, Right, Down],
+                             "Up"   : [Up, Right, Down, Left],
+                             "Right": [Right, Down, Left, Up] }}
 
 def _operator_next(DirectionOperators, OperatorNextCounter):
     OperatorX, OperatorY = DirectionOperators[OperatorNextCounter % 4] # we always use 4 operators
@@ -126,7 +126,7 @@ _Ranges = dict() # cached ranges, I don't want to recreate them always
 # TESTED
 def _spiral_coords_list_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
     OperatorNextCounter = 0
-    DirectionOperators = _spiral_operators()[Direction][Start]
+    DirectionOperators = SpiralOperators[Direction][Start]
 
     SpiralCoords = [(Coord)]
     X, Y = Coord
@@ -187,14 +187,9 @@ def spiral_nonoverlap_search_in_mark(Mark):
                 SpiralBiggestCoordStart = Coord
 
         SpiralsInMark[SpiralBiggestCoordStart] = SpiralBiggestCoords
-        _coords_delete(CoordsTry, SpiralBiggestCoords)
+        util.dict_delete_keys(CoordsTry, SpiralBiggestCoords)
 
     return SpiralsInMark
-
-def _coords_delete(CoordsDict, CoordsDeletedList):
-    for CoordDel in CoordsDeletedList:
-        # print("  del:", CoordDel)
-        del CoordsDict[CoordDel]
 
 # these chars have colors in Linux terminal, I hope in windows there are colored chars, too
 # https://apps.timwhitlock.info/emoji/tables/unicode

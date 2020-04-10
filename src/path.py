@@ -5,7 +5,6 @@ def find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsAndNeigh
     if SpiralsUsed is None: SpiralsUsed = []
     if SpiralsAndNeighbours is None: SpiralsAndNeighbours = spiral.find_neighbours_for_all_spiral(Spirals)
 
-
     SpiralWithMaxLen_AB = None
     MaxLen = 0
     PathAfromSpiral = None
@@ -63,7 +62,7 @@ def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTot
                                            PathAll = None,
                                            SpiralsSkippedAvoidThem = None,
                                            PathLongest = None
-                                           ):
+                                          ):
     if PathAll is None: PathAll = []
     if SpiralsSkippedAvoidThem is None: SpiralsSkippedAvoidThem = []
 

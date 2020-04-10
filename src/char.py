@@ -1,6 +1,6 @@
 import svg, util
 def neighbours_to_svg(Prg, NeighBours, Spirals, Fname="svg_neighbours.html"):
-    SvgObj = svg.new_object()
+    SvgObj = svg.obj_new()
     for CoordSpiralCenter, CoordsConnected in NeighBours.items():
         for CoordConnected in CoordsConnected:
             # print(Fname, "Debug:", CoordSpiralCenter, CoordConnected)
@@ -18,7 +18,7 @@ def neighbours_to_svg(Prg, NeighBours, Spirals, Fname="svg_neighbours.html"):
     util.file_write(Prg, Fname=Fname, Content=SvgSrc)
 
 def path_in_char_to_svg(Prg, Paths, Spirals, Fname="svg_paths_in_char.html"):
-    SvgObj = svg.new_object()
+    SvgObj = svg.obj_new()
 
     # the dot has to cover the lines
     print("")
