@@ -1,9 +1,8 @@
 import spiral
 
-# TODO: TEST it very carefully
 def find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsAndNeighbours=None, SpiralsUsed=None):
     if SpiralsUsed is None: SpiralsUsed = []
-    if SpiralsAndNeighbours is None: SpiralsAndNeighbours = spiral.find_neighbours_for_all_spiral(Spirals)
+    if SpiralsAndNeighbours is None: SpiralsAndNeighbours = spiral.neighbours_find_for_all_spirals(Spirals)
 
     SpiralWithMaxLen_AB = None
     MaxLen = 0
@@ -51,28 +50,21 @@ def find_spiral_with_longest_summarised_pathA_and_PathB(Spirals, SpiralsAndNeigh
     # print("Spiral with longest path A + path B =", MaxLen, SpiralWithMaxLen_AB)
     return SpiralWithMaxLen_AB, MaxLen, PathTotal
 
-# TODO: test it
-def path_total_spiral_weight(Path, Spirals):
-    PathTotalPointNumber = 0
-    for Spiral in Path:
-        PathTotalPointNumber += len(Spirals[Spiral])
-    return PathTotalPointNumber
-
-def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTotalPointNumber=None,
+def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, SpiralsAllInfo, PathTotalPointNumber=None,
                                            PathAll = None,
                                            SpiralsSkippedAvoidThem = None,
                                            PathLongest = None
-                                          ):
+                                           ):
     if PathAll is None: PathAll = []
     if SpiralsSkippedAvoidThem is None: SpiralsSkippedAvoidThem = []
 
     SpiralCoordActual = PathNow[-1]
     if PathTotalPointNumber is None:
-        PathTotalPointNumber = path_total_spiral_weight(PathNow, Spirals)
+        PathTotalPointNumber = spiral.spirals_weight_summa(PathNow, SpiralsAllInfo)
 
     if PathLongest is None:
         PathDefault = [SpiralCoordActual]
-        PathLongest = {"PathTotalPointNumber": path_total_spiral_weight(PathDefault, Spirals), "Path": PathDefault}
+        PathLongest = {"PathTotalPointNumber": spiral.spirals_weight_summa(PathDefault, SpiralsAllInfo), "Path": PathDefault}
 
     for Connection in Neighbours[SpiralCoordActual]:
 
@@ -81,8 +73,8 @@ def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTot
             if Connection not in PathNow:
                 PathNew = list(PathNow)
                 PathNew.append(Connection)
-                find_all_possible_path_from_one_Spiral(PathNew, Neighbours, Spirals,
-                                                       PathTotalPointNumber + len(Spirals[Connection]),
+                find_all_possible_path_from_one_Spiral(PathNew, Neighbours, SpiralsAllInfo,
+                                                       PathTotalPointNumber + len(SpiralsAllInfo[Connection]),
                                                        PathAll=PathAll,
                                                        SpiralsSkippedAvoidThem=SpiralsSkippedAvoidThem,
                                                        PathLongest=PathLongest)
@@ -94,3 +86,24 @@ def find_all_possible_path_from_one_Spiral(PathNow, Neighbours, Spirals, PathTot
                     PathLongest["Path"] = PathNow
 
     return PathAll, PathLongest
+
+# algorithm: keep the two strongest neighbour group as connection
+def path_find_in_char_with_spirals(SpiralsAll, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
+    Path = []
+    SpiralsAndNeighbours = neighbours_find_for_all_spirals(SpiralsAll)
+
+    SpiralsUnused = list(SpiralsAll)
+
+    while SpiralsUnused:
+        PathAll, PathNewLongest = find_all_possible_path_from_one_Spiral([Coord], NeighboursDetected, SpiralsAll, SpiralsSkippedAvoidThem=[(6, 1)])
+        # PathNew = find the longest path with unused Spirals
+
+        # SpiralsUnused = SpiralsUnused - Spirals_in_PathNew
+
+        if Spiral not in Path: Path[Spiral] = []
+        if NeighboursUnused:
+            if len(NeighboursUnused) == 1:
+                Path[Spiral].append(NeighboursUnused[0])
+
+    return Path
+

@@ -4,9 +4,9 @@ import unittest, spiral, path, util_test, util, char
 class PathTests(unittest.TestCase):
     def test_path_find_next_spirals(self):
         Spirals = util_test.spirals_letter_e()
-        util.dict_display_simple_data(Spirals, Title="Spirals:")
+        util.dict_with_lists_display_simple_data(Spirals, Title="Spirals:")
         Coord = list(Spirals.keys())[0]
-        NeighboursDetected = spiral.find_neighbours_for_all_spiral(Spirals)
+        NeighboursDetected = spiral.neighbours_find_for_all_spirals(Spirals)
         PathAll, PathLongest = path.find_all_possible_path_from_one_Spiral([Coord], NeighboursDetected, Spirals)
         PathWanted = [{'PathTotalPointNumber': 24, 'Path': [(1, 5), (2, 1)]},
                       {'PathTotalPointNumber': 38, 'Path': [(1, 5), (2, 1), (6, 1)]}]

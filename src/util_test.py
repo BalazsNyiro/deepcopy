@@ -34,3 +34,22 @@ def letter_e_string():
              " OOOOOOOOOOOO "
              "  OOOOOOOOOOO "
              "    OOOOOOOO  ")
+
+
+# https://stackoverflow.com/questions/4414234/getting-pythons-unittest-results-in-a-teardown-method/39606065#39606065
+def tearDown(Self, Prg):
+    def list2reason(exc_list):
+        if exc_list and exc_list[-1][0] is Self:
+            return exc_list[-1][1]
+
+    Result = Self.defaultTestResult()  # these 2 methods have no side effects
+    Self._feedErrorsToResult(Result, Self._outcome.errors)
+    Error = list2reason(Result.errors)
+    Failure = list2reason(Result.failures)
+    Ok = not Error and not Failure
+    Prg["TestResults"].append({"status_ok": Ok, "Error": Error, "Failure": Failure})
+
+def result_all(Prg):
+    print("TestResults: ")
+    for TestResult in Prg["TestResults"]:
+        print(TestResult)

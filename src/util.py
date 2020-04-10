@@ -89,7 +89,7 @@ def list_display(List, Title):
         print(L)
 
 # DOC: naive formatted dictionary display
-def dict_display_simple_data(Dict, Title="",Prefix="  "):
+def dict_with_lists_display_simple_data(Dict, Title="", Prefix="  "):
     if Title:
         print(Title)
 

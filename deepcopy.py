@@ -19,12 +19,13 @@ Prg = {"Os": "",
        "Color": {"TextSelectFrame": (255, 0, 0)},
 
        "ImagesLoaded": dict(),
-       "ImageIdSelected": ""
+       "ImageIdSelected": "",
 
+       "TestResults": []
        }
 
 sys.path.append(os.path.join(Prg["DirPrgParent"], "src"))
-import util, test_mark_collect, test_mark_util, test_area, test_spiral, test_path
+import util, util_test, test_mark_collect, test_mark_util, test_area, test_spiral, test_path
 
 util.dir_create_if_necessary(Prg["DirTmpPath"])
 
@@ -39,11 +40,12 @@ args = parser.parse_args()
 SysArgvOrig = sys.argv
 sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a prg param so I hide it, temporary solution
 
-test_mark_collect.run_all_tests(Prg)
-test_mark_util.run_all_tests(Prg)
-test_area.run_all_tests(Prg)
-test_spiral.run_all_tests(Prg)
-test_path.run_all_tests(Prg)
+test_mark_collect.run_all_tests(Prg),
+test_mark_util.run_all_tests(Prg),
+test_area.run_all_tests(Prg),
+test_spiral.run_all_tests(Prg),
+#test_path.run_all_tests(Prg)
+util_test.result_all(Prg)
 
 if args.testonly:
        sys.exit(0)

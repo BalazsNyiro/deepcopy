@@ -1,61 +1,39 @@
 # -*- coding: utf-8 -*-
 import area, time, util, os
 
-
-# THIS FUNC DOESNT't work properly, I have to create in path module
-# def find_longest_path_with_unused_spirals(Spirals, UnusedSpirals):
-
 # TESTED
-# algorithm: keep the two strongest neighbour group as connection
-def find_path_in_char_with_spirals(Spirals, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
-    Path = []
-    SpiralsAndNeighbours = find_neighbours_for_all_spiral(Spirals)
+def spirals_sort_by_len(SpiralsAll, SpiralsSelected, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
 
-    SpiralsUnused = list(Spirals)
+    SortedGroups = dict()
+    for Selected in SpiralsSelected:
+        SelectedLen = len(SpiralsAll[Selected])
+        print("SpiralsSelected:", Selected, "len:", SelectedLen)
+        if SelectedLen not in SortedGroups:
+            SortedGroups[SelectedLen] = []
+        SortedGroups[SelectedLen].append(Selected)
 
-    while SpiralsUnused:
-        PathAll, PathNewLongest = path.find_all_possible_path_from_one_Spiral([Coord], NeighboursDetected, Spirals, SpiralsSkippedAvoidThem=[(6, 1)])
-        # PathNew = find the longest path with unused Spirals
-        # if not Path:
-        #   Path.append(PathNew)
-        # else:
-        #   connect_with_previous_path: PathNew
-
-        # SpiralsUnused = SpiralsUnused - Spirals_in_PathNew
-
-        if Spiral not in Path: Path[Spiral] = []
-        if NeighboursUnused:
-            if len(NeighboursUnused) == 1:
-                Path[Spiral].append(NeighboursUnused[0])
-
-    return Path
-
-def _sort_neighbours_by_len(Spirals, Neighbours, ReturnObj="DetailedInfo"): # DetailedInfo | SimpleSpirals
-    Sorted = dict()
-    for Neighbour in Neighbours:
-        NeighbourLen = len(Spirals[Neighbour])
-        if NeighbourLen not in Sorted:
-            Sorted[NeighbourLen] = []
-        Sorted[NeighbourLen].append(Neighbour)
-
-    LengthSortedKeys = list(Sorted.keys())
+    LengthSortedKeys = list(SortedGroups.keys())
     LengthSortedKeys.sort()
 
-    NeighboursSortedByLen = []
-    for Len in LengthSortedKeys:
-        while Sorted[Len]:
-            OneSpiralFromLengthGroup = Sorted[Len].pop()
-            if ReturnObj == "DetailedInfo":
-                NeighboursSortedByLen.append({"Len":Len, "Spiral": OneSpiralFromLengthGroup})
-            else:
-                NeighboursSortedByLen.append(OneSpiralFromLengthGroup)
+    util.dict_with_lists_display_simple_data(SortedGroups, Title="SortedGroups")
+    print("LengthSortedKeys", LengthSortedKeys)
 
-    # print("NeighboursSortedByLen", NeighboursSortedByLen)
-    return NeighboursSortedByLen
+    SortedSpirals = []
+    for Len in LengthSortedKeys:
+        print("LenNow", Len, "SortedGroups[Len]", SortedGroups[Len])
+        while SortedGroups[Len]:
+            OneSpiralFromLengthGroup = SortedGroups[Len].pop()
+            if ReturnObj == "DetailedInfo":
+                SortedSpirals.append({"Len":Len, "Spiral": OneSpiralFromLengthGroup})
+            else:
+                SortedSpirals.append(OneSpiralFromLengthGroup)
+
+    # print("SortedGroups", SortedGroups)
+    return SortedSpirals
 
 
 # TESTED
-def find_neighbours_for_all_spiral(Spirals):
+def neighbours_find_for_all_spirals(Spirals):
     SpiralConnections= dict()
     Point_ParentSpiral = dict()
 
@@ -96,21 +74,21 @@ def find_neighbours_for_all_spiral(Spirals):
     # print("connections: ", SpiralConnections)
     return SpiralConnections
 
-Up    = ( 0,-1)
-Down  = ( 0, 1)
-Left  = (-1, 0)
-Right = ( 1, 0)
+_Up    = (0, -1)
+_Down  = (0, 1)
+_Left  = (-1, 0)
+_Right = (1, 0)
 
-SpiralOperators = {"CounterClockwise": {
-                              "Down" : [Down, Right, Up, Left],
-                              "Right": [Right, Up, Left, Down],
-                              "Up"   : [Up, Left, Down, Right],
-                              "Left" : [Left, Down, Right, Up] },
+_SpiralOperators = {"CounterClockwise": {
+                              "Down" : [_Down, _Right, _Up, _Left],
+                              "Right": [_Right, _Up, _Left, _Down],
+                              "Up"   : [_Up, _Left, _Down, _Right],
+                              "Left" : [_Left, _Down, _Right, _Up] },
                          "Clockwise": {
-                             "Down" : [Down, Left, Up, Right],
-                             "Left" : [Left, Up, Right, Down],
-                             "Up"   : [Up, Right, Down, Left],
-                             "Right": [Right, Down, Left, Up] }}
+                             "Down" : [_Down, _Left, _Up, _Right],
+                             "Left" : [_Left, _Up, _Right, _Down],
+                             "Up"   : [_Up, _Right, _Down, _Left],
+                             "Right": [_Right, _Down, _Left, _Up] }}
 
 def _operator_next(DirectionOperators, OperatorNextCounter):
     OperatorX, OperatorY = DirectionOperators[OperatorNextCounter % 4] # we always use 4 operators
@@ -126,7 +104,7 @@ _Ranges = dict() # cached ranges, I don't want to recreate them always
 # TESTED
 def _spiral_coords_list_from_coord(MarkCoords, Coord, Direction="CounterClockwise", Start="Down"):
     OperatorNextCounter = 0
-    DirectionOperators = SpiralOperators[Direction][Start]
+    DirectionOperators = _SpiralOperators[Direction][Start]
 
     SpiralCoords = [(Coord)]
     X, Y = Coord
@@ -171,7 +149,8 @@ def _spiral_max_coords_list_from_coord(MarkCoords, Coord):
     return CoordsLongest
 
 # TESTED
-def spiral_nonoverlap_search_in_mark(Mark):
+# return with all spirals in mark
+def spirals_nonoverlap_search_in_mark(Mark):
     SpiralsInMark = dict()
     CoordsTry = dict(Mark["Coords"])
 
@@ -245,5 +224,9 @@ def spirals_display(Prg, Spirals, Width, Height, SleepTime=0, Prefix="", PauseAt
     if SaveAsFilename:
         util.file_write(Prg, os.path.join(Prg["DirTmpPath"], SaveAsFilename), "".join(SaveAsTxt))
 
-
-
+# TESTED
+def spirals_weight_summa(SpiralsSelected, SpiralsAllInfo):
+    SummaPointNum = 0
+    for Spiral in SpiralsSelected:
+        SummaPointNum += len(SpiralsAllInfo[Spiral])
+    return SummaPointNum

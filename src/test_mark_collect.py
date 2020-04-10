@@ -270,9 +270,8 @@ class TestMethodsAnalysed(unittest.TestCase):
 class TestMethods(unittest.TestCase):
 
     def test_module_available(self):
-        PrgEmpty = dict()
-        self.assertFalse(util.module_available(PrgEmpty, "unknown_module", "please install unknown module :-)"))
-        self.assertTrue(util.module_available(PrgEmpty, "os", "Please install os module if you want to reach files"))
+        self.assertFalse(util.module_available("unknown_module", "please install unknown module :-)"))
+        self.assertTrue(util.module_available("os", "Please install os module if you want to reach files"))
 
     def test_ui_msg(self):
         Prg = {"Os": "Linux",
