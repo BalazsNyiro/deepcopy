@@ -1,4 +1,6 @@
 import unittest
+import types
+
 
 # I like to use function instead of dict so I covered it
 def Data(Key):
@@ -56,8 +58,27 @@ def result_all(Prg):
             print(TestResult)
 
 class DeepCopyTest(unittest.TestCase):
-    # https://stackoverflow.com/questions/4414234/getting-pythons-unittest-results-in-a-teardown-method/39606065#39606065
+    TestsExecutedOnly = []
+
+    def _test_exec(self, TestCaseName):
+        if not self.TestsExecutedOnly: # if emtpy, test can be executed
+            return True
+        # if TexecutedOnly has element, exec the test if it's in Executedlist
+        if TestCaseName in self.TestsExecutedOnly:
+            return True
+        else:
+            print("\n\nTest temporarily not executed: " + TestCaseName)
+            return False
+
     # Prg is defined in the classes, as a global variable
+
+    # # https://stackoverflow.com/a/19205946
+    # def __init__(self, *args, **kwargs):
+    #     print("getLocalMethods", getLocalMethods(DeepCopyTest))
+    #     super(DeepCopyTest, self).__init__(*args, **kwargs)
+    #     # print("init")
+
+    # https://stackoverflow.com/questions/4414234/getting-pythons-unittest-results-in-a-teardown-method/39606065#39606065
     def tearDown(self):
         def list2reason(exc_list):
             if exc_list and exc_list[-1][0] is self:
@@ -69,3 +90,16 @@ class DeepCopyTest(unittest.TestCase):
         Failure = list2reason(Result.failures)
         Ok = not Error and not Failure
         self.Prg["TestResults"].append({"status_ok": Ok, "Error": Error, "Failure": Failure})
+
+
+# https://stackoverflow.com/a/60496733
+def getLocalMethods(Class):
+    # This is a helper function for the test function below.
+    # It returns a sorted list of the names of the methods
+    # defined in a class. It's okay if you don't fully understand it!
+    Result = [ ]
+    for Key in Class.__dict__:
+        Val = Class.__dict__[Key]
+        if (isinstance(Val, types.FunctionType)):
+            Result.append(Key)
+    return sorted(Result)
