@@ -3,9 +3,7 @@ import unittest, spiral, paths, util_test, util, char, mark_util
 
 class PathTests(util_test.DeepCopyTest):
     def test_find_all_possible_path_from_one_Spiral_basic(self):
-        Char, CharWidth, MarkChar = util_test.Data("char_minus_string")
-        MarkGenerated = mark_util.mark_from_string(Char, CharWidth, MarkChar, Caller="test_find_all_possible_path_from_one_Spiral_basic")
-
+        MarkGenerated = mark_util.mark_from_string_util_test("char_minus_string", Caller="test_find_all_possible_path_from_one_Spiral_basic")
         Spirals = spiral.spirals_nonoverlap_search_in_mark(MarkGenerated)
         # util.dict_with_lists_display_simple_data(Spirals, "find all path, basic, Spirals:")
         NeighboursDetected = spiral.neighbours_find_for_all_spirals(Spirals)

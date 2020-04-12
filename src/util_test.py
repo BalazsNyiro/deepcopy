@@ -1,5 +1,6 @@
 import unittest
 
+# I like to use function instead of dict so I covered it
 def Data(Key):
     return data[Key]
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import util, area, sys
+import util, area, sys, util_test
 
 MarkBg = "." # the sigh of background area, no active pixel
 MarkFg = "O" # if active pixel is in the mark
@@ -92,20 +92,18 @@ def mark_to_area(Mark):
 def mark_to_string(Mark):
     return area.to_string(mark_to_area(Mark))
 
-def mark_from_string_util_test(StringNameFromUtil):
-    # FIXME
-    Txt, Width, MarkChar = 1,2,3
-    return mark_from_string(Txt, Width, MarkChar)
-
+def mark_from_string_util_test(StringNameFromUtil, Caller="? mark_from_string_util_test"):
+    Txt, Width, MarkChar = util_test.Data(StringNameFromUtil)
+    return mark_from_string(Txt, Width, MarkChar, Caller=Caller)
 
 # the strings are long lines without separators.
 # Width show us the exact place of splitting.
 # Without Width it's not exact that were we should split lines
 def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0, Caller="?"):
-    print("\nCaller: ", Caller)
-    print("mark_from_string params   TXT:", Txt, type(Txt), )
-    print("mark_from_string params WIDTH:", Width, type(Width))
-    print("mark_from_string params MARKC:", MarkChar, type(MarkChar))
+    # print("\nCaller: ", Caller)
+    # print("mark_from_string params   TXT:", Txt, type(Txt), )
+    # print("mark_from_string params WIDTH:", Width, type(Width))
+    # print("mark_from_string params MARKC:", MarkChar, type(MarkChar))
 
     if len(Txt) % Width != 0:
         sys.exit("mark_from_string, incorrect width: string length / Width has a remainder")

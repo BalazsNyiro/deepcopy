@@ -50,8 +50,7 @@ class SpiralTests(util_test.DeepCopyTest):
         # print("SpiralMax:", SpiralMax)
 
     def test_spiral_nonoverlap_search_in_mark__letter_e(self):
-        Letter, Width, MarkSign = util_test.Data("char_e_string")
-        MarkGenerated = mark_util.mark_from_string(Letter, Width, MarkSign, Caller="test_spiral_nonoverlap_search_in_mark__letter_e")
+        MarkGenerated = mark_util.mark_from_string_util_test("char_e_string", Caller="test_spiral_nonoverlap_search_in_mark__letter_e")
         SpiralsInMark = spiral.spirals_nonoverlap_search_in_mark(MarkGenerated)
         # for CoordStart, CoordsSpiral in SpiralsInMark.items():
         #     print("SpiralStart ", CoordStart, " -> ", CoordsSpiral)
