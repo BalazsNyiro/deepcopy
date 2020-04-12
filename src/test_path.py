@@ -3,16 +3,19 @@ import unittest, spiral, paths, util_test, util, char, mark_util
 
 class PathTests(util_test.DeepCopyTest):
     def test_find_all_possible_path_from_one_Spiral_basic(self):
-        Letter = util_test.letter_minus_string()
-        MarkGenerated = mark_util.mark_from_string(Letter, 14, "O")
-        SpiralsInMark = spiral.spirals_nonoverlap_search_in_mark(MarkGenerated)
-        print("find all path, basic, Spirals:", SpiralsInMark)
+        Char, CharWidth, MarkChar = util_test.Data("char_minus_string")
+        MarkGenerated = mark_util.mark_from_string(Char, CharWidth, MarkChar, Caller="test_find_all_possible_path_from_one_Spiral_basic")
 
+        Spirals = spiral.spirals_nonoverlap_search_in_mark(MarkGenerated)
+        # util.dict_with_lists_display_simple_data(Spirals, "find all path, basic, Spirals:")
+        NeighboursDetected = spiral.neighbours_find_for_all_spirals(Spirals)
+        util.dict_with_lists_display_simple_data(NeighboursDetected, "NeighboursDetected in Spirals")
+        # FIXME: CONTINUE FROM HERE
         # i select one elem from Spirals, manually
         # Coord = list(Spirals.keys())[0]
 
     def test_path_find_next_spirals(self):
-        Spirals = util_test.letter_e_spirals()
+        Spirals = util_test.Data("char_e_spirals")
         util.dict_with_lists_display_simple_data(Spirals, Title="Spirals:")
         Coord = list(Spirals.keys())[0]
         NeighboursDetected = spiral.neighbours_find_for_all_spirals(Spirals)
@@ -36,7 +39,7 @@ class PathTests(util_test.DeepCopyTest):
     # TODO: now you know the connections. understand the vectors to identify the letters
     def test_find_spiral_with_longest_summarised_pathA_and_PathB(self):
         print("")
-        Spirals = util_test.letter_e_spirals()
+        Spirals = util_test.Data("char_e_spirals")
         SpiralWithMaxLen_AB_1, MaxLen1, PathTotal1 = paths.find_spiral_with_longest_summarised_pathA_and_PathB(Spirals)
         self.assertEqual(MaxLen1, 132)
         self.assertEqual(SpiralWithMaxLen_AB_1, (1, 5))

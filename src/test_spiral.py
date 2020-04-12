@@ -7,7 +7,7 @@ class SpiralTests(util_test.DeepCopyTest):
                   "OOOO"
                   " OOO"
                   "OOOO")
-        Mark = mark_util.mark_from_string(Letter, 4, "O")
+        Mark = mark_util.mark_from_string(Letter, 4, "O", Caller="test_spiral_from_coord")
         # print(Mark)
 
         ######### DOWN: #################
@@ -50,20 +50,20 @@ class SpiralTests(util_test.DeepCopyTest):
         # print("SpiralMax:", SpiralMax)
 
     def test_spiral_nonoverlap_search_in_mark__letter_e(self):
-        Letter = util_test.letter_e_string()
-        MarkGenerated = mark_util.mark_from_string(Letter, 14, "O")
+        Letter, Width, MarkSign = util_test.Data("char_e_string")
+        MarkGenerated = mark_util.mark_from_string(Letter, Width, MarkSign, Caller="test_spiral_nonoverlap_search_in_mark__letter_e")
         SpiralsInMark = spiral.spirals_nonoverlap_search_in_mark(MarkGenerated)
         # for CoordStart, CoordsSpiral in SpiralsInMark.items():
         #     print("SpiralStart ", CoordStart, " -> ", CoordsSpiral)
 
-        SpiralsWanted = util_test.letter_e_spirals()
+        SpiralsWanted = util_test.Data("char_e_spirals")
         self.assertEqual(SpiralsInMark, SpiralsWanted)
 
         # Beautiful spiral drawing in Linux terminal (unicode)
         # spiral.spirals_display(Prg, SpiralsInMark, MarkGenerated["Width"], MarkGenerated["Height"], SleepTime=0.01, Prefix="  ", PauseAtEnd=0, SaveAsFilename="Spiral_test_spiral_nonoverlap_search_in_mark__letter_e.txt")
 
     def test_spirals_find_neighbour_spirals(self):
-        NeighboursDetected = spiral.neighbours_find_for_all_spirals(util_test.letter_e_spirals())
+        NeighboursDetected = spiral.neighbours_find_for_all_spirals(util_test.Data("char_e_spirals"))
         NeighboursWanted = {
                             (1, 5): [(2, 1), (6, 1), (5, 6), (1, 9)],
                             (1, 9): [(1, 12), (3, 9), (4, 12), (1, 5)],
@@ -84,10 +84,10 @@ class SpiralTests(util_test.DeepCopyTest):
                             (12, 13): [(9, 13), (12, 11)]
         }
         self.assertEqual(NeighboursDetected, NeighboursWanted)
-        char.neighbours_to_svg(self.Prg, NeighboursDetected, util_test.letter_e_spirals(), Fname="test_spirals_find_neighbours.html")
+        char.neighbours_to_svg(self.Prg, NeighboursDetected, util_test.Data("char_e_spirals"), Fname="test_spirals_find_neighbours.html")
 
     def test_spiral_sort_by_len(self):
-        Spirals = util_test.letter_e_spirals()
+        Spirals = util_test.Data("char_e_spirals")
         NeighboursDetected = spiral.neighbours_find_for_all_spirals(Spirals)
         NeighboursSorted = spiral.spirals_sort_by_len(Spirals, NeighboursDetected)
         # util.dict_display_simple_data(NeighboursSorted, "test_spiral_sort_neighbours_by_len")
@@ -100,7 +100,7 @@ class SpiralTests(util_test.DeepCopyTest):
         self.assertEqual(NeighboursSorted, Wanted)
 
     def test_spirals_weight_summa(self):
-        Spirals = util_test.letter_e_spirals()
+        Spirals = util_test.Data("char_e_spirals")
         Selected = list(Spirals.keys())[0:2]
         WeightSumma = 30
         self.assertEqual(WeightSumma, spiral.spirals_weight_summa(Selected, Spirals))

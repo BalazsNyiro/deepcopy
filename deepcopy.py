@@ -43,8 +43,8 @@ sys.argv = sys.argv[:1] # the testing environment gives a warning when I use a p
 test_mark_collect.run_all_tests(Prg)
 test_mark_util.run_all_tests(Prg)
 test_area.run_all_tests(Prg)
-test_path.run_all_tests(Prg)
 test_spiral.run_all_tests(Prg)
+test_path.run_all_tests(Prg)
 util_test.result_all(Prg)
 
 if args.testonly:

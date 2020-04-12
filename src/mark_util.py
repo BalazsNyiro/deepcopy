@@ -92,7 +92,21 @@ def mark_to_area(Mark):
 def mark_to_string(Mark):
     return area.to_string(mark_to_area(Mark))
 
-def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0):
+def mark_from_string_util_test(StringNameFromUtil):
+    # FIXME
+    Txt, Width, MarkChar = 1,2,3
+    return mark_from_string(Txt, Width, MarkChar)
+
+
+# the strings are long lines without separators.
+# Width show us the exact place of splitting.
+# Without Width it's not exact that were we should split lines
+def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0, Caller="?"):
+    print("\nCaller: ", Caller)
+    print("mark_from_string params   TXT:", Txt, type(Txt), )
+    print("mark_from_string params WIDTH:", Width, type(Width))
+    print("mark_from_string params MARKC:", MarkChar, type(MarkChar))
+
     if len(Txt) % Width != 0:
         sys.exit("mark_from_string, incorrect width: string length / Width has a remainder")
 
@@ -111,7 +125,6 @@ def mark_from_string(Txt, Width, MarkChar, MarkValueInserted=0):
             if Y < Ymin: Ymin = Y
             if X > Xmax: Xmax = X
             if Y > Ymax: Ymax = Y
-
 
     Mark["Width"] = Xmax - Xmin + 1
     Mark["Height"] = Ymax - Ymin + 1
