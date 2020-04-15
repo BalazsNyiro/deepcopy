@@ -89,9 +89,9 @@ def list_display(List, Title):
         print(L)
 
 # DOC: naive formatted dictionary display
-def dict_with_lists_display_simple_data(Dict, Title="", Prefix="  "):
-    if Title:
-        print(Title)
+def dict_with_lists_display_simple_data(Dict, Title="", Prefix="  ", NewLine=False):
+    if NewLine: print("")
+    if Title: print(Title)
 
     KeyMaxLen = 0
     # find Max length in keys

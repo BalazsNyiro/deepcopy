@@ -44,7 +44,19 @@ data = {
                        "    OOOOOOOO  ", 14, "O"),
 
     "char_minus_string": ("OOOOOOOOOOOOOO"
-                          "OOOOOOOOOOOOOO", 14, "O")
+                          "OOOOOOOOOOOOOO", 14, "O"),
+
+    "char_h_string": ("OOOO          "
+                      "OOOO          "
+                      "OOOO          "
+                      "OOOO          "
+                      "OOOOOOOOOOOO  "
+                      "OOOOOOOOOOOOO "
+                      "OOOO      OOOO"
+                      "OOOO      OOOO"
+                      "OOOO      OOOO"
+                      "OOOO      OOOO", 14, "O"),
+
 }
 
 def result_all(Prg):

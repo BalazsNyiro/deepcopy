@@ -2,18 +2,29 @@
 import unittest, spiral, paths, util_test, util, char, mark_util
 
 class PathTests(util_test.DeepCopyTest):
-    #TestsExecutedOnly = ["test_find_all_possible_path_from_one_Spiral_basic"]
     TestsExecutedOnly = []
+    TestsExecutedOnly = ["test_find_all_possible_path_from_one_Spiral_basic"]
+
     def test_find_all_possible_path_from_one_Spiral_basic(self):
         if self._test_exec("test_find_all_possible_path_from_one_Spiral_basic"):
-            # if "https://stackoverflow.com/a/60496733" not in self.ExecOnlyTheseTests: return
 
-            MarkGenerated = mark_util.mark_from_string_util_test("char_minus_string", Caller="test_find_all_possible_path_from_one_Spiral_basic")
+            # simple - sign path finding
+            MarkGenerated = mark_util.mark_from_string_util_test("char_minus_string", Caller="test_find_all_possible_path_from_one_Spiral_basic_-")
             Spirals = spiral.spirals_nonoverlap_search_in_mark(MarkGenerated)
             # util.dict_with_lists_display_simple_data(Spirals, "find all path, basic, Spirals:")
             NeighboursDetected = spiral.neighbours_find_for_all_spirals(Spirals)
-            util.dict_with_lists_display_simple_data(NeighboursDetected, "NeighboursDetected in Spirals")
+            util.dict_with_lists_display_simple_data(NeighboursDetected, "NeighboursDetected in Spirals", NewLine=True)
+            PathAll, PathLongest = paths.find_all_possible_path_from_one_Spiral([(4, 0)], NeighboursDetected, Spirals)
+            util.list_display(PathAll, "Basic, PathAll:")
+            print("\nBasic, PathLongest, avoid param is empty:", PathLongest)
+            self.assertEqual(PathLongest, {'PathTotalPointNumber': 22, 'Path': [(4, 0), (7, 0), (10, 0), (12, 0)]})
+
+            # h path finding
+            MarkGenerated_h = mark_util.mark_from_string_util_test("char_h_string", Caller="test_find_all_possible_path_from_one_Spiral_basic_h")
             # FIXME: CONTINUE FROM HERE
+
+            # B path finding
+
             # i select one elem from Spirals, manually
             # Coord = list(Spirals.keys())[0]
 
@@ -28,7 +39,7 @@ class PathTests(util_test.DeepCopyTest):
                           {'PathTotalPointNumber': 38, 'Path': [(1, 5), (2, 1), (6, 1)]}]
             self.assertEqual(PathAll[:2], PathWanted)
             self.assertEqual(PathLongest["PathTotalPointNumber"], 83)
-            print("\nPathLongest, avoid is empty:", PathLongest)
+            print("\nPathLongest, avoid param is empty:", PathLongest)
             print("===============")
             Skipped = [(6, 1)]
             PathAll, PathLongest = paths.find_all_possible_path_from_one_Spiral([Coord], NeighboursDetected, Spirals, SpiralsSkippedAvoidThem=Skipped)
