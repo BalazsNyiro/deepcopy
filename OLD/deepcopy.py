@@ -50,7 +50,6 @@ util_test.result_all(Prg)
 if args.testonly:
        sys.exit(0)
 
-
 UiInterface = importlib.import_module(Prg["UiInterface"])
 UiInterface.window_main(Prg)
 

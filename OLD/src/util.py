@@ -143,7 +143,7 @@ def file_read_lines(Prg, Fname="", ErrMsgNoFile="", ErrExit=False, Strip=False):
 
 # TESTED
 def file_test(Prg, Fn="", MsgErr="", ErrExit=False, MsgOk=""):
-    Ret=True
+    Ret = True
     if not os.path.isfile(Fn):
         Ret=False
         if not MsgErr:
