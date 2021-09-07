@@ -1,2 +1,6 @@
-go build src/*.go
+cd src/deepcopy
+rm ./deepcopy
+pwd
+go build
+ls
 ./deepcopy
