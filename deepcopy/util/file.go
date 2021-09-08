@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 
 type TypeHistogram [16][4]int
 
-func img_read_from_file(FileName string) image.Image {
+func Img_read_from_file(FileName string) image.Image {
 	reader, err := os.Open(FileName)
 	if err != nil {
 		log.Fatal(err)
@@ -24,7 +24,7 @@ func img_read_from_file(FileName string) image.Image {
 	return ImageFromFile
 }
 
-func histogram_create(Img image.Image) TypeHistogram {
+func Histogram_create(Img image.Image) TypeHistogram {
 	bounds := Img.Bounds()
 	// based on: https://pkg.go.dev/image@go1.17  (respect)
 
@@ -48,7 +48,7 @@ func histogram_create(Img image.Image) TypeHistogram {
 	return Histogram
 }
 
-func histogram_result_print(Histogram TypeHistogram) {
+func Histogram_result_print(Histogram TypeHistogram) {
 	fmt.Printf("%-14s %6s %6s %6s %6s\n", "bin", "red", "green", "blue", "alpha")
 	for i, x := range Histogram {
 		fmt.Printf("0x%04x-0x%04x: %6d %6d %6d %6d\n", i<<12, (i+1)<<12-1, x[0], x[1], x[2], x[3])
