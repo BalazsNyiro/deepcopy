@@ -54,3 +54,10 @@ func Histogram_result_print(Histogram TypeHistogram) {
 		fmt.Printf("0x%04x-0x%04x: %6d %6d %6d %6d\n", i<<12, (i+1)<<12-1, x[0], x[1], x[2], x[3])
 	}
 }
+
+func Dir_exists(Path string) bool {
+	if _, err := os.Stat(Path); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
