@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	_ "image/jpeg"
@@ -60,4 +61,23 @@ func Dir_exists(Path string) bool {
 		return false
 	}
 	return true
+}
+
+// TODO: create /tmp/test/test.txt
+//              if you set chmod 0000 /tmp/test, this fun can say that the file exists == true
+// check file existence:
+// https://stackoverflow.com/questions/12518876/how-to-check-if-a-file-exists-in-go
+func File_exists(Path string) bool {
+	if _, err := os.Stat("/path/to/whatever"); err == nil {
+		// path/to/whatever exists
+		return true
+	} else if errors.Is(err, os.ErrNotExist) {
+		// path/to/whatever does *not* exist
+		return false
+	} else {
+		// Schrodinger: file may or may not exist. See err for details.
+		// Therefore, do *NOT* use !os.IsNotExist(err) to test for file existence
+		fmt.Printf("File exist, unknown error:", err)
+		return false
+	}
 }

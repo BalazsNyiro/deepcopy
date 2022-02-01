@@ -14,4 +14,5 @@ func main() {
 
 	fmt.Print("\ndir exists:", util.Dir_exists("/tmp"))
 	fmt.Print("\ndir not exists:", util.Dir_exists("/tmp_unknown"))
+	fmt.Print("\nfile exists:", util.Dir_exists("/tmp/test/test.txt"))
 }
