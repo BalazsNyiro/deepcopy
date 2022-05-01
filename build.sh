@@ -1,7 +1,6 @@
-cd deepcopy
-rm ./deepcopy
+rm ./deepcopy -f
 pwd
-go build
+go build *.go 
 ls
 ./deepcopy
 
