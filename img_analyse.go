@@ -32,45 +32,48 @@ func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
 }
 
 func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32,
-	bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) ([]Pixel, [][]Pixel) {
+	bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) (PixelList, PixelMap) {
 
 	bounds := Img.Bounds()
-	layer := make([][]Pixel, 1000)
-	pixels_all := make([]Pixel, 5000)
+	pixelMap := make(PixelMap, 1000)
+	pixels_all := make(PixelList, 5000)
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		pixels_row := make([]Pixel, 5000)
+		pixels_row := make(PixelList, 5000)
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			fmt.Println("x", x, "y", y)
 			r, g, b, _ := Img.At(x, y).RGBA() // last value: a, alpha
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
 				pixel_now := pixel_new("char_creator", uint32(x), uint32(y), r, g, b)
 				pixels_row = append(pixels_row, pixel_now)
-				pixels_all = append(pixels_all, pixel_now) // list of all pixels_all
-				fmt.Println("foreground pixel")
+				pixels_all = append(pixels_all, pixel_now)
+				// fmt.Println("foreground pixel")
 			} else {
 				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
 				pixels_row = append(pixels_row, pixel_now)
 			}
 		}
-		layer = append(layer, pixels_row)
+		pixelMap = append(pixelMap, pixels_row)
 	}
-	return pixels_all, layer
+	return pixels_all, pixelMap
 }
 
-/*
-func pixel_layer_print() {
-
+func pixel_map_print(pixelMap PixelMap) {
+	for y := 0; y < len(pixelMap); y++ {
+		row := pixelMap[y]
+		for x := 0; x < len(row); x++ {
+			fmt.Println("pixel map print", "x", x, "y", y)
+		}
+	}
 }
-
-*/
 
 // select all pixels that is the part of the image
 func pixel_groups_foreground(Img image.Image, bgRmin uint32, bgRmax uint32, bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) {
 	fmt.Println("foreground select all pixel")
 
-	pixelsForeground, pixelLayer := pixel_list_and_layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	pixelsForeground, pixelMap := pixel_list_and_layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("num of pixel foreground", len(pixelsForeground))
-	fmt.Println("num of pixel layer elems", len(pixelLayer))
+	fmt.Println("num of pixel layer elems", len(pixelMap))
 
+	// pixel_map_print(pixelMap)
 }
