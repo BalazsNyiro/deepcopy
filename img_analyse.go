@@ -20,7 +20,7 @@ func background_detect_rgb_ranges() (uint32, uint32, uint32, uint32, uint32, uin
 	// else: foreground
 	return minGeneral, maxGeneral, minGeneral, maxGeneral, minGeneral, maxGeneral
 }
-func pixel_active(pixel_type string, x, y, r, g, b uint32) Pixel {
+func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
 	var pixel_now Pixel
 	pixel_now.pixel_type = pixel_type
 	pixel_now.x = x
@@ -31,22 +31,46 @@ func pixel_active(pixel_type string, x, y, r, g, b uint32) Pixel {
 	return pixel_now
 }
 
-// select all pixels that is the part of the image
-func pixel_group_foreground(Img image.Image, bgRmin uint32, bgRmax uint32, bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) {
-	fmt.Println("foreground select all pixel")
-	bounds := Img.Bounds()
+func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32,
+	bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) ([]Pixel, [][]Pixel) {
 
-	pixels := make([]Pixel, 5000)
+	bounds := Img.Bounds()
+	layer := make([][]Pixel, 1000)
+	pixels_all := make([]Pixel, 5000)
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		pixels_row := make([]Pixel, 5000)
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			// last value: a, alpha
-			r, g, b, _ := Img.At(x, y).RGBA()
+			fmt.Println("x", x, "y", y)
+			r, g, b, _ := Img.At(x, y).RGBA() // last value: a, alpha
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
-				pixel_now := pixel_active("char_creator", uint32(x), uint32(y), r, g, b)
-				pixels = append(pixels, pixel_now)
+				pixel_now := pixel_new("char_creator", uint32(x), uint32(y), r, g, b)
+				pixels_row = append(pixels_row, pixel_now)
+				pixels_all = append(pixels_all, pixel_now) // list of all pixels_all
 				fmt.Println("foreground pixel")
+			} else {
+				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
+				pixels_row = append(pixels_row, pixel_now)
 			}
 		}
+		layer = append(layer, pixels_row)
 	}
+	return pixels_all, layer
+}
+
+/*
+func pixel_layer_print() {
+
+}
+
+*/
+
+// select all pixels that is the part of the image
+func pixel_groups_foreground(Img image.Image, bgRmin uint32, bgRmax uint32, bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) {
+	fmt.Println("foreground select all pixel")
+
+	pixelsForeground, pixelLayer := pixel_list_and_layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	fmt.Println("num of pixel foreground", len(pixelsForeground))
+	fmt.Println("num of pixel layer elems", len(pixelLayer))
+
 }
