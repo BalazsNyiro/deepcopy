@@ -14,7 +14,7 @@ import (
 func background_detect_rgb_ranges() (uint32, uint32, uint32, uint32, uint32, uint32) {
 	fmt.Println("background detect ...")
 	var maxGeneral uint32 = 65535
-	var minGeneral uint32 = maxGeneral - 45000
+	var minGeneral = maxGeneral - 45000
 	// R min, R max - G min, G max - B min, B max
 	// if a pixel is in these ranges, then it is in the backround.
 	// else: foreground
@@ -44,14 +44,16 @@ func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			fmt.Println("x", x, "y", y)
 			r, g, b, _ := Img.At(x, y).RGBA() // last value: a, alpha
+
+			// if the current r,g,b is in background ranges than it's a background pixel
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
+				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
+				pixels_column = append(pixels_column, pixel_now)
+			} else { // not in the backround -> char_creator/active pixel
 				pixel_now := pixel_new("char_creator", uint32(x), uint32(y), r, g, b)
 				pixels_column = append(pixels_column, pixel_now)
 				pixels_all = append(pixels_all, pixel_now)
 				// fmt.Println("foreground pixel")
-			} else {
-				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
-				pixels_column = append(pixels_column, pixel_now)
 			}
 			fmt.Println("pixels_column len", len(pixels_column))
 		}
