@@ -8,7 +8,7 @@ import (
 
 func main() {
 	fmt.Print("deepcopy")
-	Img := Img_read_from_file("test/general_A.png")
+	Img := Img_read_from_file("test/general_A_thin.png")
 	/*
 		Histogram := Histogram_create(Img)
 		Histogram_result_print(Histogram)

@@ -35,11 +35,11 @@ func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32
 	bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) (PixelList, PixelMap) {
 
 	bounds := Img.Bounds()
-	pixelMap := make(PixelMap, 1000)
-	pixels_all := make(PixelList, 5000)
+	var pixelMap PixelMap
+	var pixels_all PixelList
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		pixels_row := make(PixelList, 5000)
+		var pixels_row PixelList
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			fmt.Println("x", x, "y", y)
 			r, g, b, _ := Img.At(x, y).RGBA() // last value: a, alpha
@@ -52,18 +52,40 @@ func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32
 				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
 				pixels_row = append(pixels_row, pixel_now)
 			}
+			fmt.Println("pixels_row len", len(pixels_row))
 		}
+		fmt.Printf("addr: %p", &pixels_row)
 		pixelMap = append(pixelMap, pixels_row)
 	}
 	return pixels_all, pixelMap
 }
 
+/*
+ pixelMap has lines/rows
+	0: [a, b, c, d, e, f, g, h]
+	1: [a, b, c, d, e, f, g, h]
+	1: [a, b, c, d, e, f, g, h]
+in one line, the pixels are in order: 0-> a, 1->b, 2->c
+
+if you want to reach this: x=2, y=1:
+ pixelMap[1][2] because read row 1 (go down) and
+ in the row read the 2->c value.
+*/
 func pixel_map_print(pixelMap PixelMap) {
+	fmt.Println("PRINT len pixel map ", len(pixelMap))
 	for y := 0; y < len(pixelMap); y++ {
 		row := pixelMap[y]
+		// fmt.Println("PRINT y", y)
+		// fmt.Println("PRINT row len:", len(row))
 		for x := 0; x < len(row); x++ {
-			fmt.Println("pixel map print", "x", x, "y", y)
+			char := " "
+			if pixelMap[y][x].pixel_type == "char_creator" {
+				char = "*"
+			}
+			// fmt.Println("pixel map", "x", x, "y", y, char)
+			fmt.Print(char)
 		}
+		fmt.Print("\n")
 	}
 }
 
@@ -72,8 +94,8 @@ func pixel_groups_foreground(Img image.Image, bgRmin uint32, bgRmax uint32, bgGm
 	fmt.Println("foreground select all pixel")
 
 	pixelsForeground, pixelMap := pixel_list_and_layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
-	fmt.Println("num of pixel foreground", len(pixelsForeground))
-	fmt.Println("num of pixel layer elems", len(pixelMap))
+	fmt.Println("\nlen pixel foreground", len(pixelsForeground))
+	fmt.Println("len pixel map ", len(pixelMap))
 
-	// pixel_map_print(pixelMap)
+	pixel_map_print(pixelMap)
 }

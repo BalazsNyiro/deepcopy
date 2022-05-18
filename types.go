@@ -6,7 +6,7 @@ package main
 765
 */
 type PixelList []Pixel
-type PixelMap [][]Pixel
+type PixelMap []PixelList
 
 // recursive type def:
 // https://stackoverflow.com/a/8261789
