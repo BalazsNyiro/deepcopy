@@ -38,52 +38,41 @@ func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32
 	var pixelMap PixelMap
 	var pixels_all PixelList
 
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		var pixels_row PixelList
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+	// select a column (x value) and go down from line 0 to line last (y)
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		var pixels_column PixelList
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			fmt.Println("x", x, "y", y)
 			r, g, b, _ := Img.At(x, y).RGBA() // last value: a, alpha
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
 				pixel_now := pixel_new("char_creator", uint32(x), uint32(y), r, g, b)
-				pixels_row = append(pixels_row, pixel_now)
+				pixels_column = append(pixels_column, pixel_now)
 				pixels_all = append(pixels_all, pixel_now)
 				// fmt.Println("foreground pixel")
 			} else {
 				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
-				pixels_row = append(pixels_row, pixel_now)
+				pixels_column = append(pixels_column, pixel_now)
 			}
-			fmt.Println("pixels_row len", len(pixels_row))
+			fmt.Println("pixels_column len", len(pixels_column))
 		}
-		fmt.Printf("addr: %p", &pixels_row)
-		pixelMap = append(pixelMap, pixels_row)
+		fmt.Printf("addr: %p", &pixels_column)
+
+		// pack long vertical |||| blades into PixelMap
+		pixelMap = append(pixelMap, pixels_column)
 	}
 	return pixels_all, pixelMap
 }
 
-/*
- pixelMap has lines/rows
-	0: [a, b, c, d, e, f, g, h]
-	1: [a, b, c, d, e, f, g, h]
-	1: [a, b, c, d, e, f, g, h]
-in one line, the pixels are in order: 0-> a, 1->b, 2->c
-
-if you want to reach this: x=2, y=1:
- pixelMap[1][2] because read row 1 (go down) and
- in the row read the 2->c value.
-*/
 func pixel_map_print(pixelMap PixelMap) {
-	fmt.Println("PRINT len pixel map ", len(pixelMap))
-	for y := 0; y < len(pixelMap); y++ {
-		row := pixelMap[y]
-		// fmt.Println("PRINT y", y)
-		// fmt.Println("PRINT row len:", len(row))
-		for x := 0; x < len(row); x++ {
-			char := " "
-			if pixelMap[y][x].pixel_type == "char_creator" {
-				char = "*"
+	width := len(pixelMap)
+	height := len(pixelMap[0])
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			if pixelMap[x][y].pixel_type == "char_creator" {
+				fmt.Print("*")
+			} else {
+				fmt.Print(" ")
 			}
-			// fmt.Println("pixel map", "x", x, "y", y, char)
-			fmt.Print(char)
 		}
 		fmt.Print("\n")
 	}
