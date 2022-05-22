@@ -17,5 +17,5 @@ func main() {
 		fmt.Print("\nfile exists:", Dir_exists("/tmp/test/test.txt"))
 	*/
 	bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax := background_detect_rgb_ranges()
-	pixel_groups_foreground(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	pixel_groups_char_creators(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 }

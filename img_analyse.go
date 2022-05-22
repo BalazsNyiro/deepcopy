@@ -6,7 +6,7 @@ import (
 )
 
 // TEST IT
-// separate background from foreground is elemental.
+// separate background from char_creator pixels is elemental.
 // precondition: the background is homogeneus.
 // R, G, B min/max values
 // A color's RGBA method returns values in the range [0, 65535].
@@ -17,7 +17,7 @@ func background_detect_rgb_ranges() (uint32, uint32, uint32, uint32, uint32, uin
 	var minGeneral = maxGeneral - 45000
 	// R min, R max - G min, G max - B min, B max
 	// if a pixel is in these ranges, then it is in the backround.
-	// else: foreground
+	// else: it is a char_creator pixel
 	return minGeneral, maxGeneral, minGeneral, maxGeneral, minGeneral, maxGeneral
 }
 func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
@@ -31,7 +31,7 @@ func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
 	return pixel_now
 }
 
-func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32,
+func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32,
 	bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) (PixelList, PixelMap) {
 
 	bounds := Img.Bounds()
@@ -53,7 +53,6 @@ func pixel_list_and_layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32
 				pixel_now := pixel_new("char_creator", uint32(x), uint32(y), r, g, b)
 				pixels_column = append(pixels_column, pixel_now)
 				pixels_all = append(pixels_all, pixel_now)
-				// fmt.Println("foreground pixel")
 			}
 			fmt.Println("pixels_column len", len(pixels_column))
 		}
@@ -81,11 +80,11 @@ func pixel_map_print(pixelMap PixelMap) {
 }
 
 // select all pixels that is the part of the image
-func pixel_groups_foreground(Img image.Image, bgRmin uint32, bgRmax uint32, bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) {
-	fmt.Println("foreground select all pixel")
+func pixel_groups_char_creators(Img image.Image, bgRmin uint32, bgRmax uint32, bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) {
+	fmt.Println("char creators - select all pixel")
 
-	pixelsForeground, pixelMap := pixel_list_and_layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
-	fmt.Println("\nlen pixel foreground", len(pixelsForeground))
+	pixelsCharCreators, pixelMap := pixels_char_creators_list__layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	fmt.Println("\nlen pixelCharCreators", len(pixelsCharCreators))
 	fmt.Println("len pixel map ", len(pixelMap))
 
 	pixel_map_print(pixelMap)
