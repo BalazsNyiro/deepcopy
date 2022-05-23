@@ -9,6 +9,9 @@ type PixelList []Pixel
 type PixelMap []PixelList
 type pixint uint32
 
+func PixFromInt(i int) pixint       { return pixint(uint32(i)) }
+func PixFromUInt32(i uint32) pixint { return pixint(i) }
+
 // recursive type def:
 // https://stackoverflow.com/a/8261789
 type Pixel struct {
@@ -29,16 +32,9 @@ type Pixel struct {
 	n6 *Pixel
 	n7 *Pixel
 	n8 *Pixel
-	r  uint32
-	g  uint32
-	b  uint32
-	x  uint32
-	y  uint32
+	r  pixint
+	g  pixint
+	b  pixint
+	x  pixint
+	y  pixint
 }
-
-/*
-func PixelNew(r, uint32, g, uint32, b, uint32, x uint32, y uint32) Pixel {
-	return
-}
-
-*/

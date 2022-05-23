@@ -11,16 +11,16 @@ import (
 // R, G, B min/max values
 // A color's RGBA method returns values in the range [0, 65535].
 // 0: black
-func background_detect_rgb_ranges() (uint32, uint32, uint32, uint32, uint32, uint32) {
+func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pixint) {
 	fmt.Println("background detect ...")
-	var maxGeneral uint32 = 65535
+	var maxGeneral pixint = 65535
 	var minGeneral = maxGeneral - 45000
 	// R min, R max - G min, G max - B min, B max
 	// if a pixel is in these ranges, then it is in the backround.
 	// else: it is a char_creator pixel
 	return minGeneral, maxGeneral, minGeneral, maxGeneral, minGeneral, maxGeneral
 }
-func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
+func pixel_new(pixel_type string, x, y, r, g, b pixint) Pixel {
 	var pixel_now Pixel
 	pixel_now.pixel_type = pixel_type
 	pixel_now.x = x
@@ -32,7 +32,7 @@ func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
 }
 
 func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin, bgRmax,
-	bgGmin, bgGmax, bgBmin, bgBmax uint32) (PixelList, PixelMap) {
+	bgGmin, bgGmax, bgBmin, bgBmax pixint) (PixelList, PixelMap) {
 
 	bounds := Img.Bounds()
 	var pixelMap PixelMap
@@ -43,14 +43,17 @@ func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin, bgRmax,
 		var pixels_column PixelList
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			fmt.Println("x", x, "y", y)
-			r, g, b, _ := Img.At(x, y).RGBA() // last value: a, alpha
+			rUint32, gUint32, bUint32, _ := Img.At(x, y).RGBA() // last value: a, alpha
+			r := PixFromUInt32(rUint32)
+			g := PixFromUInt32(gUint32)
+			b := PixFromUInt32(bUint32)
 
 			// if the current r,g,b is in background ranges than it's a background pixel
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
-				pixel_now := pixel_new("background", uint32(x), uint32(y), 0, 0, 0)
+				pixel_now := pixel_new("background", PixFromInt(x), PixFromInt(y), 0, 0, 0)
 				pixels_column = append(pixels_column, pixel_now)
 			} else { // not in the backround -> char_creator/active pixel
-				pixel_now := pixel_new("char_creator", uint32(x), uint32(y), r, g, b)
+				pixel_now := pixel_new("char_creator", PixFromInt(x), PixFromInt(y), r, g, b)
 				pixels_column = append(pixels_column, pixel_now)
 				pixels_all = append(pixels_all, pixel_now)
 			}
@@ -80,7 +83,7 @@ func pixel_map_print(pixelMap PixelMap) {
 }
 
 // select all pixels that is the part of the image
-func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax uint32) {
+func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) {
 	fmt.Println("char creators - select all pixel")
 
 	pixelsCharCreators, pixelMap := pixels_char_creators_list__layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
