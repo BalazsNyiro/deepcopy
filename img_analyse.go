@@ -31,8 +31,8 @@ func pixel_new(pixel_type string, x, y, r, g, b uint32) Pixel {
 	return pixel_now
 }
 
-func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin uint32, bgRmax uint32,
-	bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) (PixelList, PixelMap) {
+func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin, bgRmax,
+	bgGmin, bgGmax, bgBmin, bgBmax uint32) (PixelList, PixelMap) {
 
 	bounds := Img.Bounds()
 	var pixelMap PixelMap
@@ -80,7 +80,7 @@ func pixel_map_print(pixelMap PixelMap) {
 }
 
 // select all pixels that is the part of the image
-func pixel_groups_char_creators(Img image.Image, bgRmin uint32, bgRmax uint32, bgGmin uint32, bgGmax uint32, bgBmin uint32, bgBmax uint32) {
+func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax uint32) {
 	fmt.Println("char creators - select all pixel")
 
 	pixelsCharCreators, pixelMap := pixels_char_creators_list__layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)

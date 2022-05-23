@@ -7,10 +7,18 @@ package main
 */
 type PixelList []Pixel
 type PixelMap []PixelList
+type pixint uint32
 
 // recursive type def:
 // https://stackoverflow.com/a/8261789
 type Pixel struct {
+
+	/* background pixel: everything that doesn't hold active information, meaning.
+	   I use char_creator instead of foreground, because if you have a colored
+	   terminal output, a red and a yellow colored text both can be char_creator.
+	so typically the background color range is a solid fix value,
+	but the letters/chars can be created from different colored elems
+	*/
 	pixel_type string // char_creator, background
 	// n - neighbours (pointers):
 	n1 *Pixel
