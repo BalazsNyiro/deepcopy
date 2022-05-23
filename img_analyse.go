@@ -95,7 +95,7 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 	pixel_map_print(pixelMap)
 
 	for _, pixelGroup := range pixelGroups {
-		pixel_map_print(pixelGroup)
+		pixel_map_print(pixelGroup.pixel_map)
 	}
 }
 
@@ -103,8 +103,10 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 you can find a path with only character creator pixels between all group elems - with other words you can walk
 from creator-pixel to creator pixel and reach all group members,
 because they are not separated
+
+TODO: find groups based on char creator pixels
 */
-func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelMaps {
-	var pixelGroups PixelMaps
+func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelGroups {
+	var pixelGroups PixelGroups
 	return pixelGroups
 }
