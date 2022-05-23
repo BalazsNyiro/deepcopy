@@ -20,7 +20,7 @@ func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pix
 	// else: it is a char_creator pixel
 	return minGeneral, maxGeneral, minGeneral, maxGeneral, minGeneral, maxGeneral
 }
-func pixel_new(pixel_type string, x, y, r, g, b pixint) Pixel {
+func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	var pixel_now Pixel
 	pixel_now.pixel_type = pixel_type
 	pixel_now.x = x
@@ -51,10 +51,10 @@ func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
 
 			// if the current r,g,b is in background ranges than it's a background pixel
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
-				pixelNow := pixel_new("background", PixFromInt(x), PixFromInt(y), 0, 0, 0)
+				pixelNow := pixel_new("background", x, y, 0, 0, 0)
 				pixelsColumn = append(pixelsColumn, pixelNow)
 			} else { // not in the backround -> char_creator/active pixel
-				pixelNow := pixel_new("char_creator", PixFromInt(x), PixFromInt(y), r, g, b)
+				pixelNow := pixel_new("char_creator", x, y, r, g, b)
 				pixelsColumn = append(pixelsColumn, pixelNow)
 				pixelAll = append(pixelAll, pixelNow)
 			}
@@ -95,8 +95,8 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 	pixelGroups := pixel_groups_detect_in_map(pixelsCharCreators, pixelMap)
 	pixel_map_print(pixelMap)
 
-	for _, pixelGroup := range pixelGroups {
-		pixel_map_print(pixelGroup.pixel_map)
+	for _, pixels := range pixelGroups {
+		pixel_map_print(pixels_to_pixelmap(pixels))
 	}
 }
 
@@ -105,21 +105,73 @@ you can find a path with only character creator pixels between all group elems
 - with other words you can walk from creator-pixel
 to creator pixel and reach all group members,
 because they are not separated
-
-TODO: find groups based on char creator pixels
 */
-func pixel_neighbours_detect(pixel Pixel, pixelMap PixelMap) Pixels {
-	var pixels Pixels
-	// if pixel.x
-	return pixels
+
+
+// you can be sure that it returns with a pixel, if the coords is outside of it or not
+func pixel_get_from_map(pixelMap PixelMap, x, y int) Pixel {
+	pixelMapWidth, pixelMapHeight := pixel_map_get_w_h(pixelMap)
+	if x >= 0 && x < pixelMapWidth {
+		if y >= 0 && y < pixelMapHeight{
+			return pixelMap[x][y]
+		}
+	}
+	return pixel_empty()
 }
 
-func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelGroups {
-	var pixelGroups PixelGroups
+// active and empty pixels, too!
+func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
+	// the coords: 0, 0 is left top corner, this is the natural,
+	// because the detect of the columns happens from top to down
+	/*  123
+	    8P4
+	    765
+	*/
+	neighbours := Pixels{}
+	p1 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y-1)
+	p2 := pixel_get_from_map(pixelMap, pixel.x,  pixel.y-1)
+	p3 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y-1)
+	p4 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y  )
+	p5 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y+1)
+	p6 := pixel_get_from_map(pixelMap, pixel.x  ,pixel.y+1)
+	p7 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y+1)
+	p8 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y  )
+	if p1.pixel_type == "char_creator" {neighbours = append(neighbours, p1)}
+	if p2.pixel_type == "char_creator" {neighbours = append(neighbours, p2)}
+	if p3.pixel_type == "char_creator" {neighbours = append(neighbours, p3)}
+	if p4.pixel_type == "char_creator" {neighbours = append(neighbours, p4)}
+	if p5.pixel_type == "char_creator" {neighbours = append(neighbours, p5)}
+	if p6.pixel_type == "char_creator" {neighbours = append(neighbours, p6)}
+	if p7.pixel_type == "char_creator" {neighbours = append(neighbours, p7)}
+	if p8.pixel_type == "char_creator" {neighbours = append(neighbours, p8)}
+	return neighbours
+}
+
+func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
+	group := Pixels{pixel}
+	neighbours := pixel_neighbours_collect(pixel, pixelMap)
+	for _, pixel_neighbour := range neighbours {
+		if ! pixel_neighbour.in_pixel_group {
+			group = append(group, pixel_neighbour)
+			pixel_neighbour.in_pixel_group = true
+		}
+	}
+	return group
+}
+func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
+	width := len(pixelMap)
+	height := len(pixelMap[0])
+	return width, height
+}
+
+func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelMap {
+	var pixelGroups PixelMap
 	for _, pixel := range pixelsCharCreators {
 		fmt.Println("pixels char creator :", pixel.x, pixel.y, pixel.pixel_group)
 		if !pixel.in_pixel_group {
 			fmt.Println("pixel not in group", pixel.x, pixel.y, pixel.pixel_group)
+			pixelGroup := pixel_group_detect(pixel, pixelMap)
+			pixelGroups = append(pixelGroups, pixelGroup)
 		}
 	}
 	return pixelGroups
