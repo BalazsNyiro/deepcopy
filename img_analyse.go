@@ -31,16 +31,16 @@ func pixel_new(pixel_type string, x, y, r, g, b pixint) Pixel {
 	return pixel_now
 }
 
-func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin, bgRmax,
-	bgGmin, bgGmax, bgBmin, bgBmax pixint) (PixelList, PixelMap) {
+func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
+	bgGmin, bgGmax, bgBmin, bgBmax pixint) (Pixels, PixelMap) {
 
 	bounds := Img.Bounds()
 	var pixelMap PixelMap
-	var pixels_all PixelList
+	var pixelAll Pixels
 
 	// select a column (x value) and go down from line 0 to line last (y)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
-		var pixels_column PixelList
+		var pixelsColumn Pixels
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			fmt.Println("x", x, "y", y)
 			rUint32, gUint32, bUint32, _ := Img.At(x, y).RGBA() // last value: a, alpha
@@ -50,21 +50,21 @@ func pixels_char_creators_list__layer_from_img(Img image.Image, bgRmin, bgRmax,
 
 			// if the current r,g,b is in background ranges than it's a background pixel
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
-				pixel_now := pixel_new("background", PixFromInt(x), PixFromInt(y), 0, 0, 0)
-				pixels_column = append(pixels_column, pixel_now)
+				pixelNow := pixel_new("background", PixFromInt(x), PixFromInt(y), 0, 0, 0)
+				pixelsColumn = append(pixelsColumn, pixelNow)
 			} else { // not in the backround -> char_creator/active pixel
-				pixel_now := pixel_new("char_creator", PixFromInt(x), PixFromInt(y), r, g, b)
-				pixels_column = append(pixels_column, pixel_now)
-				pixels_all = append(pixels_all, pixel_now)
+				pixelNow := pixel_new("char_creator", PixFromInt(x), PixFromInt(y), r, g, b)
+				pixelsColumn = append(pixelsColumn, pixelNow)
+				pixelAll = append(pixelAll, pixelNow)
 			}
-			fmt.Println("pixels_column len", len(pixels_column))
+			fmt.Println("pixelsColumn len", len(pixelsColumn))
 		}
-		fmt.Printf("addr: %p", &pixels_column)
+		fmt.Printf("addr: %p", &pixelsColumn)
 
 		// pack long vertical |||| blades into PixelMap
-		pixelMap = append(pixelMap, pixels_column)
+		pixelMap = append(pixelMap, pixelsColumn)
 	}
-	return pixels_all, pixelMap
+	return pixelAll, pixelMap
 }
 
 func pixel_map_print(pixelMap PixelMap) {
@@ -86,9 +86,25 @@ func pixel_map_print(pixelMap PixelMap) {
 func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) {
 	fmt.Println("char creators - select all pixel")
 
-	pixelsCharCreators, pixelMap := pixels_char_creators_list__layer_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	pixelsCharCreators, pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("\nlen pixelCharCreators", len(pixelsCharCreators))
 	fmt.Println("len pixel map ", len(pixelMap))
 
+	// one pixel group is represented with one pixel-map
+	pixelGroups := pixel_groups_detect_in_map(pixelsCharCreators, pixelMap)
 	pixel_map_print(pixelMap)
+
+	for _, pixelGroup := range pixelGroups {
+		pixel_map_print(pixelGroup)
+	}
+}
+
+/* one group: character creator pixels that form one sign.
+you can find a path with only character creator pixels between all group elems - with other words you can walk
+from creator-pixel to creator pixel and reach all group members,
+because they are not separated
+*/
+func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelMaps {
+	var pixelGroups PixelMaps
+	return pixelGroups
 }

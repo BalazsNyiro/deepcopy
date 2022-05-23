@@ -5,8 +5,9 @@ package main
 9P4
 765
 */
-type PixelList []Pixel
-type PixelMap []PixelList
+type Pixels []Pixel
+type PixelMap []Pixels
+type PixelMaps []PixelMap // more than one pixel map
 type pixint uint32
 
 func PixFromInt(i int) pixint       { return pixint(uint32(i)) }
