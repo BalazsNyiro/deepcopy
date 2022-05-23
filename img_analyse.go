@@ -28,6 +28,7 @@ func pixel_new(pixel_type string, x, y, r, g, b pixint) Pixel {
 	pixel_now.r = r
 	pixel_now.g = g
 	pixel_now.b = b
+	pixel_now.in_pixel_group = false
 	return pixel_now
 }
 
@@ -100,13 +101,26 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 }
 
 /* one group: character creator pixels that form one sign.
-you can find a path with only character creator pixels between all group elems - with other words you can walk
-from creator-pixel to creator pixel and reach all group members,
+you can find a path with only character creator pixels between all group elems
+- with other words you can walk from creator-pixel
+to creator pixel and reach all group members,
 because they are not separated
 
 TODO: find groups based on char creator pixels
 */
+func pixel_neighbours_detect(pixel Pixel, pixelMap PixelMap) Pixels {
+	var pixels Pixels
+	// if pixel.x
+	return pixels
+}
+
 func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelGroups {
 	var pixelGroups PixelGroups
+	for _, pixel := range pixelsCharCreators {
+		fmt.Println("pixels char creator :", pixel.x, pixel.y, pixel.pixel_group)
+		if !pixel.in_pixel_group {
+			fmt.Println("pixel not in group", pixel.x, pixel.y, pixel.pixel_group)
+		}
+	}
 	return pixelGroups
 }

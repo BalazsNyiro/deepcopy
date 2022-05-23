@@ -34,18 +34,19 @@ type Pixel struct {
 	*/
 	pixel_type string // char_creator, background
 	// n - neighbours (pointers):
-	n1          *Pixel
-	n2          *Pixel
-	n3          *Pixel
-	n4          *Pixel
-	n5          *Pixel
-	n6          *Pixel
-	n7          *Pixel
-	n8          *Pixel
-	r           pixint
-	g           pixint
-	b           pixint
-	x           pixint
-	y           pixint
-	pixel_group PixelGroup
+	n1             *Pixel
+	n2             *Pixel
+	n3             *Pixel
+	n4             *Pixel
+	n5             *Pixel
+	n6             *Pixel
+	n7             *Pixel
+	n8             *Pixel
+	r              pixint
+	g              pixint
+	b              pixint
+	x              pixint
+	y              pixint
+	pixel_group    PixelGroup
+	in_pixel_group bool
 }
