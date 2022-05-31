@@ -161,19 +161,44 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 }
 
 func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
-	group := Pixels{pixel}
-	pixels_detected := make(map[int]bool)
-	pixels_detected[pixel.id] = true
+	group_ids := make(map[int]bool)
+	find_neighbours_ids := make(map[int]bool)
 
-	neighbours := pixel_neighbours_collect(pixel, pixelMap)
-	for _, pixel_neighbour := range neighbours {
-		if _, ok := pixels_detected[pixel_neighbour.id]; ok {
-			// if the pixel_id is detected previously, it is in the detected collection
-			// then there is nothing to done
-		} else {
-			group = append(group, pixel_neighbour)
-			pixels_detected[pixel.id] = true
-			pixel_neighbour.in_pixel_group = true
+	group := Pixels{pixel}
+	group_ids[pixel.id] = true
+
+	find_neighbours := Pixels{pixel}
+	find_neighbours_ids[pixel.id] = true
+
+	for len(find_neighbours) > 0 {
+		// pop the last elem...
+		id_last := len(find_neighbours) - 1
+		pixel_now := find_neighbours[id_last]
+		find_neighbours = find_neighbours[:id_last]
+		delete(find_neighbours_ids, pixel_now.id)
+
+		neighbours := pixel_neighbours_collect(pixel_now, pixelMap)
+
+		neighbours_new := Pixels{} // select new elems
+		for _, pixel_neighbour := range neighbours {
+			_, in_group := group_ids[pixel_neighbour.id]
+			if ! in_group {
+				neighbours_new = append(neighbours_new, pixel_neighbour)
+			}
+		}
+
+		for _, pixel_neighbour_new := range neighbours_new {
+			group = append(group, pixel_neighbour_new)
+			group_ids[pixel.id] = true
+			pixel_neighbour_new.in_pixel_group = true
+		}
+
+		for _, pixel_neighbour_new := range neighbours_new {
+			_, neighbours_tested := find_neighbours_ids[pixel_neighbour_new.id]
+			if ! neighbours_tested{
+				find_neighbours = append(find_neighbours, pixel_neighbour_new)
+				find_neighbours_ids[pixel_neighbour_new.id] = true
+			}
 		}
 	}
 	return group
@@ -192,6 +217,7 @@ func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) Pi
 			fmt.Println("pixel not in group", pixel.x, pixel.y, pixel.pixel_group)
 			pixelGroup := pixel_group_detect(pixel, pixelMap)
 			pixelGroups = append(pixelGroups, pixelGroup)
+
 		}
 	}
 	return pixelGroups
