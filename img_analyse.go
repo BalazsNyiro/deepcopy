@@ -20,6 +20,8 @@ func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pix
 	// else: it is a char_creator pixel
 	return minGeneral, maxGeneral, minGeneral, maxGeneral, minGeneral, maxGeneral
 }
+
+var pixel_id_next = 0
 func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	var pixel_now Pixel
 	pixel_now.pixel_type = pixel_type
@@ -29,6 +31,8 @@ func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	pixel_now.g = g
 	pixel_now.b = b
 	pixel_now.in_pixel_group = false
+	pixel_now.id = pixel_id_next
+	pixel_id_next++
 	return pixel_now
 }
 
@@ -158,11 +162,17 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 
 func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
 	group := Pixels{pixel}
-	pixel.in_pixel_group = true
+	pixels_detected := make(map[int]bool)
+	pixels_detected[pixel.id] = true
+
 	neighbours := pixel_neighbours_collect(pixel, pixelMap)
 	for _, pixel_neighbour := range neighbours {
-		if ! pixel_neighbour.in_pixel_group {
+		if _, ok := pixels_detected[pixel_neighbour.id]; ok {
+			// if the pixel_id is detected previously, it is in the detected collection
+			// then there is nothing to done
+		} else {
 			group = append(group, pixel_neighbour)
+			pixels_detected[pixel.id] = true
 			pixel_neighbour.in_pixel_group = true
 		}
 	}

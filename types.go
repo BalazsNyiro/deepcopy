@@ -39,6 +39,7 @@ type Pixel struct {
 	y              int
 	pixel_group    int
 	in_pixel_group bool
+	id             int // a simple unique integer for all pixel
 }
 func pixels_find_min_max_coords(pixels Pixels) (int, int, int, int) {
 	x_min, x_max, y_min, y_max := 0, 0, 0, 0
