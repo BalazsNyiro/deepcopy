@@ -119,7 +119,14 @@ func pixel_get_from_map(pixelMap PixelMap, x, y int) Pixel {
 	return pixel_empty()
 }
 
-// active and empty pixels, too!
+func append_pixels(collector Pixels, new_elems Pixels) Pixels {
+	for _, pixel := range new_elems {
+		collector = append(collector, pixel)
+	}
+	return collector
+}
+
+// active pixels only
 func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	// the coords: 0, 0 is left top corner, this is the natural,
 	// because the detect of the columns happens from top to down
@@ -128,6 +135,8 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	    765
 	*/
 	neighbours := Pixels{}
+	if pixel.pixel_type != "char_creator" {return neighbours} // don't collect empty pixel's neighbours
+
 	p1 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y-1)
 	p2 := pixel_get_from_map(pixelMap, pixel.x,  pixel.y-1)
 	p3 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y-1)
@@ -149,6 +158,7 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 
 func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
 	group := Pixels{pixel}
+	pixel.in_pixel_group = true
 	neighbours := pixel_neighbours_collect(pixel, pixelMap)
 	for _, pixel_neighbour := range neighbours {
 		if ! pixel_neighbour.in_pixel_group {
