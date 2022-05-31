@@ -165,6 +165,7 @@ func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
 	find_neighbours_ids := make(map[int]bool)
 
 	group := Pixels{pixel}
+	pixel.in_pixel_group = true
 	group_ids[pixel.id] = true
 
 	find_neighbours := Pixels{pixel}
@@ -193,6 +194,7 @@ func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
 			pixel_neighbour_new.in_pixel_group = true
 		}
 
+		/*
 		for _, pixel_neighbour_new := range neighbours_new {
 			_, neighbours_tested := find_neighbours_ids[pixel_neighbour_new.id]
 			if ! neighbours_tested{
@@ -200,6 +202,8 @@ func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
 				find_neighbours_ids[pixel_neighbour_new.id] = true
 			}
 		}
+		
+		 */
 	}
 	return group
 }
@@ -217,7 +221,6 @@ func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) Pi
 			fmt.Println("pixel not in group", pixel.x, pixel.y, pixel.pixel_group)
 			pixelGroup := pixel_group_detect(pixel, pixelMap)
 			pixelGroups = append(pixelGroups, pixelGroup)
-
 		}
 	}
 	return pixelGroups
