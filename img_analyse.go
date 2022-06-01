@@ -37,11 +37,10 @@ func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 }
 
 func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
-	bgGmin, bgGmax, bgBmin, bgBmax pixint) (Pixels, PixelMap) {
+	bgGmin, bgGmax, bgBmin, bgBmax pixint) PixelMap {
 
 	bounds := Img.Bounds()
 	var pixelMap PixelMap
-	var pixelAll Pixels
 
 	// select a column (x value) and go down from line 0 to line last (y)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
@@ -60,7 +59,6 @@ func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
 			} else { // not in the backround -> char_creator/active pixel
 				pixelNow := pixel_new("char_creator", x, y, r, g, b)
 				pixelsColumn = append(pixelsColumn, pixelNow)
-				pixelAll = append(pixelAll, pixelNow)
 			}
 			fmt.Println("pixelsColumn len", len(pixelsColumn))
 		}
@@ -69,7 +67,7 @@ func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
 		// pack long vertical |||| blades into PixelMap
 		pixelMap = append(pixelMap, pixelsColumn)
 	}
-	return pixelAll, pixelMap
+	return pixelMap
 }
 
 func pixel_map_print(pixelMap PixelMap) {
@@ -91,12 +89,11 @@ func pixel_map_print(pixelMap PixelMap) {
 func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) {
 	fmt.Println("char creators - select all pixel")
 
-	pixelsCharCreators, pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
-	fmt.Println("\nlen pixelCharCreators", len(pixelsCharCreators))
+	pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("len pixel map ", len(pixelMap))
 
 	// one pixel group is represented with one pixel-map
-	pixelGroups := pixel_groups_detect_in_map(pixelsCharCreators, pixelMap)
+	pixelGroups := pixel_groups_detect_in_map(pixelMap)
 	pixel_map_print(pixelMap)
 
 	for _, pixels := range pixelGroups {
@@ -213,15 +210,21 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	return width, height
 }
 
-func pixel_groups_detect_in_map(pixelsCharCreators Pixels, pixelMap PixelMap) PixelMap {
+func pixel_groups_detect_in_map(pixelMap PixelMap) PixelMap {
 	var pixelGroups PixelMap
-	for _, pixel := range pixelsCharCreators {
-		fmt.Println("pixels char creator :", pixel.x, pixel.y, pixel.pixel_group)
-		if !pixel.in_pixel_group {
-			fmt.Println("pixel not in group", pixel.x, pixel.y, pixel.pixel_group)
-			pixelGroup := pixel_group_detect(pixel, pixelMap)
-			pixelGroups = append(pixelGroups, pixelGroup)
+
+	// select the most lefts->top pixel in a group
+	for x, column := range pixelMap {
+		for y, pixel := range column {
+			fmt.Println("XY:", x, y, pixel.pixel_type)
+			if pixel.pixel_type == "char_creator" && ! pixel.in_pixel_group {
+				fmt.Println("creator:", x, y)
+				// pixelGroup := pixel_group_detect(pixel, pixelMap)
+				//pixelGroups = append(pixelGroups, pixelGroup)
+			}
+			break
 		}
 	}
+
 	return pixelGroups
 }

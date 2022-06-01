@@ -7,7 +7,6 @@ package main
 */
 type Pixels []Pixel
 type PixelMap []Pixels    // 2 dimensional representation of more pixels } || or list of (pixels)
-type PixelMaps []PixelMap // more than one pixel map
 type pixint uint32
 
 func PixFromUInt32(i uint32) pixint { return pixint(i) }
