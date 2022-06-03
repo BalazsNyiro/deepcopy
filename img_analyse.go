@@ -31,6 +31,7 @@ func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	pixel_now.g = g
 	pixel_now.b = b
 	pixel_now.in_pixel_group = false
+	pixel_now.group_starter = false
 	pixel_now.id = pixel_id_next
 	pixel_id_next++
 	return pixel_now
@@ -157,7 +158,7 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	return neighbours
 }
 
-func pixel_group_detect(pixel Pixel, pixelMap PixelMap) Pixels {
+func pixel_group_detect_old(pixel Pixel, pixelMap PixelMap) Pixels {
 	group_ids := make(map[int]bool)
 	find_neighbours_ids := make(map[int]bool)
 
@@ -210,21 +211,20 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	return width, height
 }
 
+func pixel_group_link_pixels(x, y int, pixelMapPointer *PixelMap) {
+	fmt.Println("creator:", x, y, pixelMapPointer)
+}
+
 func pixel_groups_detect_in_map(pixelMap PixelMap) PixelMap {
 	var pixelGroups PixelMap
-
-	// select the most lefts->top pixel in a group
 	for x, column := range pixelMap {
 		for y, pixel := range column {
-			fmt.Println("XY:", x, y, pixel.pixel_type)
 			if pixel.pixel_type == "char_creator" && ! pixel.in_pixel_group {
-				fmt.Println("creator:", x, y)
-				// pixelGroup := pixel_group_detect(pixel, pixelMap)
+				pixel_group_link_pixels(x, y, &pixelMap)
+				//pixelGroup := pixel_group_detect(pixel, pixelMap)
 				//pixelGroups = append(pixelGroups, pixelGroup)
 			}
-			break
 		}
 	}
-
 	return pixelGroups
 }
