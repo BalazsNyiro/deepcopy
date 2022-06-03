@@ -24,14 +24,14 @@ func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pix
 var pixel_id_next = 0
 func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	var pixel_now Pixel
-	pixel_now.pixel_type = pixel_type
+	pixel_now.pixelType = pixel_type
 	pixel_now.x = x
 	pixel_now.y = y
 	pixel_now.r = r
 	pixel_now.g = g
 	pixel_now.b = b
-	pixel_now.in_pixel_group = false
-	pixel_now.group_starter = false
+	pixel_now.inPixelGroup = false
+	pixel_now.groupStarter = false
 	pixel_now.id = pixel_id_next
 	pixel_id_next++
 	return pixel_now
@@ -76,7 +76,7 @@ func pixel_map_print(pixelMap PixelMap) {
 	height := len(pixelMap[0])
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			if pixelMap[x][y].pixel_type == "char_creator" {
+			if pixelMap[x][y].pixelType == "char_creator" {
 				fmt.Print("*")
 			} else {
 				fmt.Print(" ")
@@ -92,10 +92,10 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 	pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("len pixel map ", len(pixelMap))
-	page := Page {pixel_map: &pixelMap}
+	page := Page {pixelMap: &pixelMap}
 
 	// one pixel group is represented with one pixel-map
-	pixel_groups_detect_in_map(&page)
+	pixel_groups_detect(&page)
 	pixel_map_print(pixelMap)
 
 	/*
@@ -141,7 +141,7 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	    765
 	*/
 	neighbours := Pixels{}
-	if pixel.pixel_type != "char_creator" {return neighbours} // don't collect empty pixel's neighbours
+	if pixel.pixelType != "char_creator" {return neighbours} // don't collect empty pixel's neighbours
 
 	p1 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y-1)
 	p2 := pixel_get_from_map(pixelMap, pixel.x,  pixel.y-1)
@@ -151,14 +151,14 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	p6 := pixel_get_from_map(pixelMap, pixel.x  ,pixel.y+1)
 	p7 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y+1)
 	p8 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y  )
-	if p1.pixel_type == "char_creator" {neighbours = append(neighbours, p1)}
-	if p2.pixel_type == "char_creator" {neighbours = append(neighbours, p2)}
-	if p3.pixel_type == "char_creator" {neighbours = append(neighbours, p3)}
-	if p4.pixel_type == "char_creator" {neighbours = append(neighbours, p4)}
-	if p5.pixel_type == "char_creator" {neighbours = append(neighbours, p5)}
-	if p6.pixel_type == "char_creator" {neighbours = append(neighbours, p6)}
-	if p7.pixel_type == "char_creator" {neighbours = append(neighbours, p7)}
-	if p8.pixel_type == "char_creator" {neighbours = append(neighbours, p8)}
+	if p1.pixelType == "char_creator" {neighbours = append(neighbours, p1)}
+	if p2.pixelType == "char_creator" {neighbours = append(neighbours, p2)}
+	if p3.pixelType == "char_creator" {neighbours = append(neighbours, p3)}
+	if p4.pixelType == "char_creator" {neighbours = append(neighbours, p4)}
+	if p5.pixelType == "char_creator" {neighbours = append(neighbours, p5)}
+	if p6.pixelType == "char_creator" {neighbours = append(neighbours, p6)}
+	if p7.pixelType == "char_creator" {neighbours = append(neighbours, p7)}
+	if p8.pixelType == "char_creator" {neighbours = append(neighbours, p8)}
 	return neighbours
 }
 
@@ -167,7 +167,7 @@ func pixel_group_detect_old(pixel Pixel, pixelMap PixelMap) Pixels {
 	find_neighbours_ids := make(map[int]bool)
 
 	group := Pixels{pixel}
-	pixel.in_pixel_group = true
+	pixel.inPixelGroup = true
 	group_ids[pixel.id] = true
 
 	find_neighbours := Pixels{pixel}
@@ -193,7 +193,7 @@ func pixel_group_detect_old(pixel Pixel, pixelMap PixelMap) Pixels {
 		for _, pixel_neighbour_new := range neighbours_new {
 			group = append(group, pixel_neighbour_new)
 			group_ids[pixel.id] = true
-			pixel_neighbour_new.in_pixel_group = true
+			pixel_neighbour_new.inPixelGroup = true
 		}
 
 		/*
@@ -216,16 +216,16 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 }
 
 func pixel_group_link_pixels(x, y int, page *Page) {
-	pixelMap := *page.pixel_map
+	pixelMap := *page.pixelMap
 	pixel := pixelMap[x][y]
-	if pixel.pixel_type != "char_creator" || pixel.in_pixel_group {
+	if pixel.pixelType != "char_creator" || pixel.inPixelGroup {
 		return
 	}
 	fmt.Println("\ncreator:", x, y, pixelMap)
 }
 
-func pixel_groups_detect_in_map(page *Page) {
-	for x, column := range *page.pixel_map{
+func pixel_groups_detect(page *Page) {
+	for x, column := range *page.pixelMap {
 		for y, _:= range column {
 			pixel_group_link_pixels(x, y, page)
 		}

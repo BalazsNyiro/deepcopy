@@ -10,8 +10,8 @@ type PixelMap []Pixels    // 2 dimensional representation of more pixels } || or
 type pixint uint32
 
 type Page struct {
-	pixel_map *PixelMap
-	pixels_group_starter []*Pixel // the starter pixels of a group
+	pixelMap           *PixelMap
+	pixelsGroupStarter []*Pixel // the starter pixels of a group
 }
 
 func PixFromUInt32(i uint32) pixint { return pixint(i) }
@@ -26,7 +26,7 @@ type Pixel struct {
 	so typically the background color range is a solid fix value,
 	but the letters/chars can be created from different colored elems
 	*/
-	pixel_type string // char_creator, background, empty
+	pixelType string // char_creator, background, empty
 	// n - neighbours (pointers):
 	n1             *Pixel
 	n2             *Pixel
@@ -40,11 +40,11 @@ type Pixel struct {
 	g              pixint
 	b              pixint
 	x              int
-	y              int
-	pixel_group    int
-	in_pixel_group bool
-	group_starter  bool
-	id             int // a simple unique integer for all pixel
+	y            int
+	pixelGroup   int
+	inPixelGroup bool
+	groupStarter bool
+	id           int // a simple unique integer for all pixel
 }
 func pixels_find_min_max_coords(pixels Pixels) (int, int, int, int) {
 	x_min, x_max, y_min, y_max := 0, 0, 0, 0
