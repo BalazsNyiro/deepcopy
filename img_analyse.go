@@ -92,9 +92,10 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 	pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("len pixel map ", len(pixelMap))
+	page := Page {pixel_map: &pixelMap}
 
 	// one pixel group is represented with one pixel-map
-	pixel_groups_detect_in_map(&pixelMap)
+	pixel_groups_detect_in_map(&page)
 	pixel_map_print(pixelMap)
 
 	/*
@@ -214,8 +215,8 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	return width, height
 }
 
-func pixel_group_link_pixels(x, y int, pixelMapPointer *PixelMap) {
-	pixelMap := *pixelMapPointer
+func pixel_group_link_pixels(x, y int, page *Page) {
+	pixelMap := *page.pixel_map
 	pixel := pixelMap[x][y]
 	if pixel.pixel_type != "char_creator" || pixel.in_pixel_group {
 		return
@@ -223,10 +224,10 @@ func pixel_group_link_pixels(x, y int, pixelMapPointer *PixelMap) {
 	fmt.Println("\ncreator:", x, y, pixelMap)
 }
 
-func pixel_groups_detect_in_map(pixelMapPointer *PixelMap) {
-	for x, column := range *pixelMapPointer {
+func pixel_groups_detect_in_map(page *Page) {
+	for x, column := range *page.pixel_map{
 		for y, _:= range column {
-			pixel_group_link_pixels(x, y, pixelMapPointer)
+			pixel_group_link_pixels(x, y, page)
 		}
 	}
 }

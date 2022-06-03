@@ -9,6 +9,11 @@ type Pixels []Pixel
 type PixelMap []Pixels    // 2 dimensional representation of more pixels } || or list of (pixels)
 type pixint uint32
 
+type Page struct {
+	pixel_map *PixelMap
+	pixels_group_starter []*Pixel // the starter pixels of a group
+}
+
 func PixFromUInt32(i uint32) pixint { return pixint(i) }
 
 // recursive type def:
