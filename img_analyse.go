@@ -12,7 +12,7 @@ import (
 // A color's RGBA method returns values in the range [0, 65535].
 // 0: black
 func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pixint) {
-	fmt.Println("background detect ...")
+	// fmt.Println("background detect ...")
 	var maxGeneral pixint = 65535
 	var minGeneral = maxGeneral - 45000
 	// R min, R max - G min, G max - B min, B max
@@ -94,12 +94,15 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 	fmt.Println("len pixel map ", len(pixelMap))
 
 	// one pixel group is represented with one pixel-map
-	pixelGroups := pixel_groups_detect_in_map(pixelMap)
+	pixel_groups_detect_in_map(&pixelMap)
 	pixel_map_print(pixelMap)
 
+	/*
 	for _, pixels := range pixelGroups {
 		pixel_map_print(pixels_to_pixelmap(pixels))
 	}
+
+	 */
 }
 
 /* one group: character creator pixels that form one sign.
@@ -212,19 +215,20 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 }
 
 func pixel_group_link_pixels(x, y int, pixelMapPointer *PixelMap) {
-	fmt.Println("creator:", x, y, pixelMapPointer)
+	pixelMap := *pixelMapPointer
+	pixel := pixelMap[x][y]
+	if pixel.pixel_type != "char_creator" || pixel.in_pixel_group {
+		return
+	}
+	fmt.Println("\ncreator:", x, y, pixelMap)
 }
 
-func pixel_groups_detect_in_map(pixelMap PixelMap) PixelMap {
-	var pixelGroups PixelMap
-	for x, column := range pixelMap {
-		for y, pixel := range column {
-			if pixel.pixel_type == "char_creator" && ! pixel.in_pixel_group {
-				pixel_group_link_pixels(x, y, &pixelMap)
-				//pixelGroup := pixel_group_detect(pixel, pixelMap)
-				//pixelGroups = append(pixelGroups, pixelGroup)
-			}
+func pixel_groups_detect_in_map(pixelMapPointer *PixelMap) {
+	for x, column := range *pixelMapPointer {
+		for y, _:= range column {
+			pixel_group_link_pixels(x, y, pixelMapPointer)
 		}
 	}
-	return pixelGroups
 }
+//pixelGroup := pixel_group_detect(pixel, pixelMap)
+//pixelGroups = append(pixelGroups, pixelGroup)
