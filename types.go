@@ -46,6 +46,12 @@ type Pixel struct {
 	groupStarter bool
 	id           int // a simple unique integer for all pixel
 }
+func pixel_empty() Pixel {
+	return pixel_new("empty", 0, 0, 0, 0, 0)
+}
+
+
+/*
 func pixels_find_min_max_coords(pixels Pixels) (int, int, int, int) {
 	x_min, x_max, y_min, y_max := 0, 0, 0, 0
 	for _, pixel := range pixels {
@@ -55,9 +61,6 @@ func pixels_find_min_max_coords(pixels Pixels) (int, int, int, int) {
 		if pixel.y > y_max { y_max = pixel.y }
 	}
 	return x_min, x_max, y_min, y_max
-}
-func pixel_empty() Pixel {
-	return pixel_new("empty", 0, 0, 0, 0, 0)
 }
 func pixelmap_new(width, height int) PixelMap{
 	pixelEmpty := pixel_empty()
@@ -80,3 +83,6 @@ func pixels_to_pixelmap(pixels Pixels) PixelMap {
 	}
 	return pixelMap
 }
+
+
+ */

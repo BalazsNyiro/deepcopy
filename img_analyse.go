@@ -125,13 +125,6 @@ func pixel_get_from_map(pixelMap PixelMap, x, y int) Pixel {
 	return pixel_empty()
 }
 
-func append_pixels(collector Pixels, new_elems Pixels) Pixels {
-	for _, pixel := range new_elems {
-		collector = append(collector, pixel)
-	}
-	return collector
-}
-
 // active pixels only
 func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	// the coords: 0, 0 is left top corner, this is the natural,
