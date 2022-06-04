@@ -147,14 +147,14 @@ func pixel_neighbours_linking(pixelPointer *Pixel, pixelMapPointer *PixelMap) {
 	pixelNeighbourPointer7 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y  )
 	pixelNeighbourPointer8 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y-1)
 
-	if pixelNeighbourPointer1.pixelType == "char_creator" {pixel.n1 = pixelNeighbourPointer1}
-	if pixelNeighbourPointer2.pixelType == "char_creator" {pixel.n2 = pixelNeighbourPointer2}
-	if pixelNeighbourPointer3.pixelType == "char_creator" {pixel.n3 = pixelNeighbourPointer3}
-	if pixelNeighbourPointer4.pixelType == "char_creator" {pixel.n4 = pixelNeighbourPointer4}
-	if pixelNeighbourPointer5.pixelType == "char_creator" {pixel.n5 = pixelNeighbourPointer5}
-	if pixelNeighbourPointer6.pixelType == "char_creator" {pixel.n6 = pixelNeighbourPointer6}
-	if pixelNeighbourPointer7.pixelType == "char_creator" {pixel.n7 = pixelNeighbourPointer7}
-	if pixelNeighbourPointer8.pixelType == "char_creator" {pixel.n8 = pixelNeighbourPointer8}
+	if pixelNeighbourPointer1.pixelType == "char_creator" {pixel.n1 = pixelNeighbourPointer1; (*pixelNeighbourPointer1).n5 = pixelPointer}
+	if pixelNeighbourPointer2.pixelType == "char_creator" {pixel.n2 = pixelNeighbourPointer2; (*pixelNeighbourPointer6).n6 = pixelPointer}
+	if pixelNeighbourPointer3.pixelType == "char_creator" {pixel.n3 = pixelNeighbourPointer3; (*pixelNeighbourPointer7).n7 = pixelPointer}
+	if pixelNeighbourPointer4.pixelType == "char_creator" {pixel.n4 = pixelNeighbourPointer4; (*pixelNeighbourPointer8).n8 = pixelPointer}
+	if pixelNeighbourPointer5.pixelType == "char_creator" {pixel.n5 = pixelNeighbourPointer5; (*pixelNeighbourPointer1).n1 = pixelPointer}
+	if pixelNeighbourPointer6.pixelType == "char_creator" {pixel.n6 = pixelNeighbourPointer6; (*pixelNeighbourPointer2).n2 = pixelPointer}
+	if pixelNeighbourPointer7.pixelType == "char_creator" {pixel.n7 = pixelNeighbourPointer7; (*pixelNeighbourPointer3).n3 = pixelPointer}
+	if pixelNeighbourPointer8.pixelType == "char_creator" {pixel.n8 = pixelNeighbourPointer8; (*pixelNeighbourPointer4).n4 = pixelPointer}
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
