@@ -172,13 +172,13 @@ func pixel_group_link_pixels(x, y int, page *Page) {
 	pixelMap := *page.pixelMap
 	pixelGroupStarter := page.pixelGroupStarter
 
-	pixel := pixelMap[x][y]
-	if pixel.pixelType != "char_creator" || pixel.inPixelGroup {
+	pixelPointer := &pixelMap[x][y]
+	if (*pixelPointer).pixelType != "char_creator" || (*pixelPointer).inPixelGroup{
 		return
 	}
-	pixel.groupStarter = true
-	pixel.inPixelGroup = true
-	pixelGroupStarter = append(pixelGroupStarter, &pixel)
+	(*pixelPointer).groupStarter = true
+	(*pixelPointer).inPixelGroup = true
+	pixelGroupStarter = append(pixelGroupStarter, pixelPointer)
 
 	fmt.Println("\ncreator:", x, y)
 }
