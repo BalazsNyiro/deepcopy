@@ -92,18 +92,18 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 	pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("len pixel map ", len(pixelMap))
-	page := Page {pixelMap: &pixelMap}
+	page := Page {pixelMapPointer: &pixelMap}
 
 	// one pixel group is represented with one pixel-map
 	pixel_groups_detect(&page)
 	pixel_map_print(pixelMap)
 
-	/*
-	for _, pixels := range pixelGroups {
-		pixel_map_print(pixels_to_pixelmap(pixels))
+
+	fmt.Println("end")
+	for _, pixel_GroupStarter_pointer := range page.pixelGroupStarters {
+		fmt.Println("pixel group starter pointer: ", pixel_GroupStarter_pointer)
 	}
 
-	 */
 }
 
 /* one group: character creator pixels that form one sign.
@@ -166,8 +166,7 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 }
 
 func pixel_group_link_pixels(x, y int, page *Page) {
-	pixelMap := *page.pixelMap
-	pixelGroupStarter := page.pixelGroupStarter
+	pixelMap := *page.pixelMapPointer
 
 	pixelPointer := &pixelMap[x][y]
 	if (*pixelPointer).pixelType != "char_creator" || (*pixelPointer).inPixelGroup{
@@ -175,16 +174,17 @@ func pixel_group_link_pixels(x, y int, page *Page) {
 	}
 	(*pixelPointer).groupStarter = true
 	(*pixelPointer).inPixelGroup = true
-	pixelGroupStarter = append(pixelGroupStarter, pixelPointer)
-	pixel_neighbours_linking(pixelPointer, page.pixelMap)
+
+	(*page).pixelGroupStarters = append((*page).pixelGroupStarters, pixelPointer)
+	pixel_neighbours_linking(pixelPointer, page.pixelMapPointer)
 }
 
 func pixel_groups_detect(page *Page) {
-	for x, column := range *page.pixelMap {
+	for x, column := range *page.pixelMapPointer {
 		for y, _:= range column {
 			pixel_group_link_pixels(x, y, page)
 		}
 	}
 }
-//pixelGroup := pixel_group_detect(pixel, pixelMap)
+//pixelGroup := pixel_group_detect(pixel, pixelMapPointer)
 //pixelGroups = append(pixelGroups, pixelGroup)
