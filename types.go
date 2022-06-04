@@ -5,8 +5,7 @@ package main
 9P4
 765
 */
-type Pixels []Pixel
-type PixelMap []Pixels    // 2 dimensional representation of more pixels } || or list of (pixels)
+type PixelMap [][]Pixel    // 2 dimensional representation of more pixels } || or list of (pixels)
 type pixint uint32
 
 type Page struct {

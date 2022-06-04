@@ -45,7 +45,7 @@ func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
 
 	// select a column (x value) and go down from line 0 to line last (y)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
-		var pixelsColumn Pixels
+		var pixelsColumn []Pixel
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			fmt.Println("x", x, "y", y)
 			rUint32, gUint32, bUint32, _ := Img.At(x, y).RGBA() // last value: a, alpha
@@ -115,35 +115,37 @@ because they are not separated
 
 
 // you can be sure that it returns with a pixel, if the coords is outside of it or not
-func pixel_get_from_map(pixelMap PixelMap, x, y int) Pixel {
+func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
+	pixelMap := *pixelMapPointer
 	pixelMapWidth, pixelMapHeight := pixel_map_get_w_h(pixelMap)
 	if x >= 0 && x < pixelMapWidth {
 		if y >= 0 && y < pixelMapHeight{
-			return pixelMap[x][y]
+			return &pixelMap[x][y]
 		}
 	}
-	return pixel_empty()
+	pixelEmpty := pixel_empty()
+	return &pixelEmpty
 }
 
 // active pixels only
-func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
+func pixel_neighbours_collect(pixel Pixel, pixelMapPointer *PixelMap) []*Pixel {
 	// the coords: 0, 0 is left top corner, this is the natural,
 	// because the detect of the columns happens from top to down
 	/*  123
 	    8P4
 	    765
 	*/
-	neighbours := Pixels{}
+	neighbours := []*Pixel{}
 	if pixel.pixelType != "char_creator" {return neighbours} // don't collect empty pixel's neighbours
 
-	p1 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y-1)
-	p2 := pixel_get_from_map(pixelMap, pixel.x,  pixel.y-1)
-	p3 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y-1)
-	p4 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y  )
-	p5 := pixel_get_from_map(pixelMap, pixel.x+1,pixel.y+1)
-	p6 := pixel_get_from_map(pixelMap, pixel.x  ,pixel.y+1)
-	p7 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y+1)
-	p8 := pixel_get_from_map(pixelMap, pixel.x-1,pixel.y  )
+	p1 := pixel_get_from_map(pixelMapPointer, pixel.x-1,pixel.y-1)
+	p2 := pixel_get_from_map(pixelMapPointer, pixel.x,  pixel.y-1)
+	p3 := pixel_get_from_map(pixelMapPointer, pixel.x+1,pixel.y-1)
+	p4 := pixel_get_from_map(pixelMapPointer, pixel.x+1,pixel.y  )
+	p5 := pixel_get_from_map(pixelMapPointer, pixel.x+1,pixel.y+1)
+	p6 := pixel_get_from_map(pixelMapPointer, pixel.x  ,pixel.y+1)
+	p7 := pixel_get_from_map(pixelMapPointer, pixel.x-1,pixel.y+1)
+	p8 := pixel_get_from_map(pixelMapPointer, pixel.x-1,pixel.y  )
 	if p1.pixelType == "char_creator" {neighbours = append(neighbours, p1)}
 	if p2.pixelType == "char_creator" {neighbours = append(neighbours, p2)}
 	if p3.pixelType == "char_creator" {neighbours = append(neighbours, p3)}
