@@ -128,33 +128,33 @@ func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-func pixel_neighbours_collect(pixel Pixel, pixelMapPointer *PixelMap) []*Pixel {
+func pixel_neighbours_linking(pixelPointer *Pixel, pixelMapPointer *PixelMap) {
 	// the coords: 0, 0 is left top corner, this is the natural,
 	// because the detect of the columns happens from top to down
-	/*  123
-	    8P4
-	    765
+	/*  812
+	    7P3
+	    654
 	*/
-	neighbours := []*Pixel{}
-	if pixel.pixelType != "char_creator" {return neighbours} // don't collect empty pixel's neighbours
+	pixel := *pixelPointer
+	if pixel.pixelType != "char_creator" {return}
 
-	p1 := pixel_get_from_map(pixelMapPointer, pixel.x-1,pixel.y-1)
-	p2 := pixel_get_from_map(pixelMapPointer, pixel.x,  pixel.y-1)
-	p3 := pixel_get_from_map(pixelMapPointer, pixel.x+1,pixel.y-1)
-	p4 := pixel_get_from_map(pixelMapPointer, pixel.x+1,pixel.y  )
-	p5 := pixel_get_from_map(pixelMapPointer, pixel.x+1,pixel.y+1)
-	p6 := pixel_get_from_map(pixelMapPointer, pixel.x  ,pixel.y+1)
-	p7 := pixel_get_from_map(pixelMapPointer, pixel.x-1,pixel.y+1)
-	p8 := pixel_get_from_map(pixelMapPointer, pixel.x-1,pixel.y  )
-	if p1.pixelType == "char_creator" {neighbours = append(neighbours, p1)}
-	if p2.pixelType == "char_creator" {neighbours = append(neighbours, p2)}
-	if p3.pixelType == "char_creator" {neighbours = append(neighbours, p3)}
-	if p4.pixelType == "char_creator" {neighbours = append(neighbours, p4)}
-	if p5.pixelType == "char_creator" {neighbours = append(neighbours, p5)}
-	if p6.pixelType == "char_creator" {neighbours = append(neighbours, p6)}
-	if p7.pixelType == "char_creator" {neighbours = append(neighbours, p7)}
-	if p8.pixelType == "char_creator" {neighbours = append(neighbours, p8)}
-	return neighbours
+	pixelNeighbourPointer1 := pixel_get_from_map(pixelMapPointer, pixel.x,  pixel.y-1)
+	pixelNeighbourPointer2 := pixel_get_from_map(pixelMapPointer, pixel.x+1, pixel.y-1)
+	pixelNeighbourPointer3 := pixel_get_from_map(pixelMapPointer, pixel.x+1, pixel.y  )
+	pixelNeighbourPointer4 := pixel_get_from_map(pixelMapPointer, pixel.x+1, pixel.y+1)
+	pixelNeighbourPointer5 := pixel_get_from_map(pixelMapPointer, pixel.x  , pixel.y+1)
+	pixelNeighbourPointer6 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y+1)
+	pixelNeighbourPointer7 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y  )
+	pixelNeighbourPointer8 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y-1)
+
+	if pixelNeighbourPointer1.pixelType == "char_creator" {pixel.n1 = pixelNeighbourPointer1}
+	if pixelNeighbourPointer2.pixelType == "char_creator" {pixel.n2 = pixelNeighbourPointer2}
+	if pixelNeighbourPointer3.pixelType == "char_creator" {pixel.n3 = pixelNeighbourPointer3}
+	if pixelNeighbourPointer4.pixelType == "char_creator" {pixel.n4 = pixelNeighbourPointer4}
+	if pixelNeighbourPointer5.pixelType == "char_creator" {pixel.n5 = pixelNeighbourPointer5}
+	if pixelNeighbourPointer6.pixelType == "char_creator" {pixel.n6 = pixelNeighbourPointer6}
+	if pixelNeighbourPointer7.pixelType == "char_creator" {pixel.n7 = pixelNeighbourPointer7}
+	if pixelNeighbourPointer8.pixelType == "char_creator" {pixel.n8 = pixelNeighbourPointer8}
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
@@ -174,6 +174,8 @@ func pixel_group_link_pixels(x, y int, page *Page) {
 	(*pixelPointer).groupStarter = true
 	(*pixelPointer).inPixelGroup = true
 	pixelGroupStarter = append(pixelGroupStarter, pixelPointer)
+	pixel_neighbours_linking(pixelPointer, page.pixelMap)
+
 
 	fmt.Println("\ncreator:", x, y)
 }
