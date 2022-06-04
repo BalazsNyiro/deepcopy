@@ -162,53 +162,6 @@ func pixel_neighbours_collect(pixel Pixel, pixelMap PixelMap) Pixels {
 	return neighbours
 }
 
-func pixel_group_detect_old(pixel Pixel, pixelMap PixelMap) Pixels {
-	group_ids := make(map[int]bool)
-	find_neighbours_ids := make(map[int]bool)
-
-	group := Pixels{pixel}
-	pixel.inPixelGroup = true
-	group_ids[pixel.id] = true
-
-	find_neighbours := Pixels{pixel}
-	find_neighbours_ids[pixel.id] = true
-
-	for len(find_neighbours) > 0 {
-		// pop the last elem...
-		id_last := len(find_neighbours) - 1
-		pixel_now := find_neighbours[id_last]
-		find_neighbours = find_neighbours[:id_last]
-		delete(find_neighbours_ids, pixel_now.id)
-
-		neighbours := pixel_neighbours_collect(pixel_now, pixelMap)
-
-		neighbours_new := Pixels{} // select new elems
-		for _, pixel_neighbour := range neighbours {
-			_, in_group := group_ids[pixel_neighbour.id]
-			if ! in_group {
-				neighbours_new = append(neighbours_new, pixel_neighbour)
-			}
-		}
-
-		for _, pixel_neighbour_new := range neighbours_new {
-			group = append(group, pixel_neighbour_new)
-			group_ids[pixel.id] = true
-			pixel_neighbour_new.inPixelGroup = true
-		}
-
-		/*
-		for _, pixel_neighbour_new := range neighbours_new {
-			_, neighbours_tested := find_neighbours_ids[pixel_neighbour_new.id]
-			if ! neighbours_tested{
-				find_neighbours = append(find_neighbours, pixel_neighbour_new)
-				find_neighbours_ids[pixel_neighbour_new.id] = true
-			}
-		}
-		
-		 */
-	}
-	return group
-}
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	width := len(pixelMap)
 	height := len(pixelMap[0])
@@ -217,11 +170,17 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 
 func pixel_group_link_pixels(x, y int, page *Page) {
 	pixelMap := *page.pixelMap
+	pixelGroupStarter := page.pixelGroupStarter
+
 	pixel := pixelMap[x][y]
 	if pixel.pixelType != "char_creator" || pixel.inPixelGroup {
 		return
 	}
-	fmt.Println("\ncreator:", x, y, pixelMap)
+	pixel.groupStarter = true
+	pixel.inPixelGroup = true
+	pixelGroupStarter = append(pixelGroupStarter, &pixel)
+
+	fmt.Println("\ncreator:", x, y)
 }
 
 func pixel_groups_detect(page *Page) {

@@ -10,8 +10,8 @@ type PixelMap []Pixels    // 2 dimensional representation of more pixels } || or
 type pixint uint32
 
 type Page struct {
-	pixelMap           *PixelMap
-	pixelsGroupStarter []*Pixel // the starter pixels of a group
+	pixelMap          *PixelMap
+	pixelGroupStarter []*Pixel // the starter pixels of a group
 }
 
 func PixFromUInt32(i uint32) pixint { return pixint(i) }
