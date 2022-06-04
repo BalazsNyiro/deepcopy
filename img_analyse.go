@@ -147,14 +147,16 @@ func pixel_neighbours_linking(pixelPointer *Pixel, pixelMapPointer *PixelMap) {
 	pixelNeighbourPointer7 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y  )
 	pixelNeighbourPointer8 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y-1)
 
-	if pixelNeighbourPointer1.pixelType == "char_creator" {pixel.n1 = pixelNeighbourPointer1; (*pixelNeighbourPointer1).n5 = pixelPointer}
-	if pixelNeighbourPointer2.pixelType == "char_creator" {pixel.n2 = pixelNeighbourPointer2; (*pixelNeighbourPointer6).n6 = pixelPointer}
-	if pixelNeighbourPointer3.pixelType == "char_creator" {pixel.n3 = pixelNeighbourPointer3; (*pixelNeighbourPointer7).n7 = pixelPointer}
-	if pixelNeighbourPointer4.pixelType == "char_creator" {pixel.n4 = pixelNeighbourPointer4; (*pixelNeighbourPointer8).n8 = pixelPointer}
-	if pixelNeighbourPointer5.pixelType == "char_creator" {pixel.n5 = pixelNeighbourPointer5; (*pixelNeighbourPointer1).n1 = pixelPointer}
-	if pixelNeighbourPointer6.pixelType == "char_creator" {pixel.n6 = pixelNeighbourPointer6; (*pixelNeighbourPointer2).n2 = pixelPointer}
-	if pixelNeighbourPointer7.pixelType == "char_creator" {pixel.n7 = pixelNeighbourPointer7; (*pixelNeighbourPointer3).n3 = pixelPointer}
-	if pixelNeighbourPointer8.pixelType == "char_creator" {pixel.n8 = pixelNeighbourPointer8; (*pixelNeighbourPointer4).n4 = pixelPointer}
+	// with this solution there is repetition in the code but the structure is visible.
+	// if you refactor it, you will loose the structure.
+	if pixelNeighbourPointer1.pixelType == "char_creator" {pixel.n1 = pixelNeighbourPointer1; (*pixelNeighbourPointer1).n5 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
+	if pixelNeighbourPointer2.pixelType == "char_creator" {pixel.n2 = pixelNeighbourPointer2; (*pixelNeighbourPointer6).n6 = pixelPointer; (*pixelNeighbourPointer6).inPixelGroup = true}
+	if pixelNeighbourPointer3.pixelType == "char_creator" {pixel.n3 = pixelNeighbourPointer3; (*pixelNeighbourPointer7).n7 = pixelPointer; (*pixelNeighbourPointer7).inPixelGroup = true}
+	if pixelNeighbourPointer4.pixelType == "char_creator" {pixel.n4 = pixelNeighbourPointer4; (*pixelNeighbourPointer8).n8 = pixelPointer; (*pixelNeighbourPointer8).inPixelGroup = true}
+	if pixelNeighbourPointer5.pixelType == "char_creator" {pixel.n5 = pixelNeighbourPointer5; (*pixelNeighbourPointer1).n1 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
+	if pixelNeighbourPointer6.pixelType == "char_creator" {pixel.n6 = pixelNeighbourPointer6; (*pixelNeighbourPointer2).n2 = pixelPointer; (*pixelNeighbourPointer2).inPixelGroup = true}
+	if pixelNeighbourPointer7.pixelType == "char_creator" {pixel.n7 = pixelNeighbourPointer7; (*pixelNeighbourPointer3).n3 = pixelPointer; (*pixelNeighbourPointer3).inPixelGroup = true}
+	if pixelNeighbourPointer8.pixelType == "char_creator" {pixel.n8 = pixelNeighbourPointer8; (*pixelNeighbourPointer4).n4 = pixelPointer; (*pixelNeighbourPointer4).inPixelGroup = true}
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
@@ -175,9 +177,6 @@ func pixel_group_link_pixels(x, y int, page *Page) {
 	(*pixelPointer).inPixelGroup = true
 	pixelGroupStarter = append(pixelGroupStarter, pixelPointer)
 	pixel_neighbours_linking(pixelPointer, page.pixelMap)
-
-
-	fmt.Println("\ncreator:", x, y)
 }
 
 func pixel_groups_detect(page *Page) {
