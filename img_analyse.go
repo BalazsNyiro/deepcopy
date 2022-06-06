@@ -100,10 +100,15 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 
 	fmt.Println("end")
-	for _, pixel_GroupStarter_pointer := range page.pixelGroupStarters {
-		fmt.Println("pixel group starter pointer: ", pixel_GroupStarter_pointer)
-	}
+}
 
+func print_group_starters(page Page) {
+
+	fmt.Println("=================== BEGIN ", len(page.pixelGroupStarters), " =====================" )
+	// for id, pixel_GroupStarter_pointer := range page.pixelGroupStarters {
+	// 	fmt.Println(id, "pixel group starter pointer: ", pixel_GroupStarter_pointer)
+	// }
+	fmt.Println("=================== END =====================" )
 }
 
 /* one group: character creator pixels that form one sign.
@@ -128,13 +133,14 @@ func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-func pixel_neighbours_linking(pixelPointer *Pixel, pixelMapPointer *PixelMap) {
-	// the coords: 0, 0 is left top corner, this is the natural,
-	// because the detect of the columns happens from top to down
-	/*  812
+// TODO: test it
+func pixel_neighbours_linking(pixelPointer *Pixel, page *Page) {
+	/* neighbours coords:
+	    812
 	    7P3
 	    654
 	*/
+	pixelMapPointer := (*page).pixelMapPointer
 	pixel := *pixelPointer
 	if pixel.pixelType != "char_creator" {return}
 
@@ -165,26 +171,26 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	return width, height
 }
 
-func pixel_group_link_pixels(x, y int, page *Page) {
-	pixelMap := *page.pixelMapPointer
-
+// TODO: test it
+func pixel_group_link_pixels(x, y int, pagePointer *Page) {
+	pixelMap := *pagePointer.pixelMapPointer
 	pixelPointer := &pixelMap[x][y]
+
 	if (*pixelPointer).pixelType != "char_creator" || (*pixelPointer).inPixelGroup{
 		return
 	}
 	(*pixelPointer).groupStarter = true
 	(*pixelPointer).inPixelGroup = true
 
-	(*page).pixelGroupStarters = append((*page).pixelGroupStarters, pixelPointer)
-	pixel_neighbours_linking(pixelPointer, page.pixelMapPointer)
+	(*pagePointer).pixelGroupStarters = append((*pagePointer).pixelGroupStarters, pixelPointer)
+	pixel_neighbours_linking(pixelPointer, pagePointer)
 }
 
-func pixel_groups_detect(page *Page) {
-	for x, column := range *page.pixelMapPointer {
+func pixel_groups_detect(pagePointer *Page) {
+	for x, column := range *pagePointer.pixelMapPointer {
 		for y, _:= range column {
-			pixel_group_link_pixels(x, y, page)
+			pixel_group_link_pixels(x, y, pagePointer)
+			print_group_starters(*pagePointer)
 		}
 	}
 }
-//pixelGroup := pixel_group_detect(pixel, pixelMapPointer)
-//pixelGroups = append(pixelGroups, pixelGroup)

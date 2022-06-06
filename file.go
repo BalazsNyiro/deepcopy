@@ -77,7 +77,7 @@ func File_exists(Path string) bool {
 	} else {
 		// Schrodinger: file may or may not exist. See err for details.
 		// Therefore, do *NOT* use !os.IsNotExist(err) to test for file existence
-		fmt.Printf("File exist, unknown error:", err)
+		fmt.Printf("File exist, unknown error:%s", err)
 		return false
 	}
 }
