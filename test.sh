@@ -1,2 +1,6 @@
+rm ./deepcopy -f
+rm deepcopy
+# -v: verbose, fmt.println works
+go test -v *.go
 
-go test *.go
+rm ./deepcopy

@@ -37,17 +37,19 @@ func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	return pixel_now
 }
 
-func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
+func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 	bgGmin, bgGmax, bgBmin, bgBmax pixint) PixelMap {
 
 	bounds := Img.Bounds()
 	var pixelMap PixelMap
 
 	// select a column (x value) and go down from line 0 to line last (y)
+	fmt.Println("x min:", bounds.Min.X, "x max", bounds.Max.X)
+	fmt.Println("y min:", bounds.Min.Y, "y max", bounds.Max.Y)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
 		var pixelsColumn []Pixel
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-			fmt.Println("x", x, "y", y)
+			// fmt.Println(">>> x", x, "y", y)
 			rUint32, gUint32, bUint32, _ := Img.At(x, y).RGBA() // last value: a, alpha
 			r := PixFromUInt32(rUint32)
 			g := PixFromUInt32(gUint32)
@@ -61,9 +63,8 @@ func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
 				pixelNow := pixel_new("char_creator", x, y, r, g, b)
 				pixelsColumn = append(pixelsColumn, pixelNow)
 			}
-			fmt.Println("pixelsColumn len", len(pixelsColumn))
+			// fmt.Println("pixelsColumn len", len(pixelsColumn))
 		}
-		fmt.Printf("addr: %p", &pixelsColumn)
 
 		// pack long vertical |||| blades into PixelMap
 		pixelMap = append(pixelMap, pixelsColumn)
@@ -71,16 +72,24 @@ func pixels_char_creators_list__map_from_img(Img image.Image, bgRmin, bgRmax,
 	return pixelMap
 }
 
-func pixel_map_print(pixelMap PixelMap) {
+func print_pixel(pixel Pixel) {
+	fmt.Println(">>>", pixel.x, pixel.y)
+}
+
+func print_pixel_wide1(pixel Pixel) {
+	if pixel.pixelType == "char_creator" {
+		fmt.Print("*")
+	} else {
+		fmt.Print(" ")
+	}
+}
+
+func print_pixel_map(pixelMap PixelMap) {
 	width := len(pixelMap)
 	height := len(pixelMap[0])
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			if pixelMap[x][y].pixelType == "char_creator" {
-				fmt.Print("*")
-			} else {
-				fmt.Print(" ")
-			}
+			print_pixel_wide1(pixelMap[x][y])
 		}
 		fmt.Print("\n")
 	}
@@ -90,13 +99,13 @@ func pixel_map_print(pixelMap PixelMap) {
 func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) {
 	fmt.Println("char creators - select all pixel")
 
-	pixelMap := pixels_char_creators_list__map_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 	fmt.Println("len pixel map ", len(pixelMap))
 	page := Page {pixelMapPointer: &pixelMap}
 
 	// one pixel group is represented with one pixel-map
 	pixel_groups_detect(&page)
-	pixel_map_print(pixelMap)
+	print_pixel_map(pixelMap)
 
 
 	fmt.Println("end")
@@ -133,8 +142,7 @@ func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-// TODO: test it
-func pixel_neighbours_linking(pixelPointer *Pixel, page *Page) {
+func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, page *Page) {
 	/* neighbours coords:
 	    812
 	    7P3
@@ -183,7 +191,7 @@ func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 	(*pixelPointer).inPixelGroup = true
 
 	(*pagePointer).pixelGroupStarters = append((*pagePointer).pixelGroupStarters, pixelPointer)
-	pixel_neighbours_linking(pixelPointer, pagePointer)
+	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer)
 }
 
 func pixel_groups_detect(pagePointer *Page) {
