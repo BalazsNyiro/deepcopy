@@ -13,7 +13,7 @@ func Test_pixel_neighbours_linking(t *testing.T) {
 	page := Page {pixelMapPointer: &pixelMap}
 	pixel_group_link_pixels(1, 1, &page)
 
-	print_pixel(pixelMap[0][0])
+	print_pixel_map(pixelMap, "debug")
 
 
 	fmt.Println(" Test_pixel_neighbours_linking END  ...")

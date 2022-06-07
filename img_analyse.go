@@ -22,7 +22,7 @@ func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pix
 }
 
 var pixel_id_next = 0
-func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
+func pixel_new_obj__no_neighbours(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	var pixel_now Pixel
 	pixel_now.pixelType = pixel_type
 	pixel_now.x = x
@@ -34,6 +34,20 @@ func pixel_new(pixel_type string, x, y int, r, g, b pixint) Pixel {
 	pixel_now.groupStarter = false
 	pixel_now.id = pixel_id_next
 	pixel_id_next++
+	return pixel_now
+}
+
+var pixel_empty = pixel_empty_create()
+func pixel_new__link_empty_neighbours(pixel_type string, x, y int, r, g, b pixint) Pixel {
+	pixel_now := pixel_new_obj__no_neighbours(pixel_type, x, y, r, g, b)
+	pixel_now.n1 = &pixel_empty
+	pixel_now.n2 = &pixel_empty
+	pixel_now.n3 = &pixel_empty
+	pixel_now.n4 = &pixel_empty
+	pixel_now.n5 = &pixel_empty
+	pixel_now.n6 = &pixel_empty
+	pixel_now.n7 = &pixel_empty
+	pixel_now.n8 = &pixel_empty
 	return pixel_now
 }
 
@@ -57,10 +71,10 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 
 			// if the current r,g,b is in background ranges than it's a background pixel
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
-				pixelNow := pixel_new("background", x, y, 0, 0, 0)
+				pixelNow := pixel_new__link_empty_neighbours("background", x, y, 0, 0, 0)
 				pixelsColumn = append(pixelsColumn, pixelNow)
 			} else { // not in the backround -> char_creator/active pixel
-				pixelNow := pixel_new("char_creator", x, y, r, g, b)
+				pixelNow := pixel_new__link_empty_neighbours("char_creator", x, y, r, g, b)
 				pixelsColumn = append(pixelsColumn, pixelNow)
 			}
 			// fmt.Println("pixelsColumn len", len(pixelsColumn))
@@ -72,8 +86,8 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 	return pixelMap
 }
 
-func print_pixel(pixel Pixel) {
-	fmt.Println(">>>", pixel.x, pixel.y)
+func print_pixel_debug(pixel Pixel) {
+	fmt.Println(">>>", pixel.id, pixel.x, pixel.y, "n1", (*pixel.n1).id , "n2", (*pixel.n2).id , "n3", (*pixel.n3).id , "n4", (*pixel.n4).id , "n5", (*pixel.n5).id , "n6", (*pixel.n6).id , "n7", (*pixel.n7).id , "n8", (*pixel.n8).id )
 }
 
 func print_pixel_wide1(pixel Pixel) {
@@ -84,12 +98,17 @@ func print_pixel_wide1(pixel Pixel) {
 	}
 }
 
-func print_pixel_map(pixelMap PixelMap) {
+func print_pixel_map(pixelMap PixelMap, mode string) {
 	width := len(pixelMap)
 	height := len(pixelMap[0])
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			print_pixel_wide1(pixelMap[x][y])
+			if mode == "wide1" {
+				print_pixel_wide1(pixelMap[x][y])
+			}
+			if mode == "debug" {
+				print_pixel_debug(pixelMap[x][y])
+			}
 		}
 		fmt.Print("\n")
 	}
@@ -105,7 +124,7 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 	// one pixel group is represented with one pixel-map
 	pixel_groups_detect(&page)
-	print_pixel_map(pixelMap)
+	print_pixel_map(pixelMap, "wide1")
 
 
 	fmt.Println("end")
@@ -137,7 +156,7 @@ func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 			return &pixelMap[x][y]
 		}
 	}
-	pixelEmpty := pixel_empty()
+	pixelEmpty := pixel_empty_create()
 	return &pixelEmpty
 }
 

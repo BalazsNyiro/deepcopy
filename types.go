@@ -45,6 +45,7 @@ type Pixel struct {
 	groupStarter bool
 	id           int // a simple unique integer for all pixel
 }
-func pixel_empty() Pixel {
-	return pixel_new("empty", 0, 0, 0, 0, 0)
+func pixel_empty_create() Pixel {
+	// placeholder empty pixel, it has no real position
+	return pixel_new_obj__no_neighbours("empty", 0, 0, 0, 0, 0)
 }
