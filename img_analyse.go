@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"strings"
 )
 
 // TEST IT
@@ -86,19 +87,18 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 	return pixelMap
 }
 
-func print_pixel_debug(pixel Pixel) {
-	fmt.Println(">>>", pixel.id, pixel.x, pixel.y,
-		"n1", (*pixel.n1).id , "n2", (*pixel.n2).id ,
-		"n3", (*pixel.n3).id , "n4", (*pixel.n4).id ,
-		"n5", (*pixel.n5).id , "n6", (*pixel.n6).id ,
-		"n7", (*pixel.n7).id , "n8", (*pixel.n8).id )
+func print_pixel_debug(pixel Pixel) string {
+	return fmt.Sprintf("%d %d %d\n%d %d %d\n%d %d %d",
+		(*pixel.n8).id, (*pixel.n1).id, (*pixel.n2).id,
+		(*pixel.n7).id, pixel.id,       (*pixel.n3).id,
+		(*pixel.n6).id, (*pixel.n5).id, (*pixel.n5).id)
 }
 
-func print_pixel_wide1(pixel Pixel) {
+func print_pixel_wide1(pixel Pixel) string {
 	if pixel.pixelType == "char_creator" {
-		fmt.Print("*")
+		return "*"
 	} else {
-		fmt.Print(" ")
+		return " "
 	}
 }
 
@@ -106,14 +106,36 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 	width := len(pixelMap)
 	height := len(pixelMap[0])
 
+	fun_represent_pixel := print_pixel_wide1 // this is the default print mode
+	separator_x := ""
+	separator_y := ""
+
+	if mode == "debug" {
+		fun_represent_pixel = print_pixel_debug
+		separator_x = "|"
+		separator_y = "-"
+	}
+
 	for y := 0; y < height; y++ {
+		row := []string{}
 		for x := 0; x < width; x++ {
-			if mode == "wide1" {
-				print_pixel_wide1(pixelMap[x][y])
+			row = append(row, fun_represent_pixel(pixelMap[x][y]))
+		}
+		numlines := strings.Count(row[0], "\n") + 1
+
+		char_used_horizontally := 0
+		for lineInPixelOutput := 0; lineInPixelOutput < numlines; lineInPixelOutput++ {
+			char_used_horizontally = 0
+			for x := 0; x < width; x++ {
+				displayed := strings.Split(row[x], "\n")[lineInPixelOutput]
+				fmt.Print(displayed)
+				fmt.Print(separator_x)
+				char_used_horizontally += len(displayed) + len(separator_x)
 			}
-			if mode == "debug" {
-				print_pixel_debug(pixelMap[x][y])
-			}
+			fmt.Print("\n")
+		}
+		for x := 0; x < char_used_horizontally; x++ {
+			fmt.Print(separator_y)
 		}
 		fmt.Print("\n")
 	}
