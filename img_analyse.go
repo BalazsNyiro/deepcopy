@@ -87,7 +87,11 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 }
 
 func print_pixel_debug(pixel Pixel) {
-	fmt.Println(">>>", pixel.id, pixel.x, pixel.y, "n1", (*pixel.n1).id , "n2", (*pixel.n2).id , "n3", (*pixel.n3).id , "n4", (*pixel.n4).id , "n5", (*pixel.n5).id , "n6", (*pixel.n6).id , "n7", (*pixel.n7).id , "n8", (*pixel.n8).id )
+	fmt.Println(">>>", pixel.id, pixel.x, pixel.y,
+		"n1", (*pixel.n1).id , "n2", (*pixel.n2).id ,
+		"n3", (*pixel.n3).id , "n4", (*pixel.n4).id ,
+		"n5", (*pixel.n5).id , "n6", (*pixel.n6).id ,
+		"n7", (*pixel.n7).id , "n8", (*pixel.n8).id )
 }
 
 func print_pixel_wide1(pixel Pixel) {
@@ -101,6 +105,7 @@ func print_pixel_wide1(pixel Pixel) {
 func print_pixel_map(pixelMap PixelMap, mode string) {
 	width := len(pixelMap)
 	height := len(pixelMap[0])
+
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
 			if mode == "wide1" {
