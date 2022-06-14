@@ -239,13 +239,13 @@ func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 	pixelMap := *pagePointer.pixelMapPointer
 	pixelPointer := &pixelMap[x][y]
 
-	if (*pixelPointer).pixelType != "char_creator" || (*pixelPointer).inPixelGroup{
+	if ! pixelPointer.IsCharCreator() || pixelPointer.inPixelGroup{
 		return
 	}
-	(*pixelPointer).groupStarter = true
-	(*pixelPointer).inPixelGroup = true
+	pixelPointer.groupStarter = true
+	pixelPointer.inPixelGroup = true
 
-	(*pagePointer).pixelGroupStarters = append((*pagePointer).pixelGroupStarters, pixelPointer)
+	pagePointer.pixelGroupStarters = append(pagePointer.pixelGroupStarters, pixelPointer)
 	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer)
 }
 
