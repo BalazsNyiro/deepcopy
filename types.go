@@ -46,7 +46,7 @@ type Pixel struct {
 	id           int // a simple unique integer for all pixel
 }
 
-func (pixel Pixel) Is_char_creator () bool {
+func (pixel Pixel) IsCharCreator() bool {
 	return pixel.pixelType == "char_creator"
 }
 

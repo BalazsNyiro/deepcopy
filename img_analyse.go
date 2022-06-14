@@ -90,10 +90,18 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 }
 
 func print_pixel_debug(pixel Pixel) string {
+	p1_id := pixel.n1.id
+	p2_id := pixel.n2.id
+	p3_id := pixel.n3.id
+	p4_id := pixel.n4.id
+	p5_id := pixel.n5.id
+	p6_id := pixel.n6.id
+	p7_id := pixel.n7.id
+	p8_id := pixel.n8.id
 	return fmt.Sprintf("%d %d %d\n%d %d %d\n%d %d %d",
-		(*pixel.n8).id, (*pixel.n1).id, (*pixel.n2).id,
-		(*pixel.n7).id, pixel.id,       (*pixel.n3).id,
-		(*pixel.n6).id, (*pixel.n5).id, (*pixel.n5).id)
+		p8_id, p1_id,    p2_id,
+		p7_id, pixel.id, p3_id,
+		p6_id, p5_id,    p4_id)
 }
 
 func print_pixel_wide1(pixel Pixel) string {
@@ -177,9 +185,9 @@ because they are not separated
 
 
 // you can be sure that it returns with a pixel, if the coords is outside of it or not
-func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
+func pixel_pointer_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 	pixelMap := *pixelMapPointer
-	pixelMapWidth, pixelMapHeight := pixel_map_get_w_h(pixelMap)
+	pixelMapWidth, pixelMapHeight := pixel_map_get_w_h(*pixelMapPointer)
 	if x >= 0 && x < pixelMapWidth {
 		if y >= 0 && y < pixelMapHeight{
 			return &pixelMap[x][y]
@@ -190,36 +198,34 @@ func pixel_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, page *Page) {
+func pixel_neighbours_linking__distance_1(pixel *Pixel, page *Page) {
 	/* neighbours coords:
 	    812
 	    7P3
 	    654
 	*/
-	pixelMapPointer := (*page).pixelMapPointer
-	pixel := *pixelPointer
+	pixelMapPointer := page.pixelMapPointer
 	if pixel.pixelType != "char_creator" {return}
 
-	pixelNeighbourPointer1 := pixel_get_from_map(pixelMapPointer, pixel.x,  pixel.y-1)
-	pixelNeighbourPointer2 := pixel_get_from_map(pixelMapPointer, pixel.x+1, pixel.y-1)
-	pixelNeighbourPointer3 := pixel_get_from_map(pixelMapPointer, pixel.x+1, pixel.y  )
-	pixelNeighbourPointer4 := pixel_get_from_map(pixelMapPointer, pixel.x+1, pixel.y+1)
-	pixelNeighbourPointer5 := pixel_get_from_map(pixelMapPointer, pixel.x  , pixel.y+1)
-	pixelNeighbourPointer6 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y+1)
-	pixelNeighbourPointer7 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y  )
-	pixelNeighbourPointer8 := pixel_get_from_map(pixelMapPointer, pixel.x-1, pixel.y-1)
+	pixelNeighbourPointer1 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x,  pixel.y-1)
+	pixelNeighbourPointer2 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x+1, pixel.y-1)
+	pixelNeighbourPointer3 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x+1, pixel.y  )
+	pixelNeighbourPointer4 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x+1, pixel.y+1)
+	pixelNeighbourPointer5 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x  , pixel.y+1)
+	pixelNeighbourPointer6 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x-1, pixel.y+1)
+	pixelNeighbourPointer7 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x-1, pixel.y  )
+	pixelNeighbourPointer8 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x-1, pixel.y-1)
 
 	// with this solution there is repetition in the code but the structure is visible.
 	// if you refactor it, you will loose the structure.
-	// TODO: use methods with poin
-	if (*pixelNeighbourPointer1).Is_char_creator() {pixel.n1 = pixelNeighbourPointer1; (*pixelNeighbourPointer1).n5 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
-	if (*pixelNeighbourPointer2).Is_char_creator() {pixel.n2 = pixelNeighbourPointer2; (*pixelNeighbourPointer6).n6 = pixelPointer; (*pixelNeighbourPointer6).inPixelGroup = true}
-	if (*pixelNeighbourPointer3).Is_char_creator() {pixel.n3 = pixelNeighbourPointer3; (*pixelNeighbourPointer7).n7 = pixelPointer; (*pixelNeighbourPointer7).inPixelGroup = true}
-	if (*pixelNeighbourPointer4).Is_char_creator() {pixel.n4 = pixelNeighbourPointer4; (*pixelNeighbourPointer8).n8 = pixelPointer; (*pixelNeighbourPointer8).inPixelGroup = true}
-	if (*pixelNeighbourPointer5).Is_char_creator() {pixel.n5 = pixelNeighbourPointer5; (*pixelNeighbourPointer1).n1 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
-	if (*pixelNeighbourPointer6).Is_char_creator() {pixel.n6 = pixelNeighbourPointer6; (*pixelNeighbourPointer2).n2 = pixelPointer; (*pixelNeighbourPointer2).inPixelGroup = true}
-	if (*pixelNeighbourPointer7).Is_char_creator() {pixel.n7 = pixelNeighbourPointer7; (*pixelNeighbourPointer3).n3 = pixelPointer; (*pixelNeighbourPointer3).inPixelGroup = true}
-	if (*pixelNeighbourPointer8).Is_char_creator() {pixel.n8 = pixelNeighbourPointer8; (*pixelNeighbourPointer4).n4 = pixelPointer; (*pixelNeighbourPointer4).inPixelGroup = true}
+	neighbour := pixelNeighbourPointer1; if neighbour.IsCharCreator() {pixel.n1 = pixelNeighbourPointer1; neighbour.n5 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer2; if neighbour.IsCharCreator() {pixel.n2 = pixelNeighbourPointer2; neighbour.n6 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer3; if neighbour.IsCharCreator() {pixel.n3 = pixelNeighbourPointer3; neighbour.n7 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer4; if neighbour.IsCharCreator() {pixel.n4 = pixelNeighbourPointer4; neighbour.n8 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer5; if neighbour.IsCharCreator() {pixel.n5 = pixelNeighbourPointer5; neighbour.n1 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer6; if neighbour.IsCharCreator() {pixel.n6 = pixelNeighbourPointer6; neighbour.n2 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer7; if neighbour.IsCharCreator() {pixel.n7 = pixelNeighbourPointer7; neighbour.n3 = pixel; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer8; if neighbour.IsCharCreator() {pixel.n8 = pixelNeighbourPointer8; neighbour.n4 = pixel; neighbour.inPixelGroup = true}
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
