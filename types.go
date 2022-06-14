@@ -45,6 +45,11 @@ type Pixel struct {
 	groupStarter bool
 	id           int // a simple unique integer for all pixel
 }
+
+func (pixel Pixel) Is_char_creator () bool {
+	return pixel.pixelType == "char_creator"
+}
+
 func pixel_empty_create() Pixel {
 	// placeholder empty pixel, it has no real position
 	return pixel_new_obj__no_neighbours("empty", 0, 0, 0, 0, 0)

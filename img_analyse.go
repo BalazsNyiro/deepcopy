@@ -70,14 +70,16 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 			g := PixFromUInt32(gUint32)
 			b := PixFromUInt32(bUint32)
 
+			pixel_type := "background"
+
 			// if the current r,g,b is in background ranges than it's a background pixel
 			if r >= bgRmin && r <= bgRmax && g >= bgGmin && g <= bgGmax && b >= bgBmin && b <= bgBmax {
-				pixelNow := pixel_new__link_empty_neighbours("background", x, y, 0, 0, 0)
-				pixelsColumn = append(pixelsColumn, pixelNow)
+				// r, g, b are in the background ranges - pass, nothing happens
 			} else { // not in the backround -> char_creator/active pixel
-				pixelNow := pixel_new__link_empty_neighbours("char_creator", x, y, r, g, b)
-				pixelsColumn = append(pixelsColumn, pixelNow)
+				pixel_type = "char_creator"
 			}
+			pixelNow := pixel_new__link_empty_neighbours(pixel_type, x, y, r, g, b)
+			pixelsColumn = append(pixelsColumn, pixelNow)
 			// fmt.Println("pixelsColumn len", len(pixelsColumn))
 		}
 
@@ -209,14 +211,15 @@ func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, page *Page) {
 
 	// with this solution there is repetition in the code but the structure is visible.
 	// if you refactor it, you will loose the structure.
-	if pixelNeighbourPointer1.pixelType == "char_creator" {pixel.n1 = pixelNeighbourPointer1; (*pixelNeighbourPointer1).n5 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
-	if pixelNeighbourPointer2.pixelType == "char_creator" {pixel.n2 = pixelNeighbourPointer2; (*pixelNeighbourPointer6).n6 = pixelPointer; (*pixelNeighbourPointer6).inPixelGroup = true}
-	if pixelNeighbourPointer3.pixelType == "char_creator" {pixel.n3 = pixelNeighbourPointer3; (*pixelNeighbourPointer7).n7 = pixelPointer; (*pixelNeighbourPointer7).inPixelGroup = true}
-	if pixelNeighbourPointer4.pixelType == "char_creator" {pixel.n4 = pixelNeighbourPointer4; (*pixelNeighbourPointer8).n8 = pixelPointer; (*pixelNeighbourPointer8).inPixelGroup = true}
-	if pixelNeighbourPointer5.pixelType == "char_creator" {pixel.n5 = pixelNeighbourPointer5; (*pixelNeighbourPointer1).n1 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
-	if pixelNeighbourPointer6.pixelType == "char_creator" {pixel.n6 = pixelNeighbourPointer6; (*pixelNeighbourPointer2).n2 = pixelPointer; (*pixelNeighbourPointer2).inPixelGroup = true}
-	if pixelNeighbourPointer7.pixelType == "char_creator" {pixel.n7 = pixelNeighbourPointer7; (*pixelNeighbourPointer3).n3 = pixelPointer; (*pixelNeighbourPointer3).inPixelGroup = true}
-	if pixelNeighbourPointer8.pixelType == "char_creator" {pixel.n8 = pixelNeighbourPointer8; (*pixelNeighbourPointer4).n4 = pixelPointer; (*pixelNeighbourPointer4).inPixelGroup = true}
+	// TODO: use methods with poin
+	if (*pixelNeighbourPointer1).Is_char_creator() {pixel.n1 = pixelNeighbourPointer1; (*pixelNeighbourPointer1).n5 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
+	if (*pixelNeighbourPointer2).Is_char_creator() {pixel.n2 = pixelNeighbourPointer2; (*pixelNeighbourPointer6).n6 = pixelPointer; (*pixelNeighbourPointer6).inPixelGroup = true}
+	if (*pixelNeighbourPointer3).Is_char_creator() {pixel.n3 = pixelNeighbourPointer3; (*pixelNeighbourPointer7).n7 = pixelPointer; (*pixelNeighbourPointer7).inPixelGroup = true}
+	if (*pixelNeighbourPointer4).Is_char_creator() {pixel.n4 = pixelNeighbourPointer4; (*pixelNeighbourPointer8).n8 = pixelPointer; (*pixelNeighbourPointer8).inPixelGroup = true}
+	if (*pixelNeighbourPointer5).Is_char_creator() {pixel.n5 = pixelNeighbourPointer5; (*pixelNeighbourPointer1).n1 = pixelPointer; (*pixelNeighbourPointer1).inPixelGroup = true}
+	if (*pixelNeighbourPointer6).Is_char_creator() {pixel.n6 = pixelNeighbourPointer6; (*pixelNeighbourPointer2).n2 = pixelPointer; (*pixelNeighbourPointer2).inPixelGroup = true}
+	if (*pixelNeighbourPointer7).Is_char_creator() {pixel.n7 = pixelNeighbourPointer7; (*pixelNeighbourPointer3).n3 = pixelPointer; (*pixelNeighbourPointer3).inPixelGroup = true}
+	if (*pixelNeighbourPointer8).Is_char_creator() {pixel.n8 = pixelNeighbourPointer8; (*pixelNeighbourPointer4).n4 = pixelPointer; (*pixelNeighbourPointer4).inPixelGroup = true}
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
