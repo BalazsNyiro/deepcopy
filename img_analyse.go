@@ -90,6 +90,9 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 }
 
 func print_pixel_debug(pixel Pixel) string {
+	if ! pixel.IsCharCreator(){
+		return "     \n     \n     "
+	}
 	p1_id := pixel.n1.id
 	p2_id := pixel.n2.id
 	p3_id := pixel.n3.id
