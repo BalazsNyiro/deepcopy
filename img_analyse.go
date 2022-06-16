@@ -32,6 +32,7 @@ func pixel_new_obj__no_neighbours(pixel_type string, x, y int, r, g, b pixint) P
 	pixel_now.g = g
 	pixel_now.b = b
 	pixel_now.inPixelGroup = false
+	pixel_now.neighboursLinkingExecuted = false
 	pixel_now.groupStarter = false
 	pixel_now.id = pixel_id_next
 	pixel_id_next++
@@ -201,34 +202,46 @@ func pixel_pointer_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-func pixel_neighbours_linking__distance_1(pixel *Pixel, page *Page) {
+func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page) {
 	/* neighbours coords:
 	    812
 	    7P3
 	    654
 	*/
-	pixelMapPointer := page.pixelMapPointer
-	if pixel.pixelType != "char_creator" {return}
+	if ! pixelPointer.IsCharCreator() { return }
+	if pixelPointer.neighboursLinkingExecuted { return }
+	pixelPointer.neighboursLinkingExecuted = true
 
-	pixelNeighbourPointer1 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x,  pixel.y-1)
-	pixelNeighbourPointer2 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x+1, pixel.y-1)
-	pixelNeighbourPointer3 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x+1, pixel.y  )
-	pixelNeighbourPointer4 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x+1, pixel.y+1)
-	pixelNeighbourPointer5 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x  , pixel.y+1)
-	pixelNeighbourPointer6 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x-1, pixel.y+1)
-	pixelNeighbourPointer7 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x-1, pixel.y  )
-	pixelNeighbourPointer8 := pixel_pointer_get_from_map(pixelMapPointer, pixel.x-1, pixel.y-1)
+	pixelMapPointer := pagePointer.pixelMapPointer
+
+	pixelNeighbourPointer1 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x,  pixelPointer.y-1)
+	pixelNeighbourPointer2 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x+1, pixelPointer.y-1)
+	pixelNeighbourPointer3 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x+1, pixelPointer.y  )
+	pixelNeighbourPointer4 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x+1, pixelPointer.y+1)
+	pixelNeighbourPointer5 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x  , pixelPointer.y+1)
+	pixelNeighbourPointer6 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x-1, pixelPointer.y+1)
+	pixelNeighbourPointer7 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x-1, pixelPointer.y  )
+	pixelNeighbourPointer8 := pixel_pointer_get_from_map(pixelMapPointer, pixelPointer.x-1, pixelPointer.y-1)
 
 	// with this solution there is repetition in the code but the structure is visible.
 	// if you refactor it, you will loose the structure.
-	neighbour := pixelNeighbourPointer1; if neighbour.IsCharCreator() {pixel.n1 = pixelNeighbourPointer1; neighbour.n5 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer2; if neighbour.IsCharCreator() {pixel.n2 = pixelNeighbourPointer2; neighbour.n6 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer3; if neighbour.IsCharCreator() {pixel.n3 = pixelNeighbourPointer3; neighbour.n7 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer4; if neighbour.IsCharCreator() {pixel.n4 = pixelNeighbourPointer4; neighbour.n8 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer5; if neighbour.IsCharCreator() {pixel.n5 = pixelNeighbourPointer5; neighbour.n1 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer6; if neighbour.IsCharCreator() {pixel.n6 = pixelNeighbourPointer6; neighbour.n2 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer7; if neighbour.IsCharCreator() {pixel.n7 = pixelNeighbourPointer7; neighbour.n3 = pixel; neighbour.inPixelGroup = true}
-	neighbour =  pixelNeighbourPointer8; if neighbour.IsCharCreator() {pixel.n8 = pixelNeighbourPointer8; neighbour.n4 = pixel; neighbour.inPixelGroup = true}
+	neighbour := pixelNeighbourPointer1; if neighbour.IsCharCreator() { pixelPointer.n1 = pixelNeighbourPointer1; neighbour.n5 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer2; if neighbour.IsCharCreator() { pixelPointer.n2 = pixelNeighbourPointer2; neighbour.n6 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer3; if neighbour.IsCharCreator() { pixelPointer.n3 = pixelNeighbourPointer3; neighbour.n7 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer4; if neighbour.IsCharCreator() { pixelPointer.n4 = pixelNeighbourPointer4; neighbour.n8 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer5; if neighbour.IsCharCreator() { pixelPointer.n5 = pixelNeighbourPointer5; neighbour.n1 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer6; if neighbour.IsCharCreator() { pixelPointer.n6 = pixelNeighbourPointer6; neighbour.n2 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer7; if neighbour.IsCharCreator() { pixelPointer.n7 = pixelNeighbourPointer7; neighbour.n3 = pixelPointer; neighbour.inPixelGroup = true}
+	neighbour =  pixelNeighbourPointer8; if neighbour.IsCharCreator() { pixelPointer.n8 = pixelNeighbourPointer8; neighbour.n4 = pixelPointer; neighbour.inPixelGroup = true}
+
+	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer) }
+	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer) }
+	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer) }
+	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer) }
+	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer) }
+	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer) }
+	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer) }
+	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer) }
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {

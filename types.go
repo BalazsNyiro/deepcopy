@@ -27,23 +27,24 @@ type Pixel struct {
 	*/
 	pixelType string // char_creator, background, empty
 	// n - neighbours (pointers):
-	n1             *Pixel
-	n2             *Pixel
-	n3             *Pixel
-	n4             *Pixel
-	n5             *Pixel
-	n6             *Pixel
-	n7             *Pixel
-	n8             *Pixel
-	r              pixint
-	g              pixint
-	b              pixint
-	x              int
-	y            int
-	pixelGroup   int
-	inPixelGroup bool
-	groupStarter bool
-	id           int // a simple unique integer for all pixel
+	n1                        *Pixel
+	n2                        *Pixel
+	n3                        *Pixel
+	n4                        *Pixel
+	n5                        *Pixel
+	n6                        *Pixel
+	n7                        *Pixel
+	n8                        *Pixel
+	r                         pixint
+	g                         pixint
+	b                         pixint
+	x                         int
+	y                         int
+	pixelGroup                int
+	inPixelGroup              bool
+	neighboursLinkingExecuted bool
+	groupStarter              bool
+	id                        int // a simple unique integer for all pixel
 }
 
 func (pixel Pixel) IsCharCreator() bool {
