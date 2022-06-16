@@ -250,7 +250,6 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	return width, height
 }
 
-// TODO: test it
 func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 	pixelMap := *pagePointer.pixelMapPointer
 	pixelPointer := &pixelMap[x][y]
