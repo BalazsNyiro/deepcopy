@@ -121,13 +121,13 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 	height := len(pixelMap[0])
 
 	fun_represent_pixel := print_pixel_wide1 // this is the default print mode
-	separator_x := ""
-	separator_y := ""
+	separator_vertical := ""
+	separator_horizontal := ""
 
 	if mode == "debug" {
 		fun_represent_pixel = print_pixel_debug
-		separator_x = "|"
-		separator_y = "-"
+		separator_vertical = "|"
+		separator_horizontal = "-"
 	}
 
 	for y := 0; y < height; y++ {
@@ -143,15 +143,20 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 			for x := 0; x < width; x++ {
 				displayed := strings.Split(row[x], "\n")[lineInPixelOutput]
 				fmt.Print(displayed)
-				fmt.Print(separator_x)
-				char_used_horizontally += len(displayed) + len(separator_x)
+				fmt.Print(separator_vertical)
+				char_used_horizontally += len(displayed) + len(separator_vertical)
 			}
 			fmt.Print("\n")
 		}
+
+		separator_horizontal_used := false
 		for x := 0; x < char_used_horizontally; x++ {
-			fmt.Print(separator_y)
+			fmt.Print(separator_horizontal)
+			separator_horizontal_used = true
 		}
-		fmt.Print("\n")
+		if separator_horizontal_used && len(separator_horizontal) > 0  {
+			fmt.Print("\n")
+		}
 	}
 }
 
@@ -165,6 +170,7 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 	// one pixel group is represented with one pixel-map
 	pixel_groups_detect(&page)
+	fmt.Println("end pixel_groups_detect")
 	print_pixel_map(pixelMap, "wide1")
 
 
