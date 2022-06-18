@@ -34,3 +34,4 @@ done
 
 ######### render fix images
 render A Andale-Mono general_A.png
+render jinn Andale-Mono general_jinn.png

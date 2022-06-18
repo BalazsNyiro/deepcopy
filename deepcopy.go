@@ -6,7 +6,7 @@ import (
 
 func main() {
 	fmt.Print("deepcopy")
-	Img := Img_read_from_file("test/general_A_thin.png")
+	Img := Img_read_from_file("test/general_jinn_noborder.png")
 	bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax := background_detect_rgb_ranges()
 	pixel_groups_char_creators(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
 

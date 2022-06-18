@@ -155,7 +155,8 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 			separator_horizontal_used = true
 		}
 		if separator_horizontal_used && len(separator_horizontal) > 0  {
-			fmt.Print("\n")
+			fmt.Print("\n") // if something was displayed as row separator,
+			                // create newline again
 		}
 	}
 }
@@ -180,9 +181,9 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 func print_group_starters(page Page) {
 
 	fmt.Println("=================== BEGIN ", len(page.pixelGroupStarters), " =====================" )
-	// for id, pixel_GroupStarter_pointer := range page.pixelGroupStarters {
-	// 	fmt.Println(id, "pixel group starter pointer: ", pixel_GroupStarter_pointer)
-	// }
+	for id, pixelGroupStarterPointer := range page.pixelGroupStarters {
+	 	fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
+	}
 	fmt.Println("=================== END =====================" )
 }
 
@@ -256,6 +257,7 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 	return width, height
 }
 
+//  Test_pixel_neighbours_linking
 func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 	pixelMap := *pagePointer.pixelMapPointer
 	pixelPointer := &pixelMap[x][y]
