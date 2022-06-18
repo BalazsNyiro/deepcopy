@@ -5,21 +5,20 @@ import (
 	"testing"
 )
 
-func linking_test(testId string, x, y int, neighbour string, targetX, targetY int, pixelMap PixelMap, t *testing.T) {
+func neighbours_linking_test_pixel_pairs(testId string, x, y int, direction string, targetX, targetY int, pixelMap PixelMap, t *testing.T) {
 	neighbourId := pixelMap[x][y].n1.id
-	if neighbour == "n2" { neighbourId = pixelMap[x][y].n2.id }
-	if neighbour == "n3" { neighbourId = pixelMap[x][y].n3.id }
-	if neighbour == "n4" { neighbourId = pixelMap[x][y].n4.id }
-	if neighbour == "n5" { neighbourId = pixelMap[x][y].n5.id }
-	if neighbour == "n6" { neighbourId = pixelMap[x][y].n6.id }
-	if neighbour == "n7" { neighbourId = pixelMap[x][y].n7.id }
-	if neighbour == "n8" { neighbourId = pixelMap[x][y].n8.id }
+	if direction == "n2" { neighbourId = pixelMap[x][y].n2.id }
+	if direction == "n3" { neighbourId = pixelMap[x][y].n3.id }
+	if direction == "n4" { neighbourId = pixelMap[x][y].n4.id }
+	if direction == "n5" { neighbourId = pixelMap[x][y].n5.id }
+	if direction == "n6" { neighbourId = pixelMap[x][y].n6.id }
+	if direction == "n7" { neighbourId = pixelMap[x][y].n7.id }
+	if direction == "n8" { neighbourId = pixelMap[x][y].n8.id }
 
 	if neighbourId != pixelMap[targetX][targetY].id {
 		t.Fatalf("TestId %s - linking problem! %d,%d.%s.id = %d 0,1.id = %d",
-			testId, x, y, neighbour, neighbourId, pixelMap[targetX][targetY].id)
+			testId, x, y, direction, neighbourId, pixelMap[targetX][targetY].id)
 	}
-
 }
 
 func Test_pixel_neighbours_linking(t *testing.T) {
@@ -32,11 +31,20 @@ func Test_pixel_neighbours_linking(t *testing.T) {
 	pixel_group_link_pixels(0, 0, &page)
 	print_pixel_map(pixelMap, "debug")
 
-	linking_test("neighbour_link_0_0 a", 0, 0, "n4", 1, 1, pixelMap, t)
-	linking_test("neighbour_link_0_0 b", 0, 0, "n5", 0, 1, pixelMap, t)
+	neighbours_linking_test_pixel_pairs("neighbour_link_0_0_a", 0, 0, "n4", 1, 1, pixelMap, t)
+	neighbours_linking_test_pixel_pairs("neighbour_link_0_0_b", 0, 0, "n5", 0, 1, pixelMap, t)
 
-	linking_test("neighbour_link_0_1", 0, 1, "n5", 0, 2, pixelMap, t)
+	// 0, 1 -> 0, 0 is tested previously
+	neighbours_linking_test_pixel_pairs("neighbour_link_0_1_a", 0, 1, "n3", 1, 1, pixelMap, t)
+	neighbours_linking_test_pixel_pairs("neighbour_link_0_1_b", 0, 1, "n5", 0, 2, pixelMap, t)
 
+	neighbours_linking_test_pixel_pairs("neighbour_link_1_1_a", 1, 1, "n2", 2, 0, pixelMap, t)
 
+	neighbours_linking_test_pixel_pairs("neighbour_link_2_0_a", 2, 0, "n5", 2, 1, pixelMap, t)
+	neighbours_linking_test_pixel_pairs("neighbour_link_2_0_b", 2, 0, "n6", 1, 1, pixelMap, t)
 
+	neighbours_linking_test_pixel_pairs("neighbour_link_2_1", 2, 1, "n7", 1, 1, pixelMap, t)
+
+	neighbours_linking_test_pixel_pairs("neighbour_link_2_2_a", 2, 2, "n1", 2, 1, pixelMap, t)
+	neighbours_linking_test_pixel_pairs("neighbour_link_2_2_b", 2, 2, "n8", 1, 1, pixelMap, t)
 }
