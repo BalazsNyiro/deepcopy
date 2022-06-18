@@ -115,6 +115,17 @@ func print_pixel_wide1(pixel Pixel) string {
 		return " "
 	}
 }
+func numbering_rows(rowNum int, numOfLinesInInfo int) string {
+	numbering := fmt.Sprintf("% 3d", rowNum)
+	var out string
+	for i :=0; i < numOfLinesInInfo; i++ {
+		if len(out) > 0 {
+			out = out + "\n"
+		}
+		out = out + numbering
+	}
+	return out
+}
 
 func print_pixel_map(pixelMap PixelMap, mode string) {
 	width := len(pixelMap)
@@ -130,15 +141,17 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 		separator_horizontal = "-"
 	}
 
+	samplePixelInfoToCountNewlines := fun_represent_pixel(pixelMap[0][0])
+	numLinesInInfo := strings.Count(samplePixelInfoToCountNewlines, "\n") + 1
+
 	for y := 0; y < height; y++ {
-		row := []string{}
+		row := []string{numbering_rows(y, numLinesInInfo)}
 		for x := 0; x < width; x++ {
 			row = append(row, fun_represent_pixel(pixelMap[x][y]))
 		}
-		numlines := strings.Count(row[0], "\n") + 1
 
 		char_used_horizontally := 0
-		for lineInPixelOutput := 0; lineInPixelOutput < numlines; lineInPixelOutput++ {
+		for lineInPixelOutput := 0; lineInPixelOutput < numLinesInInfo; lineInPixelOutput++ {
 			char_used_horizontally = 0
 			for x := 0; x < width; x++ {
 				displayed := strings.Split(row[x], "\n")[lineInPixelOutput]
