@@ -175,7 +175,7 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 }
 
 // select all pixels that is the part of the image
-func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) {
+func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) Page {
 	fmt.Println("char creators - select all pixel")
 
 	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
@@ -184,11 +184,8 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 
 	// one pixel group is represented with one pixel-map
 	pixel_groups_detect(&page)
-	fmt.Println("end pixel_groups_detect")
-	print_pixel_map(pixelMap, "wide1")
 
-
-	fmt.Println("end")
+	return page
 }
 
 func print_group_starters(page Page) {
@@ -289,7 +286,6 @@ func pixel_groups_detect(pagePointer *Page) {
 	for x, column := range *pagePointer.pixelMapPointer {
 		for y, _:= range column {
 			pixel_group_link_pixels(x, y, pagePointer)
-			print_group_starters(*pagePointer)
 		}
 	}
 }

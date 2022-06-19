@@ -31,5 +31,3 @@ INSTALL:
    - python3-pil
    - python3-pil.imagetk
 
-TODO: 
- - program planning in doc dir
