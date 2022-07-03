@@ -174,8 +174,10 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 	}
 }
 
-// select all pixels that is the part of the image
-func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) Page {
+// link connected pixels to each other
+// important: here a pixel knows only his nearest neighbours.
+// so a pixel doesn't know all other pixels in the same group at this point.
+func pixel_groups_linking_in_page(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) Page {
 	fmt.Println("char creators - select all pixel")
 
 	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
@@ -183,14 +185,14 @@ func pixel_groups_char_creators(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax,
 	page := Page {pixelMapPointer: &pixelMap}
 
 	// one pixel group is represented with one pixel-map
-	pixel_groups_detect(&page)
+	pixel_groups_link_all_pixels(&page)
 
 	return page
 }
 
-func print_group_starters(page Page) {
+func print_group_starter_pixels(page Page) {
 
-	fmt.Println("=================== BEGIN ", len(page.pixelGroupStarters), " =====================" )
+	fmt.Println("=================== num of pixelgroup starters: ", len(page.pixelGroupStarters), " =====================" )
 	for id, pixelGroupStarterPointer := range page.pixelGroupStarters {
 	 	fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
 	}
@@ -282,7 +284,7 @@ func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer)
 }
 
-func pixel_groups_detect(pagePointer *Page) {
+func pixel_groups_link_all_pixels(pagePointer *Page) {
 	for x, column := range *pagePointer.pixelMapPointer {
 		for y, _:= range column {
 			pixel_group_link_pixels(x, y, pagePointer)

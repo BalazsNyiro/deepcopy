@@ -11,6 +11,13 @@ type pixint uint32
 type Page struct {
 	pixelMapPointer    *PixelMap
 	pixelGroupStarters []*Pixel // the starter pixels of a group
+
+	/* Pixelgroups: directly connected character creator pixels.
+	you can reach all pixels one by one, they are not separated.
+	example: 'i' letter: it has 2 pixelgroups because from the '.'
+	dot you can't reach the body of 'ı' (dotless i)
+
+	 */
 }
 
 func PixFromUInt32(i uint32) pixint { return pixint(i) }
