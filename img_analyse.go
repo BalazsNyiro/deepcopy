@@ -221,7 +221,8 @@ func pixel_pointer_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page) {
+func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page,
+	                                      pixelsInGroupPointer *[]Pixel) {
 	/* neighbours coords:
 	    812
 	    7P3
@@ -253,14 +254,14 @@ func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page
 	neighbour =  pixelNeighbourPointer7; if neighbour.IsCharCreator() { pixelPointer.n7 = pixelNeighbourPointer7; neighbour.n3 = pixelPointer; neighbour.inPixelGroup = true}
 	neighbour =  pixelNeighbourPointer8; if neighbour.IsCharCreator() { pixelPointer.n8 = pixelNeighbourPointer8; neighbour.n4 = pixelPointer; neighbour.inPixelGroup = true}
 
-	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer) }
-	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer) }
-	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer) }
-	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer) }
-	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer) }
-	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer) }
-	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer) }
-	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer) }
+	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer, pixelsInGroupPointer) }
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
@@ -280,8 +281,12 @@ func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 	pixelPointer.groupStarter = true
 	pixelPointer.inPixelGroup = true
 
+	pixelsInGroup := []Pixel{}
 	pagePointer.pixelGroupStarters = append(pagePointer.pixelGroupStarters, pixelPointer)
-	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer)
+	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer, &pixelsInGroup)
+	_=pixelsInGroup
+	// TODO: use the collected pixel list
+	return
 }
 
 func pixel_groups_link_all_pixels(pagePointer *Page) {

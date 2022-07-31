@@ -17,6 +17,13 @@ type Page struct {
 	example: 'i' letter: it has 2 pixelgroups because from the '.'
 	dot you can't reach the body of 'ı' (dotless i)
 
+	pixelgroup's bounding boxes can overlap each other.
+	for example a zero 0 char when a dot is in the middle of the zero,
+	the zero's bounding box and the dot's bounding box has an overlapped area.
+
+	because of possible overlapping, it is not enough to re-use the original
+	pixel representation of pages.
+
 	 */
 }
 
