@@ -12,13 +12,15 @@ import (
 // R, G, B min/max values
 // A color's RGBA method returns values in the range [0, 65535].
 // 0: black
-func background_detect_rgb_ranges() (pixint, pixint, pixint, pixint, pixint, pixint) {
+func background_detect_rgb_ranges(callerLevel int) (pixint, pixint, pixint, pixint, pixint, pixint) {
+	trace("background_detect_rgb_ranges", ">", callerLevel+1)
 	// fmt.Println("background detect ...")
 	var maxGeneral pixint = 65535
 	var minGeneral = maxGeneral - 45000
 	// R min, R max - G min, G max - B min, B max
 	// if a pixel is in these ranges, then it is in the backround.
 	// else: it is a char_creator pixel
+	trace("background_detect_rgb_ranges", "<", callerLevel+1)
 	return minGeneral, maxGeneral, minGeneral, maxGeneral, minGeneral, maxGeneral
 }
 
@@ -54,7 +56,9 @@ func pixel_new__link_empty_neighbours(pixel_type string, x, y int, r, g, b pixin
 }
 
 func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
-	bgGmin, bgGmax, bgBmin, bgBmax pixint) PixelMap {
+	bgGmin, bgGmax, bgBmin, bgBmax pixint, callerLevel int) PixelMap {
+	callLevel := callerLevel+1
+	trace("pixelmap_from_img", ">", callLevel)
 
 	bounds := Img.Bounds()
 	var pixelMap PixelMap
@@ -87,6 +91,7 @@ func pixelmap_from_img(Img image.Image, bgRmin, bgRmax,
 		// pack long vertical |||| blades into PixelMap
 		pixelMap = append(pixelMap, pixelsColumn)
 	}
+	trace("pixelmap_from_img", "<", callLevel)
 	return pixelMap
 }
 
@@ -177,16 +182,19 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 // link connected pixels to each other
 // important: here a pixel knows only his nearest neighbours.
 // so a pixel doesn't know all other pixels in the same group at this point.
-func pixel_groups_linking_in_page(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint) Page {
+func pixel_groups_linking_in_page(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint, callerLevel int) Page {
+	callLevel := callerLevel + 1
+	trace("pixel_groups_linking_in_page", ">", callLevel)
 	fmt.Println("char creators - select all pixel")
 
-	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax, callLevel)
 	fmt.Println("len pixel map ", len(pixelMap))
 	page := Page {pixelMapPointer: &pixelMap}
 
 	// one pixel group is represented with one pixel-map
-	pixel_groups_link_all_pixels(&page)
+	pixel_groups_link_all_pixels(&page, callLevel)
 
+	trace("pixel_groups_linking_in_page", "<", callLevel)
 	return page
 }
 
@@ -222,7 +230,10 @@ func pixel_pointer_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 
 // active pixels only
 func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page,
-	                                      pixelsInGroupPointer *[]Pixel) {
+	                                      pixelsInGroupPointer *[]Pixel, callerLevel int) {
+	callLevel := callerLevel + 1
+	trace("pixel_neighbours_linking__distance_1", ">", callLevel)
+
 	/* neighbours coords:
 	    812
 	    7P3
@@ -254,14 +265,15 @@ func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page
 	neighbour =  pixelNeighbourPointer7; if neighbour.IsCharCreator() { pixelPointer.n7 = pixelNeighbourPointer7; neighbour.n3 = pixelPointer; neighbour.inPixelGroup = true}
 	neighbour =  pixelNeighbourPointer8; if neighbour.IsCharCreator() { pixelPointer.n8 = pixelNeighbourPointer8; neighbour.n4 = pixelPointer; neighbour.inPixelGroup = true}
 
-	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer, pixelsInGroupPointer) }
-	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer, pixelsInGroupPointer) }
+	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer, pixelsInGroupPointer, callLevel) }
+	trace("pixel_neighbours_linking__distance_1", "<", callLevel)
 }
 
 func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
@@ -271,11 +283,14 @@ func pixel_map_get_w_h(pixelMap PixelMap) (int, int) {
 }
 
 //  Test_pixel_neighbours_linking
-func pixel_group_link_pixels(x, y int, pagePointer *Page) {
+func pixel_group_link_pixels(x, y int, pagePointer *Page, callerLevel int) {
+	callLevel := callerLevel + 1
+	trace("pixel_group_link_pixels", ">", callLevel)
 	pixelMap := *pagePointer.pixelMapPointer
 	pixelPointer := &pixelMap[x][y]
 
 	if ! pixelPointer.IsCharCreator() || pixelPointer.inPixelGroup{
+		trace("pixel_group_link_pixels", "<", callLevel)
 		return
 	}
 	pixelPointer.groupStarter = true
@@ -283,16 +298,20 @@ func pixel_group_link_pixels(x, y int, pagePointer *Page) {
 
 	pixelsInGroup := []Pixel{}
 	pagePointer.pixelGroupStarters = append(pagePointer.pixelGroupStarters, pixelPointer)
-	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer, &pixelsInGroup)
+	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer, &pixelsInGroup, callLevel)
 	_=pixelsInGroup
 	// TODO: use the collected pixel list
+	trace("pixel_group_link_pixels", "<", callLevel)
 	return
 }
 
-func pixel_groups_link_all_pixels(pagePointer *Page) {
+func pixel_groups_link_all_pixels(pagePointer *Page, callerLevel int) {
+	callLevel := callerLevel + 1
+	trace("pixel_groups_link_all_pixels", ">", callLevel)
 	for x, column := range *pagePointer.pixelMapPointer {
 		for y, _:= range column {
-			pixel_group_link_pixels(x, y, pagePointer)
+			pixel_group_link_pixels(x, y, pagePointer, callLevel)
 		}
 	}
+	trace("pixel_groups_link_all_pixels", "<", callLevel)
 }
