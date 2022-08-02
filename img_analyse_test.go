@@ -23,12 +23,12 @@ func neighbours_linking_test_pixel_pairs(testId string, x, y int, direction stri
 
 func Test_pixel_neighbours_linking(t *testing.T) {
 	fmt.Println(" Test_pixel_neighbours_linking BEGINNING  ...")
-	Img := Img_read_from_file("test/test_simple_H.png")
-	bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax := background_detect_rgb_ranges()
-	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax)
+	Img := Img_read_from_file("test/test_simple_H.png", 0)
+	bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax := background_detect_rgb_ranges(0)
+	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax, 0)
 	page := Page {pixelMapPointer: &pixelMap}
 
-	pixel_group_link_pixels(0, 0, &page)
+	pixel_group_link_pixels(0, 0, &page, 0)
 	print_pixel_map(pixelMap, "debug")
 
 	neighbours_linking_test_pixel_pairs("neighbour_link_0_0_a", 0, 0, "n4", 1, 1, pixelMap, t)

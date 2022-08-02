@@ -24,8 +24,10 @@ func Img_read_from_file(FileName string, callerLevel int) image.Image {
 }
 
 func trace(funcName string, direction string, depth int) {
-	var skipTrace = []string{"pixel_group_link_pixels", "pixel_neighbours_linking__distance_1"}
-	for _, skipThis := range skipTrace {
+	var skippedFuncs	 = []string{
+		"pixel_group_link_pixels",
+		"pixel_neighbours_linking__distance_1"}
+	for _, skipThis := range skippedFuncs {
 		if skipThis == funcName {
 			return
 		}
