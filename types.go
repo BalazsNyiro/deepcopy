@@ -11,6 +11,7 @@ type pixint uint32
 type Page struct {
 	pixelMapPointer    *PixelMap
 	pixelGroupStarters []*Pixel // the starter pixels of a group
+	pixelGroups  [] ([]*Pixel)  // list of pixelPointerLists
 
 	/* Pixelgroups: directly connected character creator pixels.
 	you can reach all pixels one by one, they are not separated.

@@ -312,7 +312,7 @@ func pixel_groups_link_all_pixels(pagePointer *Page, callerLevel int) {
 	}
 	trace("pixel_groups_link_all_pixels", "<", callLevel)
 }
-func pixel_groups_collect_pixels(page Page) {
+func pixel_groups_collect_pixels__in_page(page Page) {
 	for id, pixelGroupStarterPointer := range page.pixelGroupStarters {
 		fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
 
@@ -335,7 +335,7 @@ func pixel_groups_collect_pixels(page Page) {
 				}
 			}
 		}
-
+		page.pixelGroups = append(page.pixelGroups, accumulator)
 	}
 }
 
