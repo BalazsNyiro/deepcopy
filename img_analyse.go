@@ -312,3 +312,38 @@ func pixel_groups_link_all_pixels(pagePointer *Page, callerLevel int) {
 	}
 	trace("pixel_groups_link_all_pixels", "<", callLevel)
 }
+func pixel_groups_collect_pixels(page Page) {
+	for id, pixelGroupStarterPointer := range page.pixelGroupStarters {
+		fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
+
+		accumulator := [] (*Pixel) {}
+		queue := [] (*Pixel) {pixelGroupStarterPointer}
+
+		for len(queue) > 0 {
+			pixelPtr := queue[0]
+			queue = queue[1:]
+			accumulator = append(accumulator, pixelPtr)
+
+			fmt.Println("pixelPtr", pixelPtr)
+			fmt.Println("accumulator", accumulator)
+
+			neighbours := [] * Pixel {pixelPtr.n1, pixelPtr.n2, pixelPtr.n3, pixelPtr.n4, pixelPtr.n5, pixelPtr.n6, pixelPtr.n7, pixelPtr.n8}
+			for _, neighbourPtr := range(neighbours) {
+				// become slower as accumulator longer, but simple solution
+				if neighbourPtr.inPixelGroup && ! in_pixel_list(queue, neighbourPtr) && ! in_pixel_list(accumulator, neighbourPtr) {
+					queue = append(queue, neighbourPtr)
+				}
+			}
+		}
+
+	}
+}
+
+func in_pixel_list(pixels [] *Pixel, pixelPointer *Pixel) bool {
+	for _, v := range pixels {
+		if v == pixelPointer {
+			return true
+		}
+	}
+	return false
+}

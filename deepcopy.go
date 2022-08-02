@@ -16,6 +16,7 @@ func main() {
 
 	page := pixel_groups_linking_in_page(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax, 0)
 	// page.pixelGroupStarters is filled!
+	pixel_groups_collect_pixels(page)
 
 	// NEXT TASK: I'd like to know the list of pixels in a group
 
