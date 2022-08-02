@@ -24,6 +24,8 @@ func Img_read_from_file(FileName string, callerLevel int) image.Image {
 }
 
 func trace(funcName string, direction string, depth int) {
+	if direction == "<" { return } // entry points displaying is enough now
+
 	var skippedFuncs	 = []string{
 		"pixel_group_link_pixels",
 		"pixel_neighbours_linking__distance_1"}

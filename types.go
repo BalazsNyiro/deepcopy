@@ -54,10 +54,10 @@ type Pixel struct {
 	b                         pixint
 	x                         int
 	y                         int
-	pixelGroup                int
 	inPixelGroup              bool
 	neighboursLinkingExecuted bool
 	groupStarter              bool
+	groupMembers              [] *Pixel
 	id                        int // a simple unique integer for all pixel
 }
 

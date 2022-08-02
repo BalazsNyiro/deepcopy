@@ -229,8 +229,7 @@ func pixel_pointer_get_from_map(pixelMapPointer *PixelMap, x, y int) *Pixel {
 }
 
 // active pixels only
-func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page,
-	                                      pixelsInGroupPointer *[]Pixel, callerLevel int) {
+func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page, callerLevel int) {
 	callLevel := callerLevel + 1
 	trace("pixel_neighbours_linking__distance_1", ">", callLevel)
 
@@ -265,14 +264,14 @@ func pixel_neighbours_linking__distance_1(pixelPointer *Pixel, pagePointer *Page
 	neighbour =  pixelNeighbourPointer7; if neighbour.IsCharCreator() { pixelPointer.n7 = pixelNeighbourPointer7; neighbour.n3 = pixelPointer; neighbour.inPixelGroup = true}
 	neighbour =  pixelNeighbourPointer8; if neighbour.IsCharCreator() { pixelPointer.n8 = pixelNeighbourPointer8; neighbour.n4 = pixelPointer; neighbour.inPixelGroup = true}
 
-	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer, pixelsInGroupPointer, callLevel) }
-	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer, pixelsInGroupPointer, callLevel) }
+	if ! pixelNeighbourPointer1.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer1, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer2.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer2, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer3.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer3, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer4.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer4, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer5.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer5, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer6.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer6, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer7.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer7, pagePointer, callLevel) }
+	if ! pixelNeighbourPointer8.neighboursLinkingExecuted { pixel_neighbours_linking__distance_1(pixelNeighbourPointer8, pagePointer, callLevel) }
 	trace("pixel_neighbours_linking__distance_1", "<", callLevel)
 }
 
@@ -296,11 +295,9 @@ func pixel_group_link_pixels(x, y int, pagePointer *Page, callerLevel int) {
 	pixelPointer.groupStarter = true
 	pixelPointer.inPixelGroup = true
 
-	pixelsInGroup := []Pixel{}
 	pagePointer.pixelGroupStarters = append(pagePointer.pixelGroupStarters, pixelPointer)
-	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer, &pixelsInGroup, callLevel)
-	_=pixelsInGroup
-	// TODO: use the collected pixel list
+	// groupMemberCollector = &pixelPointer.groupMembers
+	pixel_neighbours_linking__distance_1(pixelPointer, pagePointer, callLevel)
 	trace("pixel_group_link_pixels", "<", callLevel)
 	return
 }
