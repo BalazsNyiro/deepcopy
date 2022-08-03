@@ -207,6 +207,18 @@ func print_group_starter_pixels(page Page) {
 	fmt.Println("=================== END =====================" )
 }
 
+func print_group_member_pixels(page Page) {
+
+	fmt.Println("=================== num of pixelgroups: ", len(page.pixelGroups), " =====================" )
+	for id, pixelGroup := range page.pixelGroups {
+		fmt.Println(id, "pixel group:")
+		for _, pixel := range pixelGroup {
+			fmt.Println(pixel.x, pixel.y)
+		}
+	}
+	fmt.Println("=================== END =====================" )
+}
+
 /* one group: character creator pixels that form one sign.
 you can find a path with only character creator pixels between all group elems
 - with other words you can walk from creator-pixel
@@ -312,8 +324,8 @@ func pixel_groups_link_all_pixels(pagePointer *Page, callerLevel int) {
 	}
 	trace("pixel_groups_link_all_pixels", "<", callLevel)
 }
-func pixel_groups_collect_pixels__in_page(page Page) {
-	for id, pixelGroupStarterPointer := range page.pixelGroupStarters {
+func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
+	for id, pixelGroupStarterPointer := range pagePtr.pixelGroupStarters {
 		fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
 
 		accumulator := [] (*Pixel) {}
@@ -335,7 +347,7 @@ func pixel_groups_collect_pixels__in_page(page Page) {
 				}
 			}
 		}
-		page.pixelGroups = append(page.pixelGroups, accumulator)
+		pagePtr.pixelGroups = append(pagePtr.pixelGroups, accumulator)
 	}
 }
 
