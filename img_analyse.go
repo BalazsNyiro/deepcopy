@@ -332,15 +332,17 @@ func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
 		queue := PixelPointers {pixelGroupStarterPointer}
 
 		for len(queue) > 0 {
-			pixelPtr := queue[0]
+			pixelPtrFromQueue := queue[0]
 			queue = queue[1:]
-			groupStarters = append(groupStarters, pixelPtr)
+			groupStarters = append(groupStarters, pixelPtrFromQueue)
 
-			fmt.Println("pixelPtr", pixelPtr)
+			fmt.Println("pixelPtrFromQueue", pixelPtrFromQueue)
 			fmt.Println("groupStarters", groupStarters)
 
-			neighbours := PixelPointers{pixelPtr.n1, pixelPtr.n2, pixelPtr.n3, pixelPtr.n4,
-				pixelPtr.n5, pixelPtr.n6, pixelPtr.n7, pixelPtr.n8}
+			neighbours := PixelPointers{pixelPtrFromQueue.n1, pixelPtrFromQueue.n2,
+				                        pixelPtrFromQueue.n3, pixelPtrFromQueue.n4,
+				                        pixelPtrFromQueue.n5, pixelPtrFromQueue.n6,
+										pixelPtrFromQueue.n7, pixelPtrFromQueue.n8}
 			for _, neighbourPtr := range(neighbours) {
 				// become slower as groupStarters longer, but simple solution
 				if neighbourPtr.inPixelGroup && ! in_pixel_list(queue, neighbourPtr) && ! in_pixel_list(groupStarters, neighbourPtr) {
