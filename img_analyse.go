@@ -182,9 +182,9 @@ func print_pixel_map(pixelMap PixelMap, mode string) {
 // link connected pixels to each other
 // important: here a pixel knows only his nearest neighbours.
 // so a pixel doesn't know all other pixels in the same group at this point.
-func pixel_groups_linking_in_page(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint, callerLevel int) Page {
+func pixel_group_starters_in_page(Img image.Image, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax pixint, callerLevel int) Page {
 	callLevel := callerLevel + 1
-	trace("pixel_groups_linking_in_page", ">", callLevel)
+	trace("pixel_group_starters_in_page", ">", callLevel)
 	fmt.Println("char creators - select all pixel")
 
 	pixelMap := pixelmap_from_img(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax, callLevel)
@@ -194,7 +194,7 @@ func pixel_groups_linking_in_page(Img image.Image, bgRmin, bgRmax, bgGmin, bgGma
 	// one pixel group is represented with one pixel-map
 	pixel_groups_link_all_pixels(&page, callLevel)
 
-	trace("pixel_groups_linking_in_page", "<", callLevel)
+	trace("pixel_group_starters_in_page", "<", callLevel)
 	return page
 }
 
@@ -328,26 +328,27 @@ func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
 	for id, pixelGroupStarterPointer := range pagePtr.pixelGroupStarters {
 		fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
 
-		accumulator := [] (*Pixel) {}
+		groupStarters := [] (*Pixel) {}
 		queue := [] (*Pixel) {pixelGroupStarterPointer}
 
 		for len(queue) > 0 {
 			pixelPtr := queue[0]
 			queue = queue[1:]
-			accumulator = append(accumulator, pixelPtr)
+			groupStarters = append(groupStarters, pixelPtr)
 
 			fmt.Println("pixelPtr", pixelPtr)
-			fmt.Println("accumulator", accumulator)
+			fmt.Println("groupStarters", groupStarters)
 
-			neighbours := [] * Pixel {pixelPtr.n1, pixelPtr.n2, pixelPtr.n3, pixelPtr.n4, pixelPtr.n5, pixelPtr.n6, pixelPtr.n7, pixelPtr.n8}
+			neighbours := [] * Pixel {pixelPtr.n1, pixelPtr.n2, pixelPtr.n3, pixelPtr.n4,
+				pixelPtr.n5, pixelPtr.n6, pixelPtr.n7, pixelPtr.n8}
 			for _, neighbourPtr := range(neighbours) {
-				// become slower as accumulator longer, but simple solution
-				if neighbourPtr.inPixelGroup && ! in_pixel_list(queue, neighbourPtr) && ! in_pixel_list(accumulator, neighbourPtr) {
+				// become slower as groupStarters longer, but simple solution
+				if neighbourPtr.inPixelGroup && ! in_pixel_list(queue, neighbourPtr) && ! in_pixel_list(groupStarters, neighbourPtr) {
 					queue = append(queue, neighbourPtr)
 				}
 			}
 		}
-		pagePtr.pixelGroups = append(pagePtr.pixelGroups, accumulator)
+		pagePtr.pixelGroups = append(pagePtr.pixelGroups, groupStarters)
 	}
 }
 

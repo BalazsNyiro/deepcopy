@@ -14,8 +14,7 @@ func main() {
 	Img := Img_read_from_file("test/general_jim.png", 0)
 	bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax := background_detect_rgb_ranges(0)
 
-	page := pixel_groups_linking_in_page(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax, 0)
-	// page.pixelGroupStarters are filled!
+	page := pixel_group_starters_in_page(Img, bgRmin, bgRmax, bgGmin, bgGmax, bgBmin, bgBmax, 0)
 
 	pixel_groups_collect_pixels__in_page(&page)
 	// page.pixelGroups are filled!
