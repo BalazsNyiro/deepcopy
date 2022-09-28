@@ -328,8 +328,8 @@ func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
 	for id, pixelGroupStarterPointer := range pagePtr.pixelGroupStarters {
 		fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
 
-		groupStarters := [] (*Pixel) {}
-		queue := [] (*Pixel) {pixelGroupStarterPointer}
+		groupStarters := PixelPointers {}
+		queue := PixelPointers {pixelGroupStarterPointer}
 
 		for len(queue) > 0 {
 			pixelPtr := queue[0]
@@ -339,7 +339,7 @@ func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
 			fmt.Println("pixelPtr", pixelPtr)
 			fmt.Println("groupStarters", groupStarters)
 
-			neighbours := [] * Pixel {pixelPtr.n1, pixelPtr.n2, pixelPtr.n3, pixelPtr.n4,
+			neighbours := PixelPointers{pixelPtr.n1, pixelPtr.n2, pixelPtr.n3, pixelPtr.n4,
 				pixelPtr.n5, pixelPtr.n6, pixelPtr.n7, pixelPtr.n8}
 			for _, neighbourPtr := range(neighbours) {
 				// become slower as groupStarters longer, but simple solution
@@ -352,7 +352,7 @@ func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
 	}
 }
 
-func in_pixel_list(pixels [] *Pixel, pixelPointer *Pixel) bool {
+func in_pixel_list(pixels PixelPointers, pixelPointer *Pixel) bool {
 	for _, v := range pixels {
 		if v == pixelPointer {
 			return true

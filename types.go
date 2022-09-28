@@ -7,11 +7,12 @@ package main
 */
 type PixelMap [][]Pixel    // 2 dimensional representation of more pixels } || or list of (pixels)
 type pixint uint32
+type PixelPointers []*Pixel
 
 type Page struct {
 	pixelMapPointer    *PixelMap
-	pixelGroupStarters []*Pixel // the starter pixels of a group
-	pixelGroups  [] ([]*Pixel)  // list of pixelPointerLists
+	pixelGroupStarters PixelPointers // the starter pixels of a group
+	pixelGroups  [] PixelPointers    // list of pixelPointerLists
 
 	/* Pixelgroups: directly connected character creator pixels.
 	you can reach all pixels one by one, they are not separated.
@@ -58,7 +59,7 @@ type Pixel struct {
 	inPixelGroup              bool
 	neighboursLinkingExecuted bool
 	groupStarter              bool
-	groupMembers              [] *Pixel
+	groupMembers              PixelPointers
 	id                        int // a simple unique integer for all pixel
 }
 

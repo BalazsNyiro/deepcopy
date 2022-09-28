@@ -1,3 +1,8 @@
+Plan:
+    deepcopy.go/main:
+	    Img_read_from_file()
+	    pixel_groups_linking_in_page()
 
 
+TODO list:
 - read file names from a dir into file name list
