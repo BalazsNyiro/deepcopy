@@ -324,33 +324,33 @@ func pixel_groups_link_all_pixels(pagePointer *Page, callerLevel int) {
 	}
 	trace("pixel_groups_link_all_pixels", "<", callLevel)
 }
-func pixel_groups_collect_pixels__in_page(pagePtr *Page) {
+func pixelgroups_collect_pixels(pagePtr *Page) {
 	for id, pixelGroupStarterPointer := range pagePtr.pixelGroupStarters {
 		fmt.Println(id, "pixel group starter pixel: ", pixelGroupStarterPointer.x, pixelGroupStarterPointer.y)
 
-		groupStarters := PixelPointers {}
-		queue := PixelPointers {pixelGroupStarterPointer}
+		groupMembers := PixelPointers {}
+		membersCheckNeighbours := PixelPointers {pixelGroupStarterPointer}
 
-		for len(queue) > 0 {
-			pixelPtrFromQueue := queue[0]
-			queue = queue[1:]
-			groupStarters = append(groupStarters, pixelPtrFromQueue)
+		for len(membersCheckNeighbours) > 0 {
+			pixelPtrFromQueue := membersCheckNeighbours[0]
+			membersCheckNeighbours = membersCheckNeighbours[1:]
+			groupMembers = append(groupMembers, pixelPtrFromQueue)
 
 			fmt.Println("pixelPtrFromQueue", pixelPtrFromQueue)
-			fmt.Println("groupStarters", groupStarters)
+			fmt.Println("groupMembers", groupMembers)
 
 			neighbours := PixelPointers{pixelPtrFromQueue.n1, pixelPtrFromQueue.n2,
 				                        pixelPtrFromQueue.n3, pixelPtrFromQueue.n4,
 				                        pixelPtrFromQueue.n5, pixelPtrFromQueue.n6,
 										pixelPtrFromQueue.n7, pixelPtrFromQueue.n8}
 			for _, neighbourPtr := range(neighbours) {
-				// become slower as groupStarters longer, but simple solution
-				if neighbourPtr.inPixelGroup && ! in_pixel_list(queue, neighbourPtr) && ! in_pixel_list(groupStarters, neighbourPtr) {
-					queue = append(queue, neighbourPtr)
+				// become slower as groupMembers longer, but simple solution
+				if neighbourPtr.inPixelGroup && ! in_pixel_list(membersCheckNeighbours, neighbourPtr) && ! in_pixel_list(groupMembers, neighbourPtr) {
+					membersCheckNeighbours = append(membersCheckNeighbours, neighbourPtr)
 				}
 			}
 		}
-		pagePtr.pixelGroups = append(pagePtr.pixelGroups, groupStarters)
+		pagePtr.pixelGroups = append(pagePtr.pixelGroups, groupMembers)
 	}
 }
 
