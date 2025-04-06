@@ -12,11 +12,17 @@ class TestPrgNew(unittest.TestCase):
         prg = prg_general_config_and_state.Prg()
 
         self.assertTrue(prg.initErrors == list() )
-        dirRootDetected, _errors = prg.get("deepcopy_dir_root")
+        dirRootDetected, errors = prg.get("deepcopy_dir_root")
         self.assertTrue(dirRootDetected.endswith("deepcopy"))
+        self.assertTrue(len(errors)==0)
 
-        osDetected, _errors = prg.get("operation_system")
+        osDetected, errors = prg.get("operation_system")
         self.assertTrue(osDetected in ["Linux", "Windows", "Darwin"])
+        self.assertTrue(len(errors)==0)
+        self.assertTrue(len(errors)==0)
+
+        history, _err = prg.get_history("operation_system")
+        self.assertTrue(len(history)>0)
 
 
 if __name__ == '__main__':

@@ -75,10 +75,21 @@ class Prg:
         self.data[keyword] = val
         self.history.setdefault(keyword, list())
 
-        recordWhatHappened = {"valNew": val, "whoUpdated": whoUpdated, "whyUpdated": whyUpdated}
+        recordWhatHappened = {"valueUpdated": val, "whoUpdated": whoUpdated, "whyUpdated": whyUpdated}
         self.history[keyword].append(recordWhatHappened)
 
 
+
+
+    def get_history(self, keyword: str):
+        errors = []
+        history = []
+        if keyword not in self.history:
+            errors.append(f"wanted keyword ({keyword}) is unknown in history")
+        else:
+            history = self.history.get(keyword)
+
+        return history, errors
 
     def get(self, keyword: str):
         """read wanted keyword from data
