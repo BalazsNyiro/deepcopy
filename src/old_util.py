@@ -1,25 +1,7 @@
 # -*- coding: utf-8 -*-
 
+
 import platform, json, os, importlib, gzip
-
-def installed_environment_detect():
-    Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
-
-    if Major < 3:
-        warning_display("Please use deepcopy with minimum Python 3.7!", "util:env detect min py 3")
-
-    if Major == 3 and Minor < 7:
-        warning_display("Tested with Python 3.7. Maybe it works with older versions.", "util:env detect, min 3.7")
-
-
-def os_detect(Prg):
-    Os = Prg["Os"] = platform.system() 
-    print(ui_msg(Prg, "os_detect.detected").format(Os))
-    if Os != "Linux" and Os != "Windows":
-        warning_display("Not supported Os detected: {:s}".format(Os), "util:os_detect")
-        if Os == "Darwin": 
-            warning_display("Theoretically DeepCopy can run on Mac if the necessary external commands are available, TODO in the future", "util:os darwin")
-
 
 
 

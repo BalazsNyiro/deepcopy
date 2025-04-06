@@ -1,35 +1,15 @@
 # deepcopy
 Python based OCR program with deep text structure analysing and style detecting
 
-Features:
- - Rolling screen reading: 
-    - screenshot -> OCR current screen
-    - keyboard/mouse simulation -> next page
-    - OCR again, until we reach end page
- - Wawed paper/text recognition
- - Phone screenshots OCR 
- - Windows/Linux desktop screenshot OCR
- - image process from multipage PDF
- - color detection to separate keywords and different text elements from source
- - multiline text processing
- - detect images and text blocks on the page
- - structured json export of text, as a database
- 
- - user learning function: the user can teach special chars to the program
+Contact/Author: Balazs Nyiro, balazs.nyiro.ca@gmail.com
 
- - client/server architecture: you can reach it from command line or from different guis
-
- - use only basic Python3 libs if it's possible
-
-
-ROADMAP: 
- - 2019 december: program planning, api definitions, 
+How can you support:
+ - I need a Macintosh to test Deepcopy, so if you have an unused and can give that to me, that would be a help.
 
 INSTALL:
  - important python3 modules (Ubuntu package names)
-   - tkinter
-   - python3-pil
-   - python3-pil.imagetk
+   - python3-pil  (manual install: 'pip install pillow')
+   - 
 
 TODO: 
- - program planning in doc dir
+ - test with different image sources (grayscale, predefined color palette, with alpha channels...)
