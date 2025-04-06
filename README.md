@@ -9,7 +9,10 @@ How can you support:
 INSTALL:
  - important python3 modules (Ubuntu package names)
    - python3-pil  (manual install: 'pip install pillow')
-   - 
+ 
+ - for development:
+   - mypy         (pip install mypy)
+   - coverage     (pip install coverage)
 
 TODO: 
  - test with different image sources (grayscale, predefined color palette, with alpha channels...)

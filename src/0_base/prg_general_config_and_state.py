@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import platform, json, os, importlib, gzip
+import typing
+
+logFile = "log_deepcopy_DATE.txt"
 
 
 class Prg:
@@ -20,7 +23,7 @@ class Prg:
 
     # history saving is important to see the source of changes in Prg,
     # for testing reasons. Changes in Prg has to be followed and checked.
-    historySaveSkipForTheseKeywords = set()
+    historySaveSkipForTheseKeywords: set[str] = set()
     # logging, callstack, or other special elements where the history would kill the performance
 
 
@@ -43,7 +46,7 @@ class Prg:
         ################################################
         Major, Minor = [int(Num) for Num in platform.python_version().split(".")[0:2]]
 
-        msgVersionMin = "3.12.3!"
+        msgVersionMin = "3.12.3"
         if Major < 3:
             self.initErrors.append(f"Too low version: Please use deepcopy with minimum Python {msgVersionMin}")
 
@@ -69,7 +72,7 @@ class Prg:
 
 
     ######### save Prg history changes to follow
-    def set(self, keyword: str, val: any, whoUpdated: str, whyUpdated: str="setValueFirstTime"):
+    def set(self, keyword: str, val: typing.Any, whoUpdated: str, whyUpdated: str="setValueFirstTime"):
         """set wanted keyword and history"""
 
         self.data[keyword] = val
