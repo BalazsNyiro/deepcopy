@@ -25,11 +25,11 @@ class TestLoadImageFile(unittest.TestCase):
 
 
     def test_load_image_file__check_memory_usage_and_speed_manually(self):
-
+        """manual image load test - native Python is maybe a little slow to read a huge PNG, pixel by pixel"""
         # A4 white based page with 300dpi pixel text
         imgPath = "../../samples/lorem_ipsum.png"
         if os.path.isfile(imgPath): # big binary file, used only for speed test, don't insert into git
-            print(f"this is a large image - to process every pixel, the for loop needs 10+ seconds")
+            print(f"this is a large image - to process every pixel, the for loop needs ~8 seconds")
             pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
 
 
