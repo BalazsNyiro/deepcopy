@@ -23,11 +23,15 @@ class FakePixel_channel_2():
 
 class TestLoadImageFile(unittest.TestCase):
 
-    def test_load_image_file__check_memory_usage(self):
-        imgPath = "../../samples/lorem_ipsum.png"
 
-        print(f"this is a large image - to process every pixel, the for loop needs 10+ seconds")
-        pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+    def test_load_image_file__check_memory_usage_and_speed_manually(self):
+
+        # A4 white based page with 300dpi pixel text
+        imgPath = "../../samples/lorem_ipsum.png"
+        if os.path.isfile(imgPath): # big binary file, used only for speed test, don't insert into git
+            print(f"this is a large image - to process every pixel, the for loop needs 10+ seconds")
+            pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+
 
 
     def test_load_image_file_incorrect_channel_number(self):
