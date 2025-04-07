@@ -116,12 +116,35 @@ def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ):
 
     return isActive
 
+
+
+
+
+
+
+
+def isActiveCheckAllSelector(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[callable, dict]]) -> bool:
+    isActiveByAllFun = True
+    for (funDecideIsActive, paramsToSelector) in selectorFunctions:
+        r, g, b = onePixelRgb
+
+        isActiveByThisFun = funDecideIsActive(r, g, b, paramsToSelector)
+
+        if not isActiveByThisFun:  # one way: if any of the func decides that the pixel is not active, it is not active
+            isActiveByAllFun = False
+
+    return isActiveByAllFun
+
+
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                               selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[PixelGroup]:
 
     """
 
-    :param pixelsAll:
+    :param pixelsAll: (r,g,b) values in rows in columns, double embedded list
+                      rgb values are organised into 'ONE ROW / ONE LIST, X-axis' and
+                      list of rows represents Y axis.
+
     :param selectorFunctions:  one or more selector fun, and params for the selector.
                                by default the pixels are active, so part of a character.
                                if any of the selector thinks that the pixel is not active, the end result is NotActive.
@@ -130,19 +153,11 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
 
     dectectedActiveCoords = set()
 
+
     for y, row in enumerate(pixelsAll):
         for x, onePixelRgb in enumerate(row):
 
-            isActiveByAllFun = True
-            for (funDecideIsActive, paramsToSelector) in selectorFunctions:
-                r, g, b = onePixelRgb
-
-                isActiveByThisFun = funDecideIsActive(r, g, b, paramsToSelector)
-
-                if not isActiveByThisFun:  # one way: if any of the func decides that the pixel is not active, it is not active
-                    isActiveByAllFun = False
-
-            if isActiveByAllFun:
+            if isActiveCheckAllSelector(onePixelRgb, selectorFunctions):
                 print(f"active pixel detected:", x, y)
                 if (x, y) not in dectectedActiveCoords:
                     dectectedActiveCoords.add((x,y))
