@@ -3,7 +3,7 @@
 
 # python3 img_pixels_test.py
 
-import unittest, platform
+import unittest, platform, sys
 import img_pixels
 
 from unittest.mock import Mock
@@ -22,6 +22,12 @@ class FakePixel_channel_2():
 
 
 class TestLoadImageFile(unittest.TestCase):
+
+    def test_load_image_file__check_memory_usage(self):
+        imgPath = "../../samples/lorem_ipsum.png"
+
+        print(f"this is a large image - to process every pixel, the for loop needs 10+ seconds")
+        pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
 
 
     def test_load_image_file_incorrect_channel_number(self):
