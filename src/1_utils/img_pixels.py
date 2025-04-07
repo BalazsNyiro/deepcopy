@@ -10,7 +10,7 @@ print("""
 from PIL import Image
 
 
-def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, int]]], list[str], list[str]]:
+def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
     """return with one RGB matrix as the image representation.
 
     Grayscale images are converted to RGB, Alpha channel is neglected.
@@ -22,7 +22,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
     if not os.path.isfile(imagePath):
         errors.append(f"unknown image file path, cannot load: {imagePath}")
 
-    pixelsAllRow: list[tuple[tuple[int, int, int]]] = []
+    pixelsAllRow: list[tuple[tuple[int, int, int], ...]] = []
     if not errors:
 
         imageLoaded = Image.open(imagePath)
@@ -52,10 +52,12 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
         # one color channel:
         if len(colorSamplePixelTuple) == 1:  # so colorVal will be an integer, not a tuple in this loop:
             for y in range(0, imgHeight):
-                pixelRow: list[tuple] = []
+                pixelRow: list[tuple[int, int, int], ] = []
                 for x in range(0, imgWidth):
                     colorVal = imageLoaded.getpixel((x, y))
+                    print(colorVal)
                     if isinstance(colorVal, int):   # int, but myPy...
+                        # pixelRow.append((colorVal, colorVal, colorVal))
                         pixelRow.append((colorVal, colorVal, colorVal))
                 pixelsAllRow.append(tuple(pixelRow))
 
@@ -66,9 +68,8 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
                     colorVal = imageLoaded.getpixel((x, y))
                     if isinstance(colorVal, tuple):  # tuple, but myPy gives an error without type checking
                         # < 3   grayscale + Alpha.  Alpha is not processed, use only grayscale val.
-                        colorValInt = colorVal[0]
-                        if isinstance(colorValInt, int):
-                            pixelRow.append( (colorValInt, colorValInt, colorValInt) )
+                        if isinstance(colorVal[0], int):
+                            pixelRow.append( (colorVal[0], colorVal[0], colorVal[0]) )
 
                 pixelsAllRow.append(tuple(pixelRow))
 
@@ -85,7 +86,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
                     # 3 or more channels, RGB value has 3 elems, RGBA has 4
 
                     if isinstance(colorVal, tuple):  # tuple, but myPy gives an error without type checking
-                        pixelRow.append(colorVal[0:3])
+                        pixelRow.append((colorVal[0], colorVal[1], colorVal[2]))
 
                 pixelsAllRow.append(tuple(pixelRow))
 
