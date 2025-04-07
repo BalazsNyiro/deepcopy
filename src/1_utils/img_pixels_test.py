@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # python3 img_pixels_test.py
+# python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 
 import unittest, platform, sys, os, time
 import img_pixels
@@ -9,6 +10,24 @@ import img_pixels
 from unittest.mock import Mock
 from unittest.mock import patch
 import PIL
+
+
+
+# python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
+class Test_active_pixel_group_detection(unittest.TestCase):
+
+
+    def test_active_pixel_group_detection(self):
+
+        imgPath = "../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png"
+        pixelsInImg, _errors, _warnings = img_pixels.pixels_load_from_image(imgPath)
+
+        pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
+
+
+
+
+
 
 class FakePixel_channel_2():
     """return with 2 channel information, simulate grayscale + alpha"""
@@ -31,7 +50,7 @@ class TestLoadImageFile(unittest.TestCase):
         if os.path.isfile(imgPath): # big binary file, used only for speed test, don't insert into git
             print(f"this is a large image - to process every pixel, the for loop needs ~8 seconds")
 
-            pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+            pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
             "testResult: only the PNG -> python reading is slow, the in-memory loop is relatively fast, 0.1 sec in the huge lorem ipsum"
 
             timeStartLoop = time.time()
@@ -49,7 +68,7 @@ class TestLoadImageFile(unittest.TestCase):
         with patch("PIL.Image.open") as mocked_fun:
             mocked_fun.return_value = FakePixel_channel_2()
 
-            pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+            pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
             self.assertTrue(len(warnings) == 1)
             self.assertIn("probably Alpha channel is detected", str(warnings))
 
@@ -58,7 +77,7 @@ class TestLoadImageFile(unittest.TestCase):
 
     def test_load_image_file_grayscale(self):
         imgPath = "../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png"
-        pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+        pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
         self.assertTrue(len(pixelsInImg[0][0]) == 3)
         self.assertTrue(warnings == list())
         # 3 values are in the pixel, rgb is created from one grayscale value
@@ -66,7 +85,7 @@ class TestLoadImageFile(unittest.TestCase):
 
     def test_load_image_file_rgb(self):
         imgPath = "../../samples/sample_abc_lower_ubuntu_light_300.png"
-        pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+        pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
         print(f"pixel 0, 0:")
         print(pixelsInImg[0][0])  # 3 values are in the pixel
         self.assertTrue(len(pixelsInImg[0][0]) == 3)  # 3 values are in the pixel
@@ -75,7 +94,7 @@ class TestLoadImageFile(unittest.TestCase):
 
     def test_load_image_file__missing_file(self):
         imgPath = "unknown_file.png"
-        pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+        pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
         self.assertTrue(len(errors) == 1)
         self.assertTrue(len(pixelsInImg) == 0)
         self.assertTrue(warnings == list())

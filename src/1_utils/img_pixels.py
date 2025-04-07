@@ -10,7 +10,7 @@ print("""
 from PIL import Image
 
 
-def img_load_pixels(imagePath):
+def pixels_load_from_image(imagePath: str) -> tuple[list[list[tuple[int, int, int]]], list[str], list[str]]:
     """return with one RGB matrix as the image representation.
 
     Grayscale images are converted to RGB, Alpha channel is neglected.
@@ -78,5 +78,77 @@ def img_load_pixels(imagePath):
                 pixelsAllRow.append(tuple(pixelRow))
 
     return pixelsAllRow, errors, warnings
+
+
+
+class PixelGroup:
+
+    def __init__(self):
+        self.pixels = dict()
+        self.x_min = -1
+        self.x_max = -1
+        self.y_min = -1
+        self.y_max = -1
+
+    def addPixelActive(self, x, y):
+        if not self.pixels:
+            self.x_min = x
+            self.x_max = x
+            self.y_min = y
+            self.y_max = y
+
+        self.pixels[(x,y)] = True
+
+        self.x_max = max(self.x_max, x)
+        self.x_min = min(self.x_min, x)
+        self.y_max = max(self.y_max, y)
+        self.y_min = min(self.y_min, y)
+
+
+# white: 255,255,255 black: 0,0,0
+def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ):
+    """if the value is less than the limit, so the pixel is darker, then select)"""
+    isActive = False
+    if rNow < params.get("rMax_toSelect"):
+        if gNow < params.get("gMax_toSelect"):
+            if bNow < params.get("bMax_toSelect"):
+                isActive = True
+
+    return isActive
+
+def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
+                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[PixelGroup]:
+
+    """
+
+    :param pixelsAll:
+    :param selectorFunctions:  one or more selector fun, and params for the selector.
+                               by default the pixels are active, so part of a character.
+                               if any of the selector thinks that the pixel is not active, the end result is NotActive.
+    :return:
+    """
+
+    dectectedActiveCoords = set()
+
+    for y, row in enumerate(pixelsAll):
+        for x, onePixelRgb in enumerate(row):
+
+            isActiveByAllFun = True
+            for (funDecideIsActive, paramsToSelector) in selectorFunctions:
+                r, g, b = onePixelRgb
+
+                isActiveByThisFun = funDecideIsActive(r, g, b, paramsToSelector)
+
+                if not isActiveByThisFun:  # one way: if any of the func decides that the pixel is not active, it is not active
+                    isActiveByAllFun = False
+
+            if isActiveByAllFun:
+                print(f"active pixel detected:", x, y)
+                if (x, y) not in dectectedActiveCoords:
+                    dectectedActiveCoords.add((x,y))
+
+
+
+
 
 
