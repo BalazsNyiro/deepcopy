@@ -1,4 +1,5 @@
 */.coverage
+*/htmlcov
 */.mypy_cache/
 */__pycache__/
 

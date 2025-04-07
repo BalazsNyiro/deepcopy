@@ -11,6 +11,7 @@ for DIR_NAME in src/*; do
 
         python3 -m coverage run -m unittest *test.py
         python3 -m coverage report
+        python3 -m coverage html
 
         cd $DIR_START
     fi
