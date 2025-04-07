@@ -11,6 +11,18 @@ from unittest.mock import patch
 
 class TestPrgNew(unittest.TestCase):
 
+    def test_notWin_notLinux_os(self):
+
+        with patch("platform.system") as mocked_fun:
+            mocked_fun.return_value = "Darwin"
+
+            prg = prg_general_config_and_state.Prg()
+            osName, errors = prg.get("operation_system")
+            print(f"received osName after Mock: {osName}")
+            self.assertIn("Mac", str(prg.initWarnings))
+
+
+
     def test_incorrect_python_major_version(self):
 
         # the mock is living only in this code section
@@ -28,14 +40,14 @@ class TestPrgNew(unittest.TestCase):
     def test_incorrect_python_minor_version(self):
 
         with patch("platform.python_version") as mock_python_version:
-            mock_python_version.return_value = "2.11.3"
+            mock_python_version.return_value = "3.11.3"
 
             prg = prg_general_config_and_state.Prg()
             pythonMinor, errors = prg.get("python_interpreter_version_minor")
             self.assertTrue(pythonMinor == 11)
             # print("initErrors:", prg.initErrors)
-            self.assertTrue(len(prg.initErrors) > 0)
-            self.assertIn("low version", str(prg.initErrors))
+            self.assertTrue(len(prg.initWarnings) > 0)
+            self.assertIn("maybe it works with older versions", str(prg.initWarnings))
             
 
 

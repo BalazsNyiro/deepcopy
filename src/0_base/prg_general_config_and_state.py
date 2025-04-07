@@ -64,7 +64,7 @@ class Prg:
         osName = platform.system()
         self.set("operation_system", osName, "prg_init")
         if osName != "Linux" and osName != "Windows":
-            self.initWarnings.append("Not supported Os detected: {:s}".format(osName), "util:os_detect")
+            self.initWarnings.append(f"Not supported Os detected: {osName}")
             if osName == "Darwin":
                 self.initWarnings.append("Theoretically DeepCopy can run on Mac, but the author needs a Mac to test the program.")
 
