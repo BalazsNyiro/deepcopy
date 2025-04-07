@@ -3,7 +3,7 @@
 
 # python3 img_pixels_test.py
 
-import unittest, platform, sys
+import unittest, platform, sys, os, time
 import img_pixels
 
 from unittest.mock import Mock
@@ -30,7 +30,16 @@ class TestLoadImageFile(unittest.TestCase):
         imgPath = "../../samples/lorem_ipsum.png"
         if os.path.isfile(imgPath): # big binary file, used only for speed test, don't insert into git
             print(f"this is a large image - to process every pixel, the for loop needs ~8 seconds")
+
             pixelsInImg, errors, warnings = img_pixels.img_load_pixels(imgPath)
+            "testResult: only the PNG -> python reading is slow, the in-memory loop is relatively fast, 0.1 sec in the huge lorem ipsum"
+
+            timeStartLoop = time.time()
+            for rowNum, row in enumerate(pixelsInImg):
+                # print("pixelReadRow:", rowNum)
+                for pixelOne in row:
+                    pass
+            print(f"loop time over pixels: {time.time() - timeStartLoop}")
 
 
 
