@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, time, sys
+import os, time, sys, typing
 
 print("""
       Python image library (PIL) is important to load images. If the 'PIL import' is unsuccessful,
@@ -10,7 +10,7 @@ print("""
 from PIL import Image
 
 
-def pixels_load_from_image(imagePath: str) -> tuple[list[list[tuple[int, int, int]]], list[str], list[str]]:
+def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, int]]], list[str], list[str]]:
     """return with one RGB matrix as the image representation.
 
     Grayscale images are converted to RGB, Alpha channel is neglected.
@@ -22,18 +22,23 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[list[tuple[int, int, in
     if not os.path.isfile(imagePath):
         errors.append(f"unknown image file path, cannot load: {imagePath}")
 
-    pixelsAllRow = []
+    pixelsAllRow: list[tuple[tuple[int, int, int]]] = []
     if not errors:
 
         imageLoaded = Image.open(imagePath)
 
         ##################################################################################
-        colorSamplePixel= imageLoaded.getpixel((0, 0))
+        colorSamplePixelMaybeIntMaybeTuple = imageLoaded.getpixel((0, 0))
 
-        if isinstance(colorSamplePixel, int):
-            colorSamplePixel = (colorSamplePixel,) # convert it to tuple
+        if isinstance(colorSamplePixelMaybeIntMaybeTuple, int):
+            colorSamplePixelTuple = tuple([colorSamplePixelMaybeIntMaybeTuple]) # convert one element integer to a tuple
 
-        if len(colorSamplePixel) not in [1, 3]: # so the num of channels are not 3 or 1
+        if isinstance(colorSamplePixelMaybeIntMaybeTuple, tuple):
+            colorSamplePixelTuple = colorSamplePixelMaybeIntMaybeTuple
+            # myPy is a nightmare here, the tuple has to be built up one-by-one
+
+
+        if len(colorSamplePixelTuple) not in [1, 3]: # so the num of channels are not 3 or 1
             warnings.append(
                 f"Please use images with 1 or 3 color channels without Alpha - probably Alpha channel is detected and NEGLECTED in file {imagePath}. "
                 "if the result is not fine for you, please use files without alpha channels (rgb or grayscale images, not cmyk or other color spaces.")
@@ -45,24 +50,29 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[list[tuple[int, int, in
         # so it worth to repeat/separate the cases and use different loops
 
         # one color channel:
-        if len(colorSamplePixel) == 1:  # so colorVal will be an integer, not a tuple in this loop:
+        if len(colorSamplePixelTuple) == 1:  # so colorVal will be an integer, not a tuple in this loop:
+            for y in range(0, imgHeight):
+                pixelRow: list[tuple] = []
+                for x in range(0, imgWidth):
+                    colorVal = imageLoaded.getpixel((x, y))
+                    if isinstance(colorVal, int):   # int, but myPy...
+                        pixelRow.append((colorVal, colorVal, colorVal))
+                pixelsAllRow.append(tuple(pixelRow))
+
+        elif len(colorSamplePixelTuple) == 2:  # colorVal is a tuple in this loop
             for y in range(0, imgHeight):
                 pixelRow = []
                 for x in range(0, imgWidth):
                     colorVal = imageLoaded.getpixel((x, y))
-                    pixelRow.append((colorVal, colorVal, colorVal))
+                    if isinstance(colorVal, tuple):  # tuple, but myPy gives an error without type checking
+                        # < 3   grayscale + Alpha.  Alpha is not processed, use only grayscale val.
+                        colorValInt = colorVal[0]
+                        if isinstance(colorValInt, int):
+                            pixelRow.append( (colorValInt, colorValInt, colorValInt) )
+
                 pixelsAllRow.append(tuple(pixelRow))
 
-        elif len(colorSamplePixel) == 2:  # colorVal is a tuple in this loop
-            for y in range(0, imgHeight):
-                pixelRow = []
-                for x in range(0, imgWidth):
-                    colorVal = imageLoaded.getpixel((x, y))
-                    # < 3   grayscale + Alpha.  Alpha is not processed, use only grayscale val.
-                    pixelRow.append( (colorVal[0], colorVal[0], colorVal[0]) )
-                pixelsAllRow.append(tuple(pixelRow))
-
-        elif len(colorSamplePixel) >= 3: # 3 or more channels, imageLoaded.getpixel() output is a tuple
+        elif len(colorSamplePixelTuple) >= 3: # 3 or more channels, imageLoaded.getpixel() output is a tuple
             for y in range(0, imgHeight):
                 pixelRow = []
                 for x in range(0, imgWidth):
@@ -73,7 +83,9 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[list[tuple[int, int, in
                     # RGB:  3 elements are in the tuple
                     # RGBA: 4 elements are in the tuple
                     # 3 or more channels, RGB value has 3 elems, RGBA has 4
-                    pixelRow.append(colorVal[0:3])
+
+                    if isinstance(colorVal, tuple):  # tuple, but myPy gives an error without type checking
+                        pixelRow.append(colorVal[0:3])
 
                 pixelsAllRow.append(tuple(pixelRow))
 
@@ -106,12 +118,12 @@ class PixelGroup:
 
 
 # white: 255,255,255 black: 0,0,0
-def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ):
+def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
     """if the value is less than the limit, so the pixel is darker, then select)"""
     isActive = False
-    if rNow < params.get("rMax_toSelect"):
-        if gNow < params.get("gMax_toSelect"):
-            if bNow < params.get("bMax_toSelect"):
+    if rNow < params.get("rMax_toSelect", 127):
+        if gNow < params.get("gMax_toSelect", 127):
+            if bNow < params.get("bMax_toSelect", 127):
                 isActive = True
 
     return isActive
@@ -123,7 +135,7 @@ def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ):
 
 
 
-def isActiveCheckAllSelector(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[callable, dict]]) -> bool:
+def isActiveCheckAllSelector(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
     isActiveByAllFun = True
     for (funDecideIsActive, paramsToSelector) in selectorFunctions:
         r, g, b = onePixelRgb
@@ -137,7 +149,7 @@ def isActiveCheckAllSelector(onePixelRgb: tuple[int, int, int], selectorFunction
 
 
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
-                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[PixelGroup]:
+                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup]:
 
     """
 
@@ -151,18 +163,20 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
     :return:
     """
 
-    dectectedActiveCoords = set()
+    detectedActiveCoords = set()
 
+    pixelGroups: dict[tuple[int, int], PixelGroup] = dict()
 
     for y, row in enumerate(pixelsAll):
         for x, onePixelRgb in enumerate(row):
 
             if isActiveCheckAllSelector(onePixelRgb, selectorFunctions):
                 print(f"active pixel detected:", x, y)
-                if (x, y) not in dectectedActiveCoords:
-                    dectectedActiveCoords.add((x,y))
+                if (x, y) not in detectedActiveCoords:
+                    detectedActiveCoords.add((x,y))
 
 
+    return pixelGroups
 
 
 
