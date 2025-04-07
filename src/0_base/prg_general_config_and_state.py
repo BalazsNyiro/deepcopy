@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import platform, json, os, importlib, gzip
+import platform, json, os, importlib, gzip, datetime
 import typing
-
-logFile = "log_deepcopy_DATE.txt"
 
 
 class Prg:
@@ -26,7 +24,7 @@ class Prg:
     historySaveSkipForTheseKeywords: set[str] = set()
     # logging, callstack, or other special elements where the history would kill the performance
 
-
+    logFile = f"log_deepcopy_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.txt"
 
     def __init__(self):
         self.initErrors = []

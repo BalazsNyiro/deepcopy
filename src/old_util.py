@@ -91,28 +91,6 @@ def dir_create_if_necessary(Path):
         os.mkdir(Path)
 
 
-def img_load_pixels(Prg, ImgPath, Timer=False):
-    try:
-        from PIL import Image
-    except ImportError:
-        error_display(ui_msg("install.missing.module_pillow"), "util:mg_load_pixels, PIL import")
-
-    ImgOriginal = Image.open(ImgPath)
-    ImgWidth, ImgHeight = ImgOriginal.size
-
-    # detect once that it's RGB or RGBA (3 or 4 elements in the tuple)
-    PixelSampleColorValue = ImgOriginal.getpixel((0, 0))
-    # if it's a grayscale img, it't a simple int, not a tuple
-    if isinstance(PixelSampleColorValue, int):
-        PixelDataSize = 1
-    else:
-        PixelDataSize = len(PixelSampleColorValue) # RGB value has 3 elems, RGBA has 4
-    print("Pixel Data size: ", PixelDataSize)
-
-    Pixels = ImgOriginal.load()
-
-    return Pixels, PixelDataSize, ImgWidth, ImgHeight
-
 
 def img_is_rgb(Img):
     Size = Img.get("PixelDataSize", -1)

@@ -73,7 +73,6 @@ class TestPrgNew(unittest.TestCase):
         osDetected, errors = prg.get("operation_system")
         self.assertTrue(osDetected in ["Linux", "Windows", "Darwin"])
         self.assertTrue(len(errors)==0)
-        self.assertTrue(len(errors)==0)
 
         history, _err = prg.get_history("operation_system")
         self.assertTrue(len(history)>0)
