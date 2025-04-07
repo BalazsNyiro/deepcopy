@@ -11,6 +11,16 @@ from unittest.mock import patch
 
 class TestPrgNew(unittest.TestCase):
 
+
+    def test_get_history_missing_keyword(self):
+        prg = prg_general_config_and_state.Prg()
+        _notImportant, errors = prg.get("keyword_not_known_in_prg_data")
+        self.assertIn("unknown keyword", str(errors))
+
+        _notImportant, errors = prg.get_history("keyword_not_known_in_prg_data")
+        self.assertIn("unknown in history", str(errors))
+
+
     def test_notWin_notLinux_os(self):
 
         with patch("platform.system") as mocked_fun:
