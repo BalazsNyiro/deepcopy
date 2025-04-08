@@ -127,6 +127,22 @@ class PixelGroup:
         return len(self.pixels) > 0
 
 
+    def display_in_terminal(self):
+        print(f"=========== {self.groupId} ==========")
+
+        for y in range(self.y_min, self.y_max+1):
+            row = []
+            for x in range(self.x_min, self.x_max+1):
+
+                if (x, y) in self.pixels:
+                    row.append("*")
+                else:
+                    row.append(" ")
+            print("".join(row))
+
+
+
+
 # white: 255,255,255 black: 0,0,0
 def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
     """if the value is less than the limit, so the pixel is darker, then select)"""
@@ -218,7 +234,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                 onePixelRgb = pixelsAll[coordNowY][coordNowX]  # this is correct, here Y is the first selector
 
                 if isActiveCheckAllSelector(onePixelRgb, selectorFunctions):
-                    print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
+                    # print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
                     pixelGroupNow.addPixelActive(coordNowX, coordNowY, onePixelRgb)
 
                     # maybe the neighbours are detected from multiple places, insert them only once

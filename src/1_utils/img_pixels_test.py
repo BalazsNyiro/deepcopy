@@ -25,8 +25,7 @@ class Test_active_pixel_group_detection(unittest.TestCase):
         pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
 
         for (xGroupPixel, yGroupPixel), group in pixelGroups.items():
-            print(f"====== pixel Group: {xGroupPixel} {yGroupPixel} ========= ")
-            print(group.pixels)
+            group.display_in_terminal()
 
 
 
