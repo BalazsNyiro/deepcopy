@@ -22,13 +22,16 @@ class Test_active_pixel_group_detection(unittest.TestCase):
         imgPath = "../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png"
         pixelsInImg, _errors, _warnings = img_pixels.pixels_load_from_image(imgPath)
 
-        pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
+        coords_pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
 
-        self.assertTrue(len(pixelGroups) == 28)  # 26 letters + 2 accents
+        self.assertTrue(len(coords_pixelGroups) == 28)  # 26 letters + 2 accents
 
-        for (xGroupPixel, yGroupPixel), group in pixelGroups.items():
+
+        for (xGroupPixel, yGroupPixel), group in coords_pixelGroups.items():
             group.display_in_terminal()
 
+        areaWithAllPixelGroups = img_pixels.matrix_representation_for_more_pixelgroups( coords_pixelGroups.values() )
+        img_pixels.pixel_group_matrix_representation_print(areaWithAllPixelGroups)
 
 
 

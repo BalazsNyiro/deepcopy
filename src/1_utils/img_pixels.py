@@ -105,7 +105,7 @@ class PixelGroup:
         self.x_max = -1
         self.y_min = -1
         self.y_max = -1
-        self.matrix_representation = []
+        self.matrix_representation: list[list[PixelGroup]] = []
 
         self.groupId = PixelGroup.groupCounter
         PixelGroup.groupCounter += 1
@@ -118,6 +118,7 @@ class PixelGroup:
             self.y_min = y
             self.y_max = y
 
+        # the original coords from the orig image are saved here, as (x, y)
         self.pixels[(x,y)] = {"rgb": rgbTuple, "pixelGroupObj": self}  # every point knows who is the parent group
 
         self.x_max = max(self.x_max, x)
@@ -128,48 +129,79 @@ class PixelGroup:
     def has_pixels(self) -> bool:
         return len(self.pixels) > 0
 
-
-    def matrix_representation_create(self):
-        """represent the char in a human readable matrix.
-
-        one row of pixels are in one row,
-        the matrix has multiple rows, so every row has to be selected with Y first,
-        then in the row you can see the X-coord-based-elems one by one.
-        """
-
-        self.matrix_representation = list()
-
-        for y in range(self.y_min, self.y_max+1):
-            row = []
-            for x in range(self.x_min, self.x_max+1):
-
-                if (x, y) in self.pixels:
-                    row.append("*")
-                else:
-                    row.append(" ")
-            self.matrix_representation.append("".join(row))
-
     def display_in_terminal(self):
         print(f"=========== {self.groupId} ==========")
-        self.matrix_representation_create()
-        print("\n".join(self.matrix_representation))
+        pixel_group_matrix_representation_create(self, pixelGroupForBackgroundNonActivePixels)
+        pixel_group_matrix_representation_print(self.matrix_representation)
 
 
-def matrix_representation_empty_area_create_list_of_lists(x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100, fillerChar: str=" ") -> list[list[str]]:
+def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup]] ):
+    """display matrix representation of a pixel group or more pixel groups"""
+    for row in matrix_representation:
+        rowDisplayed = []
+        for pixelRepresentation in row:
+            if pixelRepresentation.has_pixels():
+                rowDisplayed.append("*")
+            else:
+                rowDisplayed.append(" ")
+        print("".join(rowDisplayed))
+
+
+def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup, pixelGroupForBackgroundNonActivePixels):
+    """represent the char in a human readable matrix.
+
+    it cannot be a class method in PixelGroup, because the general background collector has to be received as an object,
+    so the class has to be defined before this function definition/usage
+
+    one row of pixels are in one row,
+    the matrix has multiple rows, so every row has to be selected with Y first,
+    then in the row you can see the X-coord-based-elems one by one.
+
+    Maybe it is better if embedded list is used here, because instead of strings,
+    the list elems can be removed/changed.
+
+    It's a feeling only, that it is better for the future.
+    """
+
+    pixelGroupActivePixels.matrix_representation = list()
+
+    for y in range(pixelGroupActivePixels.y_min, pixelGroupActivePixels.y_max+1):
+        row = []
+        for x in range(pixelGroupActivePixels.x_min, pixelGroupActivePixels.x_max+1):
+            if (x, y) in pixelGroupActivePixels.pixels:
+                row.append(pixelGroupActivePixels)  # every pixel knows who is the parent obj in the representation
+            else:
+                # the non-active pixels are NOT saved in the parent object, so this is used ONLY
+                # to use the same type of object in the row instead of None.
+                row.append(pixelGroupForBackgroundNonActivePixels)
+        pixelGroupActivePixels.matrix_representation.append(row)
+
+
+#################################################################
+pixelGroupForBackgroundNonActivePixels = PixelGroup()
+# TODO: maybe a new background collector has to be created for every page? not only one general?
+
+
+def matrix_representation_empty_area_create_list_of_lists(
+        pixelGroupBackgroundCollector: PixelGroup, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup]]:
     """create an empty area
 
     Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
     different from
     """
-    matrix_representation = list()
+
+    matrix_representation: list[list[PixelGroup]] = list()
     for _y in range(y_min, y_max + 1):
         row = []
         for _x in range(x_min, x_max + 1):
-            row.append(fillerChar)
-        self.matrix_representation.append(row)
+            row.append(pixelGroupBackgroundCollector)
+        matrix_representation.append(row)
     return matrix_representation
+#################################################################
 
-def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup]):
+
+
+def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup]) -> list[list[PixelGroup]]:
     """can create a merged matrix representation for MORE PixelGroup elems"""
 
     xMinGlobal = -1
@@ -189,12 +221,26 @@ def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup]
         yMinGlobal = min(pixelGroup.y_min, yMinGlobal)
         yMaxGlobal = max(pixelGroup.y_max, yMaxGlobal)
 
+    # empty space where new pixels are placed
+    areaPixels = matrix_representation_empty_area_create_list_of_lists(
+        pixelGroupForBackgroundNonActivePixels,
+        x_min=xMinGlobal, x_max=xMaxGlobal,
+        y_min=yMinGlobal, y_max=yMaxGlobal
+    )
 
+    for pixelGroup in pixelGroupElems:
+        pixel_group_matrix_representation_create(pixelGroup, pixelGroupForBackgroundNonActivePixels)
 
+        for (xAbsPosInOrigImage, yAbsPosInOrigImage) in pixelGroup.pixels:
 
+            xInAreaPixels = xAbsPosInOrigImage - xMinGlobal
+            yInAreaPixels = yAbsPosInOrigImage - yMinGlobal
 
+            # add the pixel obj
+            print("add pixel obj into representation MORE pixelgroups:", type(pixelGroup))
+            areaPixels[yInAreaPixels][xInAreaPixels] = pixelGroup
 
-
+    return areaPixels
 
 
 # white: 255,255,255 black: 0,0,0
