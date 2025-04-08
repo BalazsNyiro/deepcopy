@@ -98,6 +98,7 @@ class PixelGroup:
 
     groupCounter = 0
 
+
     def __init__(self):
         self.pixels = dict()
         self.x_min = -1
@@ -117,7 +118,7 @@ class PixelGroup:
             self.y_min = y
             self.y_max = y
 
-        self.pixels[(x,y)] = rgbTuple
+        self.pixels[(x,y)] = {"rgb": rgbTuple, "pixelGroupObj": self}  # every point knows who is the parent group
 
         self.x_max = max(self.x_max, x)
         self.x_min = min(self.x_min, x)
@@ -152,6 +153,48 @@ class PixelGroup:
         print(f"=========== {self.groupId} ==========")
         self.matrix_representation_create()
         print("\n".join(self.matrix_representation))
+
+
+def matrix_representation_empty_area_create_list_of_lists(x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100, fillerChar: str=" ") -> list[list[str]]:
+    """create an empty area
+
+    Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
+    different from
+    """
+    matrix_representation = list()
+    for _y in range(y_min, y_max + 1):
+        row = []
+        for _x in range(x_min, x_max + 1):
+            row.append(fillerChar)
+        self.matrix_representation.append(row)
+    return matrix_representation
+
+def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup]):
+    """can create a merged matrix representation for MORE PixelGroup elems"""
+
+    xMinGlobal = -1
+    xMaxGlobal = -1
+    yMinGlobal = -1
+    yMaxGlobal = -1
+
+    for groupCounter, pixelGroup in enumerate(pixelGroupElems):
+        if groupCounter == 0:
+            xMinGlobal = pixelGroup.x_min
+            xMaxGlobal = pixelGroup.x_max
+            yMinGlobal = pixelGroup.y_min
+            yMaxGlobal = pixelGroup.y_max
+
+        xMinGlobal = min(pixelGroup.x_min, xMinGlobal)
+        xMaxGlobal = max(pixelGroup.x_max, xMaxGlobal)
+        yMinGlobal = min(pixelGroup.y_min, yMinGlobal)
+        yMaxGlobal = max(pixelGroup.y_max, yMaxGlobal)
+
+
+
+
+
+
+
 
 
 # white: 255,255,255 black: 0,0,0

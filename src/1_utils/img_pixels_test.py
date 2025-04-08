@@ -24,6 +24,8 @@ class Test_active_pixel_group_detection(unittest.TestCase):
 
         pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
 
+        self.assertTrue(len(pixelGroups) == 28)  # 26 letters + 2 accents
+
         for (xGroupPixel, yGroupPixel), group in pixelGroups.items():
             group.display_in_terminal()
 
