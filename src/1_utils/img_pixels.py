@@ -94,21 +94,23 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
 
 
 
-class PixelGroup:
-
+class PixelGroup_Glyph:
+    """represents active pixels, next to each other, together forming a glyph.
+    A character can be represented by multiple glyphs, so by multiple PixelGroups
+    """
     groupCounter = 0
 
 
     def __init__(self) -> None:
-        self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup]] = dict()
+        self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup_Glyph]] = dict()
         self.x_min = -1
         self.x_max = -1
         self.y_min = -1
         self.y_max = -1
-        self.matrix_representation: list[list[PixelGroup]] = []
+        self.matrix_representation: list[list[PixelGroup_Glyph]] = []
 
-        self.groupId = PixelGroup.groupCounter
-        PixelGroup.groupCounter += 1
+        self.groupId = PixelGroup_Glyph.groupCounter
+        PixelGroup_Glyph.groupCounter += 1
 
 
     def add_pixel_active(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
@@ -135,7 +137,7 @@ class PixelGroup:
         pixel_group_matrix_representation_print(self.matrix_representation)
 
 
-def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup]] ):
+def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]):
     """display matrix representation of a pixel group or more pixel groups"""
     for row in matrix_representation:
         rowDisplayed = []
@@ -147,7 +149,7 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
         print("".join(rowDisplayed))
 
 
-def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup, pixelGroupForBackgroundNonActivePixels):
+def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup_Glyph, pixelGroupForBackgroundNonActivePixels):
     """a matrix representation of the pixels, prepare output for human printing
 
     it cannot be a class method in PixelGroup, because the general background collector has to be received as an object,
@@ -178,19 +180,19 @@ def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup,
 
 
 #################################################################
-pixelGroupForBackgroundNonActivePixels = PixelGroup()
+pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph()
 # TODO: maybe a new background collector has to be created for every page? not only one general?
 
 
 def matrix_representation_empty_area_create_list_of_lists(
-        pixelGroupBackgroundCollector: PixelGroup, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup]]:
+        pixelGroupBackgroundCollector: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup_Glyph]]:
     """create an empty area
 
     Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
     different from
     """
 
-    matrix_representation: list[list[PixelGroup]] = list()
+    matrix_representation: list[list[PixelGroup_Glyph]] = list()
     for _y in range(y_min, y_max + 1):
         row = []
         for _x in range(x_min, x_max + 1):
@@ -201,7 +203,7 @@ def matrix_representation_empty_area_create_list_of_lists(
 
 
 
-def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup]) -> list[list[PixelGroup]]:
+def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
     """can create a merged matrix representation for MORE PixelGroup elems"""
 
     xMinGlobal = -1
@@ -297,7 +299,7 @@ def coords_neighbours(x: int, y: int,
 
 
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
-                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup]:
+                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup_Glyph]:
 
     """
 
@@ -313,9 +315,9 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
 
     coordsAnalysedOnce = set()
 
-    pixelGroups: dict[tuple[int, int], PixelGroup] = dict()
+    pixelGroups: dict[tuple[int, int], PixelGroup_Glyph] = dict()
 
-    pixelGroupNow = PixelGroup()
+    pixelGroupNow = PixelGroup_Glyph()
 
     for y, row in enumerate(pixelsAll):
         for x in range(0, len(row)):
@@ -348,7 +350,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                 # the top-left coord of the group is the registration point
                 pixelGroups[(pixelGroupNow.x_min, pixelGroupNow.y_min)] = pixelGroupNow
 
-                pixelGroupNow = PixelGroup()  # create a new one
+                pixelGroupNow = PixelGroup_Glyph()  # create a new one
 
     return pixelGroups
 
