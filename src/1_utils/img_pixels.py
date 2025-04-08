@@ -99,8 +99,8 @@ class PixelGroup:
     groupCounter = 0
 
 
-    def __init__(self):
-        self.pixels = dict()
+    def __init__(self) -> None:
+        self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup]] = dict()
         self.x_min = -1
         self.x_max = -1
         self.y_min = -1
@@ -148,7 +148,7 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
 
 
 def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup, pixelGroupForBackgroundNonActivePixels):
-    """represent the char in a human readable matrix.
+    """a matrix representation of the pixels, prepare output for human printing
 
     it cannot be a class method in PixelGroup, because the general background collector has to be received as an object,
     so the class has to be defined before this function definition/usage
@@ -237,7 +237,7 @@ def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup]
             yInAreaPixels = yAbsPosInOrigImage - yMinGlobal
 
             # add the pixel obj
-            print("add pixel obj into representation MORE pixelgroups:", type(pixelGroup))
+            # print("add pixel obj into representation MORE pixelgroups:", type(pixelGroup))
             areaPixels[yInAreaPixels][xInAreaPixels] = pixelGroup
 
     return areaPixels
@@ -276,7 +276,7 @@ def isActive_checkAllSelector(onePixelRgb: tuple[int, int, int], selectorFunctio
 
 def coords_neighbours(x: int, y: int,
                       xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
-                      xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int) -> list[tuple[int, int], ...]:
+                      xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int) -> list[tuple[int, int], ]:
     """return with possible neighbour coordinates"""
     neighbours = list()
     for xNeighbour in range(x-1, x+2):

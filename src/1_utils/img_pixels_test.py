@@ -30,7 +30,9 @@ class Test_active_pixel_group_detection(unittest.TestCase):
         for (xGroupPixel, yGroupPixel), group in coords_pixelGroups.items():
             group.display_in_terminal()
 
-        areaWithAllPixelGroups = img_pixels.matrix_representation_for_more_pixelgroups( coords_pixelGroups.values() )
+        pixelGroups = coords_pixelGroups.values()
+        areaWithAllPixelGroups = img_pixels.matrix_representation_for_more_pixelgroups(pixelGroups)
+
         img_pixels.pixel_group_matrix_representation_print(areaWithAllPixelGroups)
 
 
