@@ -104,6 +104,7 @@ class PixelGroup:
         self.x_max = -1
         self.y_min = -1
         self.y_max = -1
+        self.matrix_representation = []
 
         self.groupId = PixelGroup.groupCounter
         PixelGroup.groupCounter += 1
@@ -127,8 +128,15 @@ class PixelGroup:
         return len(self.pixels) > 0
 
 
-    def display_in_terminal(self):
-        print(f"=========== {self.groupId} ==========")
+    def matrix_representation_create(self):
+        """represent the char in a human readable matrix.
+
+        one row of pixels are in one row,
+        the matrix has multiple rows, so every row has to be selected with Y first,
+        then in the row you can see the X-coord-based-elems one by one.
+        """
+
+        self.matrix_representation = list()
 
         for y in range(self.y_min, self.y_max+1):
             row = []
@@ -138,9 +146,12 @@ class PixelGroup:
                     row.append("*")
                 else:
                     row.append(" ")
-            print("".join(row))
+            self.matrix_representation.append("".join(row))
 
-
+    def display_in_terminal(self):
+        print(f"=========== {self.groupId} ==========")
+        self.matrix_representation_create()
+        print("\n".join(self.matrix_representation))
 
 
 # white: 255,255,255 black: 0,0,0
@@ -194,6 +205,7 @@ def coords_neighbours(x: int, y: int,
             neighbours.append( (xNeighbour, yNeighbour) )
 
     return neighbours
+
 
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                               selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup]:
