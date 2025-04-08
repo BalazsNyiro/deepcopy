@@ -55,7 +55,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
                 pixelRow: list[tuple[int, int, int], ] = []
                 for x in range(0, imgWidth):
                     colorVal = imageLoaded.getpixel((x, y))
-                    print(colorVal)
+                    # print(colorVal)
                     if isinstance(colorVal, int):   # int, but myPy...
                         # pixelRow.append((colorVal, colorVal, colorVal))
                         pixelRow.append((colorVal, colorVal, colorVal))
@@ -96,6 +96,8 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
 
 class PixelGroup:
 
+    groupCounter = 0
+
     def __init__(self):
         self.pixels = dict()
         self.x_min = -1
@@ -103,19 +105,26 @@ class PixelGroup:
         self.y_min = -1
         self.y_max = -1
 
-    def addPixelActive(self, x, y):
+        self.groupId = PixelGroup.groupCounter
+        PixelGroup.groupCounter += 1
+
+
+    def addPixelActive(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
         if not self.pixels:
             self.x_min = x
             self.x_max = x
             self.y_min = y
             self.y_max = y
 
-        self.pixels[(x,y)] = True
+        self.pixels[(x,y)] = rgbTuple
 
         self.x_max = max(self.x_max, x)
         self.x_min = min(self.x_min, x)
         self.y_max = max(self.y_max, y)
         self.y_min = min(self.y_min, y)
+
+    def hasPixels(self) -> bool:
+        return len(self.pixels) > 0
 
 
 # white: 255,255,255 black: 0,0,0
@@ -149,6 +158,27 @@ def isActiveCheckAllSelector(onePixelRgb: tuple[int, int, int], selectorFunction
     return isActiveByAllFun
 
 
+def coordsNeighbour(x: int, y: int,
+                    xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
+                    xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int) -> list[tuple[int, int], ...]:
+    """return with possible neighbour coordinates"""
+    neighbours = list()
+    for xNeighbour in range(x-1, x+2):
+        for yNeighbour in range(y-1, y+2):
+
+            if xNeighbour == x and yNeighbour == y:
+                continue  # the orig point is NOT a neighbour
+
+            if xNeighbour < xMinValidPossibleCoordValue or yNeighbour < yMinValidPossibleCoordValue:
+                continue
+
+            if xNeighbour > xMaxValidPossibleCoordValue or yNeighbour > yMaxValidPossibleCoordValue:
+                continue
+
+            neighbours.append( (xNeighbour, yNeighbour) )
+
+    return neighbours
+
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                               selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup]:
 
@@ -164,18 +194,44 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
     :return:
     """
 
-    detectedActiveCoords = set()
+    coordsAnalysedOnce = set()
 
     pixelGroups: dict[tuple[int, int], PixelGroup] = dict()
 
+    pixelGroupNow = PixelGroup()
+
     for y, row in enumerate(pixelsAll):
-        for x, onePixelRgb in enumerate(row):
+        for x in range(0, len(row)):
 
-            if isActiveCheckAllSelector(onePixelRgb, selectorFunctions):
-                print(f"active pixel detected:", x, y)
-                if (x, y) not in detectedActiveCoords:
-                    detectedActiveCoords.add((x,y))
+            checkTheseCoords = [(x,y)]
 
+
+            while checkTheseCoords:
+
+                (coordNowX, coordNowY) = checkTheseCoords.pop(0)
+
+                if (coordNowX, coordNowY) in coordsAnalysedOnce:
+                    continue
+                coordsAnalysedOnce.add( (coordNowX, coordNowY) )
+
+                # pixelsAll: have rows, one row represent one row of pixels in a line, so the first selector is Y coord.
+                onePixelRgb = pixelsAll[coordNowY][coordNowX]  # this is correct, here Y is the first selector
+
+                if isActiveCheckAllSelector(onePixelRgb, selectorFunctions):
+                    print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
+                    pixelGroupNow.addPixelActive(coordNowX, coordNowY, onePixelRgb)
+
+                    # maybe the neighbours are detected from multiple places, insert them only once
+                    for (xPossibleNeighbour, yPossibleNeighbour) in coordsNeighbour(coordNowX, coordNowY, 0, 0, len(row)-1, len(pixelsAll)-1):
+                        if (xPossibleNeighbour, yPossibleNeighbour) not in checkTheseCoords:
+                            checkTheseCoords.append( (xPossibleNeighbour, yPossibleNeighbour))
+
+            # only Active pixels are inserted into the Groups, so a new group has to be created ONLY if the previous one has any active Pixels
+            if pixelGroupNow.hasPixels():
+                # the top-left coord of the group is the registration point
+                pixelGroups[(pixelGroupNow.x_min, pixelGroupNow.y_min)] = pixelGroupNow
+
+                pixelGroupNow = PixelGroup()  # create a new one
 
     return pixelGroups
 

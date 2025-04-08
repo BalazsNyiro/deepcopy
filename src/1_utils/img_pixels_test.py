@@ -24,6 +24,10 @@ class Test_active_pixel_group_detection(unittest.TestCase):
 
         pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
 
+        for (xGroupPixel, yGroupPixel), group in pixelGroups.items():
+            print(f"====== pixel Group: {xGroupPixel} {yGroupPixel} ========= ")
+            print(group.pixels)
+
 
 
 
@@ -68,7 +72,7 @@ class TestLoadImageFile(unittest.TestCase):
         with patch("PIL.Image.open") as mocked_fun:
             mocked_fun.return_value = FakePixel_channel_2()
 
-            pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
+            _pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
             self.assertTrue(len(warnings) == 1)
             self.assertIn("probably Alpha channel is detected", str(warnings))
 
