@@ -6,13 +6,19 @@ Contact/Author: Balazs Nyiro, balazs.nyiro.ca@gmail.com
 How can you support:
  - I need a Macintosh to test Deepcopy, so if you have an unused and can give that to me, that would be a help.
 
-INSTALL:
- - important python3 modules (Ubuntu package names)
-   - python3-pil  (manual install: 'pip install pillow')
+# INSTALL
+ - important python3 modules
+   - python3-pil  
+     - apt install python3-pil    (install with apt package manager)
+     - pip install pillow         (install with pip)
+
  
- - for development:
+# INSTALL for development
+
+Tools:
    - mypy         (pip install mypy)
    - coverage     (pip install coverage)
 
-TODO: 
- - test with different image sources (grayscale, predefined color palette, with alpha channels...)
+To validate with mypy: validate_mypy.sh
+To validate coverage:  validate_coverage.sh
+

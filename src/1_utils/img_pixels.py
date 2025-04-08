@@ -150,7 +150,7 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
 
 
 def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup_Glyph, pixelGroupForBackgroundNonActivePixels):
-    """a matrix representation of the pixels, prepare output for human printing
+    """a matrix representation of ONE pixel group, prepare output for human printing
 
     it cannot be a class method in PixelGroup, because the general background collector has to be received as an object,
     so the class has to be defined before this function definition/usage
@@ -203,7 +203,7 @@ def matrix_representation_empty_area_create_list_of_lists(
 
 
 
-def matrix_representation_for_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
+def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
     """can create a merged matrix representation for MORE PixelGroup elems"""
 
     xMinGlobal = -1

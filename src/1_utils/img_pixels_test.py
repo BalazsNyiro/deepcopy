@@ -31,7 +31,7 @@ class Test_active_pixel_group_detection(unittest.TestCase):
             group.display_in_terminal()
 
         pixelGroups = coords_pixelGroups.values()
-        areaWithAllPixelGroups = img_pixels.matrix_representation_for_more_pixelgroups(pixelGroups)
+        areaWithAllPixelGroups = img_pixels.matrix_representation_shared_for_more_pixelgroups(pixelGroups)
 
         img_pixels.pixel_group_matrix_representation_print(areaWithAllPixelGroups)
 
