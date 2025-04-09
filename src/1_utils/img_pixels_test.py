@@ -12,14 +12,19 @@ from unittest.mock import patch
 import PIL
 
 
+def path_abs_to_testfile(pathRelative: str):
+    """with absolute path the test """
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), pathRelative)
 
-# python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
+
+
+    # python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 class Test_active_pixel_group_detection(unittest.TestCase):
 
 
     def test_active_pixel_group_detection(self):
 
-        imgPath = "../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png"
+        imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png")
         pixelsInImg, _errors, _warnings = img_pixels.pixels_load_from_image(imgPath)
 
         coords_pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
@@ -56,7 +61,7 @@ class TestLoadImageFile(unittest.TestCase):
     def test_load_image_file__check_memory_usage_and_speed_manually(self):
         """manual image load test - native Python is maybe a little slow to read a huge PNG, pixel by pixel"""
         # A4 white based page with 300dpi pixel text
-        imgPath = "../../samples/lorem_ipsum.png"
+        imgPath = path_abs_to_testfile("../../samples/lorem_ipsum.png")
         if os.path.isfile(imgPath): # big binary file, used only for speed test, don't insert into git
             print(f"this is a large image - to process every pixel, the for loop needs ~8 seconds")
 
@@ -73,7 +78,7 @@ class TestLoadImageFile(unittest.TestCase):
 
 
     def test_load_image_file_incorrect_channel_number(self):
-        imgPath = "../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png"
+        imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png")
 
         with patch("PIL.Image.open") as mocked_fun:
             mocked_fun.return_value = FakePixel_channel_2()
@@ -86,7 +91,7 @@ class TestLoadImageFile(unittest.TestCase):
 
 
     def test_load_image_file_grayscale(self):
-        imgPath = "../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png"
+        imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png")
         pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
         self.assertTrue(len(pixelsInImg[0][0]) == 3)
         self.assertTrue(warnings == list())
@@ -94,7 +99,7 @@ class TestLoadImageFile(unittest.TestCase):
 
 
     def test_load_image_file_rgb(self):
-        imgPath = "../../samples/sample_abc_lower_ubuntu_light_300.png"
+        imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300.png")
         pixelsInImg, errors, warnings = img_pixels.pixels_load_from_image(imgPath)
         print(f"pixel 0, 0:")
         print(pixelsInImg[0][0])  # 3 values are in the pixel
