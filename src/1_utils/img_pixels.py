@@ -249,22 +249,35 @@ def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int], selectorFuncti
 
 def coords_neighbours(x: int, y: int,
                       xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
-                      xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int) -> list[tuple[int, int], ]:
+                      xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int,
+                      allowedDirections: set[int]={1,2,3,4,5,6,7,8}
+                      ) -> list[tuple[int, int], ]:
     """return with possible neighbour coordinates"""
+
     neighbours = list()
-    for xNeighbour in range(x-1, x+2):
-        for yNeighbour in range(y-1, y+2):
 
-            if xNeighbour == x and yNeighbour == y:
-                continue  # the orig point is NOT a neighbour
+    directions = { 1: (x,   y-1),
+                   2: (x+1, y-1),
+                   3: (x+1, y  ),
+                   4: (x+1, y+1),
+                   5: (x,   y+1),
+                   6: (x-1, y+1),
+                   7: (x-1, y  ),
+                   8: (x-1, y-1)
+                 }
 
-            if xNeighbour < xMinValidPossibleCoordValue or yNeighbour < yMinValidPossibleCoordValue:
-                continue
+    for direction, (xNeighbour, yNeighbour) in directions.items():
 
-            if xNeighbour > xMaxValidPossibleCoordValue or yNeighbour > yMaxValidPossibleCoordValue:
-                continue
+        if direction not in allowedDirections:
+            continue
 
-            neighbours.append( (xNeighbour, yNeighbour) )
+        if xNeighbour < xMinValidPossibleCoordValue or yNeighbour < yMinValidPossibleCoordValue:
+            continue # cannot go over the limits...
+
+        if xNeighbour > xMaxValidPossibleCoordValue or yNeighbour > yMaxValidPossibleCoordValue:
+            continue # cannot go over the limits...
+
+        neighbours.append( (xNeighbour, yNeighbour) )
 
     return neighbours
 
