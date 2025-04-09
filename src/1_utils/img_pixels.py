@@ -133,7 +133,7 @@ class PixelGroup_Glyph:
 
     def display_in_terminal(self):
         print(f"=========== {self.groupId} ==========")
-        pixel_group_matrix_representation_create(self, pixelGroupForBackgroundNonActivePixels)
+        self.matrix_representation = matrix_representation_shared_for_more_pixelgroups([self])
         pixel_group_matrix_representation_print(self.matrix_representation)
 
 
@@ -147,36 +147,6 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
             else:
                 rowDisplayed.append(" ")
         print("".join(rowDisplayed))
-
-
-def pixel_group_matrix_representation_create(pixelGroupActivePixels: PixelGroup_Glyph, pixelGroupForBackgroundNonActivePixels):
-    """a matrix representation of ONE pixel group, prepare output for human printing
-
-    it cannot be a class method in PixelGroup, because the general background collector has to be received as an object,
-    so the class has to be defined before this function definition/usage
-
-    one row of pixels are in one row,
-    the matrix has multiple rows, so every row has to be selected with Y first,
-    then in the row you can see the X-coord-based-elems one by one.
-
-    Maybe it is better if embedded list is used here, because instead of strings,
-    the list elems can be removed/changed.
-
-    It's a feeling only, that it is better for the future.
-    """
-
-    pixelGroupActivePixels.matrix_representation = list()
-
-    for y in range(pixelGroupActivePixels.y_min, pixelGroupActivePixels.y_max+1):
-        row = []
-        for x in range(pixelGroupActivePixels.x_min, pixelGroupActivePixels.x_max+1):
-            if (x, y) in pixelGroupActivePixels.pixels:
-                row.append(pixelGroupActivePixels)  # every pixel knows who is the parent obj in the representation
-            else:
-                # the non-active pixels are NOT saved in the parent object, so this is used ONLY
-                # to use the same type of object in the row instead of None.
-                row.append(pixelGroupForBackgroundNonActivePixels)
-        pixelGroupActivePixels.matrix_representation.append(row)
 
 
 #################################################################
@@ -231,7 +201,6 @@ def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[Pixe
     )
 
     for pixelGroup in pixelGroupElems:
-        pixel_group_matrix_representation_create(pixelGroup, pixelGroupForBackgroundNonActivePixels)
 
         for (xAbsPosInOrigImage, yAbsPosInOrigImage) in pixelGroup.pixels:
 
