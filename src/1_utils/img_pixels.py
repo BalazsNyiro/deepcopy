@@ -247,23 +247,25 @@ def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[Pixe
 
 # white: 255,255,255 black: 0,0,0
 def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
-    """if the value is less than the limit, so the pixel is darker, then select)"""
+    """if the value is less than the limit, so the pixel is darker, then select"""
     isActive = False
+
+    # if any channel param is acceptable, set Active
     if rNow < params.get("rMax_toSelect", 127):
-        if gNow < params.get("gMax_toSelect", 127):
-            if bNow < params.get("bMax_toSelect", 127):
-                isActive = True
+        isActive = True
+
+    if gNow < params.get("gMax_toSelect", 127):
+        isActive = True
+
+    if bNow < params.get("bMax_toSelect", 127):
+        isActive = True
 
     return isActive
 
 
 
 
-
-
-
-
-def isActive_checkAllSelector(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
+def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
     isActiveByAllFun = True
     for (funDecideIsActive, paramsToSelector) in selectorFunctions:
         r, g, b = onePixelRgb
@@ -336,7 +338,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                 # pixelsAll: have rows, one row represent one row of pixels in a line, so the first selector is Y coord.
                 onePixelRgb = pixelsAll[coordNowY][coordNowX]  # this is correct, here Y is the first selector
 
-                if isActive_checkAllSelector(onePixelRgb, selectorFunctions):
+                if isActive_checkAllSelectors(onePixelRgb, selectorFunctions):
                     # print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
                     pixelGroupNow.add_pixel_active(coordNowX, coordNowY, onePixelRgb)
 

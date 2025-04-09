@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 
 DIR_START=$(pwd)
 for DIR_NAME in src/*; do 
