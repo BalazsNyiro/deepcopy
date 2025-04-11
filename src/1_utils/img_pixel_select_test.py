@@ -27,11 +27,11 @@ class Test_pixelGroups_active_select(unittest.TestCase):
         testName = "test_base1 in test_pixelGroups_active_select"
 
         txt = """
-          .....**.....
-          ....*..*....
-          ...******...
-          ..*......*..
-          .*........*.
+          .....**....... <- only STARs and DOTs are detected, any other chars are ignored
+          ....*..*......
+          ...******...**  <- extra active chars, don't belong to the first group
+          ..*......*....
+          .*........*...
         """
 
         pixels, errors, warnings = img_pixels.pixels_load_from_string(
@@ -51,10 +51,11 @@ class Test_pixelGroups_active_select(unittest.TestCase):
                        (3, 2), ( 4, 2), (5, 2), (6, 2), (7, 2), (8, 2),
                        (2, 3), ( 9, 3),
                        (1, 4), (10, 4)
-                       ]:
+                      ]:
             self.assertIn(wanted, pixelGroups_Glyphs[0].pixels )
 
-        self.assertTrue(len(pixelGroups_Glyphs[0].pixels) == txt.count("*"))
+        self.assertTrue(
+            len(pixelGroups_Glyphs[0].pixels) == txt.count("*")-2)
 
 class Test_isActive_checkAllSelectors(unittest.TestCase):
 
