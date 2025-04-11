@@ -19,7 +19,7 @@ def coords_neighbours(x: int, y: int,
                       xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int,
                       allowedDirections: set[int]={1,2,3,4,5,6,7,8}
                       ) -> list[tuple[int, int], ]:
-    """return with possible neighbour coordinates"""
+    """return with possible neighbour coordinates (select pixels next to <x,y> )"""
 
     neighbours = list()
 
