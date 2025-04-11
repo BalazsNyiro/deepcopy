@@ -24,12 +24,14 @@ print("""
       """)
 from PIL import Image
 
+sys.path.append("../0_base")
+import prg_general_config_and_state
 
 
 def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 0),
                             inactivePixelRgb: tuple[int, int, int]=(255, 255, 255),
                             activePixelRepresenter: str="*", inactivePixelRepresenter: str=".",
-                            callerName=""
+                            callerPlaceName=""
                             ) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
     """
     Typically used from tests, or development process
@@ -62,7 +64,9 @@ def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 
 
             rowLengthsUsed.add(len(pixelRow))
             if len(rowLengthsUsed) > 1:
-                errors.append(f"ERROR: <{callerName}> the num of pixels in the rows are different - that is impossible in case of a normal image.")
+                msg = f"ERROR: <{callerPlaceName}> the num of pixels in the rows are different - that is impossible in case of a normal image."
+                errors.append(msg)
+                print(msg)
 
     return pixelsAllRow, errors, warnings
 

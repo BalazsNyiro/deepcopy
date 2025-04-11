@@ -32,14 +32,15 @@ class Test_pixelGroups_active_select(unittest.TestCase):
           ..*......*..
           .*........*.
         """
-        
-        pixels = img_pixels.pixels_load_from_string(txt)
+
+        pixels, errors, warnings = img_pixels.pixels_load_from_string(
+            txt, callerPlaceName="test_base1 in test_pixelGroups_active_select")
         print(pixels)
         print(f"TODO: continue TESTING")
 
         coords_pixelGroups_Glyphs = img_pixel_select.pixelGroups_active_select(pixels)
 
-        print(f"=== Detected pixel groups (glyphs) in file {imgPath} ===")
+        print(f"=== Detected pixel groups (glyphs),  ===")
         for (xGroupPixel, yGroupPixel), group in coords_pixelGroups_Glyphs.items():
             group.display_in_terminal()
 
