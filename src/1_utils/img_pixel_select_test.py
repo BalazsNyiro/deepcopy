@@ -45,8 +45,16 @@ class Test_pixelGroups_active_select(unittest.TestCase):
         for pixelGroup in pixelGroups_Glyphs:
             pixelGroup.display_in_terminal()
 
-        self.assertIn((5, 0), pixelGroups_Glyphs[0].pixels )
+        # are these x,y coords in the detected pixels?
+        for wanted in [(5, 0), ( 6, 0),
+                       (4, 1), ( 7, 1),
+                       (3, 2), ( 4, 2), (5, 2), (6, 2), (7, 2), (8, 2),
+                       (2, 3), ( 9, 3),
+                       (1, 4), (10, 4)
+                       ]:
+            self.assertIn(wanted, pixelGroups_Glyphs[0].pixels )
 
+        self.assertTrue(len(pixelGroups_Glyphs[0].pixels) == txt.count("*"))
 
 class Test_isActive_checkAllSelectors(unittest.TestCase):
 

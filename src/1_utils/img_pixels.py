@@ -157,6 +157,9 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
 class PixelGroup_Glyph:
     """represents active pixels, next to each other, together forming a glyph.
     A character can be represented by multiple glyphs, so by multiple PixelGroups
+
+
+    (0, 0) coord represents the left-top corner.
     """
     groupCounter = 0
 
