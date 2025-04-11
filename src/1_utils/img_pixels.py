@@ -26,7 +26,11 @@ from PIL import Image
 
 
 
-def pixels_load_from_string(txt: str, activePixelRgb=(0, 0, 0), inactivePixelRgb=(255, 255, 255)) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
+def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 0),
+                            inactivePixelRgb: tuple[int, int, int]=(255, 255, 255),
+                            activePixelRepresenter: str="*", inactivePixelRepresenter: str=".",
+                            callerName=""
+                            ) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
     """
     Typically used from tests, or development process
 
@@ -37,15 +41,28 @@ def pixels_load_from_string(txt: str, activePixelRgb=(0, 0, 0), inactivePixelRgb
     warnings = []
     pixelsAllRow: list[tuple[tuple[int, int, int], ...]] = []
 
+
+    rowLengthsUsed = set()  # theoretically all rows have similar num of pixels,
+                            # practically if we have more than one length, maybe that is a mistake
+
     for row in txt.split("\n"):
         pixelRow: list[tuple[int, int, int],] = []
+
         for oneChar in row:
-            if oneChar == "*":
+            if oneChar == activePixelRepresenter:
                 pixelRow.append(activePixelRgb)
-            else:
+            elif oneChar == inactivePixelRepresenter:
                 pixelRow.append(inactivePixelRgb)
 
-        pixelsAllRow.append(tuple(pixelRow))
+        # in normal images it is impossible that a row is empty,
+        # but in test situations it is possible that there is no active or inactive pixels in a test row,
+        # so add the row only if it is not empy
+        if pixelRow:
+            pixelsAllRow.append(tuple(pixelRow))
+
+            rowLengthsUsed.add(len(pixelRow))
+            if len(rowLengthsUsed) > 1:
+                errors.append(f"ERROR: <{callerName}> the num of pixels in the rows are different - that is impossible in case of a normal image.")
 
     return pixelsAllRow, errors, warnings
 

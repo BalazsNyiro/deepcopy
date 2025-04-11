@@ -26,12 +26,13 @@ class Test_pixelGroups_active_select(unittest.TestCase):
     def test_pixelGroups_active_select(self):
 
         txt = """
-            **
-           *  *
-          ******
-         *      *
-        *        *
+          .....**.....
+          ....*..*....
+          ...******...
+          ..*......*..
+          .*........*.
         """
+        
         pixels = img_pixels.pixels_load_from_string(txt)
         print(pixels)
         print(f"TODO: continue TESTING")
