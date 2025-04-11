@@ -14,6 +14,9 @@
 # in the root directory of this source tree.
 
 
+import typing
+from img_pixels import PixelGroup_Glyph
+
 def coords_neighbours(x: int, y: int,
                       xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
                       xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int,
@@ -47,3 +50,98 @@ def coords_neighbours(x: int, y: int,
         neighbours.append( (xNeighbour, yNeighbour) )
 
     return sorted(neighbours)
+
+
+# white: 255,255,255 black: 0,0,0
+def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
+    """if the value is less than the limit, so the pixel is darker, then select"""
+    isActive = False
+
+    # if any channel param is acceptable, set Active
+    if rNow < params.get("rMax_toSelect", 127):
+        isActive = True
+
+    if gNow < params.get("gMax_toSelect", 127):
+        isActive = True
+
+    if bNow < params.get("bMax_toSelect", 127):
+        isActive = True
+
+    return isActive
+
+
+
+# TODO: TEST
+def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
+    isActiveByAllFun = True
+    for (funDecideIsActive, paramsToSelector) in selectorFunctions:
+        r, g, b = onePixelRgb
+
+        isActiveByThisFun = funDecideIsActive(r, g, b, paramsToSelector)
+
+        if not isActiveByThisFun:  # one way: if any of the func decides that the pixel is not active, it is not active
+            isActiveByAllFun = False
+
+    return isActiveByAllFun
+
+
+
+# TODO: TEST
+def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
+                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup_Glyph]:
+
+    """
+
+    :param pixelsAll: (r,g,b) values in rows in columns, double embedded list
+                      rgb values are organised into 'ONE ROW / ONE LIST, X-axis' and
+                      list of rows represents Y axis.
+
+    :param selectorFunctions:  one or more selector fun, and params for the selector.
+                               by default the pixels are active, so part of a character.
+                               if any of the selector thinks that the pixel is not active, the end result is NotActive.
+    :return:
+    """
+
+    coordsAnalysedOnce = set()
+
+    pixelGroups: dict[tuple[int, int], PixelGroup_Glyph] = dict()
+
+    pixelGroupNow = PixelGroup_Glyph()
+
+    for y, row in enumerate(pixelsAll):
+        for x in range(0, len(row)):
+
+            checkTheseCoords = [(x,y)]
+
+
+            while checkTheseCoords:
+
+                (coordNowX, coordNowY) = checkTheseCoords.pop(0)
+
+                if (coordNowX, coordNowY) in coordsAnalysedOnce:
+                    continue
+                coordsAnalysedOnce.add( (coordNowX, coordNowY) )
+
+                # pixelsAll: have rows, one row represent one row of pixels in a line, so the first selector is Y coord.
+                onePixelRgb = pixelsAll[coordNowY][coordNowX]  # this is correct, here Y is the first selector
+
+                if isActive_checkAllSelectors(onePixelRgb, selectorFunctions):
+                    # print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
+                    pixelGroupNow.add_pixel_active(coordNowX, coordNowY, onePixelRgb)
+
+                    # maybe the neighbours are detected from multiple places, insert them only once
+                    for (xPossibleNeighbour, yPossibleNeighbour) in coords_neighbours(coordNowX, coordNowY, 0, 0, len(row) - 1, len(pixelsAll) - 1):
+                        if (xPossibleNeighbour, yPossibleNeighbour) not in checkTheseCoords:
+                            checkTheseCoords.append( (xPossibleNeighbour, yPossibleNeighbour))
+
+            # only Active pixels are inserted into the Groups, so a new group has to be created ONLY if the previous one has any active Pixels
+            if pixelGroupNow.has_pixels():
+                # the top-left coord of the group is the registration point
+                pixelGroups[(pixelGroupNow.x_min, pixelGroupNow.y_min)] = pixelGroupNow
+
+                pixelGroupNow = PixelGroup_Glyph()  # create a new one
+
+    return pixelGroups
+
+
+

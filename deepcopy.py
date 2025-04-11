@@ -18,7 +18,7 @@ import os, sys, argparse
 dirDeepcopyRoot = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(dirDeepcopyRoot, 'src/1_utils'))
 
-import img_pixels
+import img_pixels, img_pixel_select
 
 
 def deepcopy_main(fileList: list[str]):
@@ -32,7 +32,7 @@ def deepcopy_main(fileList: list[str]):
 
         if not errors:
 
-            coords_pixelGroups_Glyphs = img_pixels.pixelGroups_active_select(pixelsInImg)
+            coords_pixelGroups_Glyphs = img_pixel_select.pixelGroups_active_select(pixelsInImg)
 
             print(f"=== Detected pixel groups (glyphs) in file {imgPath} ===")
             for (xGroupPixel, yGroupPixel), group in coords_pixelGroups_Glyphs.items():

@@ -17,7 +17,6 @@
 
 
 import os, time, sys, typing
-import img_pixel_select
 
 print("""
       Python image library (PIL) is important to load images. If the 'PIL import' is unsuccessful,
@@ -153,8 +152,11 @@ class PixelGroup_Glyph:
         pixel_group_matrix_representation_print(self.matrix_representation)
 
 
-def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]):
-    """display matrix representation of a pixel group or more pixel groups"""
+def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]) -> str:
+    """display matrix representation of a pixel group or more pixel groups, a print command.
+    The representation is given back as a string.
+    """
+    fullOut = []
     for row in matrix_representation:
         rowDisplayed = []
         for pixelRepresentation in row:
@@ -162,7 +164,11 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
                 rowDisplayed.append("*")
             else:
                 rowDisplayed.append(" ")
-        print("".join(rowDisplayed))
+        fullOut.append("".join(rowDisplayed))
+
+    fullOutStr = "\n".join(fullOut)
+    print(fullOutStr)
+    return fullOutStr
 
 
 #################################################################
@@ -170,6 +176,8 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph()
 # TODO: maybe a new background collector has to be created for every page? not only one general?
 
 
+
+# TODO: TEST
 def matrix_representation_empty_area_create_list_of_lists(
         pixelGroupBackgroundCollector: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup_Glyph]]:
     """create an empty area
@@ -188,7 +196,7 @@ def matrix_representation_empty_area_create_list_of_lists(
 #################################################################
 
 
-
+# TODO: TEST
 def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
     """can create a merged matrix representation for MORE PixelGroup elems"""
 
@@ -230,96 +238,6 @@ def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[Pixe
     return areaPixels
 
 
-# white: 255,255,255 black: 0,0,0
-def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
-    """if the value is less than the limit, so the pixel is darker, then select"""
-    isActive = False
-
-    # if any channel param is acceptable, set Active
-    if rNow < params.get("rMax_toSelect", 127):
-        isActive = True
-
-    if gNow < params.get("gMax_toSelect", 127):
-        isActive = True
-
-    if bNow < params.get("bMax_toSelect", 127):
-        isActive = True
-
-    return isActive
-
-
-
-
-def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
-    isActiveByAllFun = True
-    for (funDecideIsActive, paramsToSelector) in selectorFunctions:
-        r, g, b = onePixelRgb
-
-        isActiveByThisFun = funDecideIsActive(r, g, b, paramsToSelector)
-
-        if not isActiveByThisFun:  # one way: if any of the func decides that the pixel is not active, it is not active
-            isActiveByAllFun = False
-
-    return isActiveByAllFun
-
-
-
-
-def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
-                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup_Glyph]:
-
-    """
-
-    :param pixelsAll: (r,g,b) values in rows in columns, double embedded list
-                      rgb values are organised into 'ONE ROW / ONE LIST, X-axis' and
-                      list of rows represents Y axis.
-
-    :param selectorFunctions:  one or more selector fun, and params for the selector.
-                               by default the pixels are active, so part of a character.
-                               if any of the selector thinks that the pixel is not active, the end result is NotActive.
-    :return:
-    """
-
-    coordsAnalysedOnce = set()
-
-    pixelGroups: dict[tuple[int, int], PixelGroup_Glyph] = dict()
-
-    pixelGroupNow = PixelGroup_Glyph()
-
-    for y, row in enumerate(pixelsAll):
-        for x in range(0, len(row)):
-
-            checkTheseCoords = [(x,y)]
-
-
-            while checkTheseCoords:
-
-                (coordNowX, coordNowY) = checkTheseCoords.pop(0)
-
-                if (coordNowX, coordNowY) in coordsAnalysedOnce:
-                    continue
-                coordsAnalysedOnce.add( (coordNowX, coordNowY) )
-
-                # pixelsAll: have rows, one row represent one row of pixels in a line, so the first selector is Y coord.
-                onePixelRgb = pixelsAll[coordNowY][coordNowX]  # this is correct, here Y is the first selector
-
-                if isActive_checkAllSelectors(onePixelRgb, selectorFunctions):
-                    # print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
-                    pixelGroupNow.add_pixel_active(coordNowX, coordNowY, onePixelRgb)
-
-                    # maybe the neighbours are detected from multiple places, insert them only once
-                    for (xPossibleNeighbour, yPossibleNeighbour) in img_pixel_select.coords_neighbours(coordNowX, coordNowY, 0, 0, len(row) - 1, len(pixelsAll) - 1):
-                        if (xPossibleNeighbour, yPossibleNeighbour) not in checkTheseCoords:
-                            checkTheseCoords.append( (xPossibleNeighbour, yPossibleNeighbour))
-
-            # only Active pixels are inserted into the Groups, so a new group has to be created ONLY if the previous one has any active Pixels
-            if pixelGroupNow.has_pixels():
-                # the top-left coord of the group is the registration point
-                pixelGroups[(pixelGroupNow.x_min, pixelGroupNow.y_min)] = pixelGroupNow
-
-                pixelGroupNow = PixelGroup_Glyph()  # create a new one
-
-    return pixelGroups
 
 
 

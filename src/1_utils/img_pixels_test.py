@@ -19,7 +19,7 @@
 # python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 
 import unittest, platform, sys, os, time
-import img_pixels
+import img_pixels, img_pixel_select
 
 from unittest.mock import Mock
 from unittest.mock import patch
@@ -41,7 +41,7 @@ class Test_active_pixel_group_detection(unittest.TestCase):
         imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png")
         pixelsInImg, _errors, _warnings = img_pixels.pixels_load_from_image(imgPath)
 
-        coords_pixelGroups = img_pixels.pixelGroups_active_select(pixelsInImg)
+        coords_pixelGroups = img_pixel_select.pixelGroups_active_select(pixelsInImg)
 
         self.assertTrue(len(coords_pixelGroups) == 28)  # 26 letters + 2 accents
 
