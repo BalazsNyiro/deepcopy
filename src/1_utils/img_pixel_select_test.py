@@ -24,6 +24,7 @@ import img_pixel_select, img_pixels
 class Test_pixelGroups_active_select(unittest.TestCase):
 
     def test_pixelGroups_active_select(self):
+        testName = "test_base1 in test_pixelGroups_active_select"
 
         txt = """
           .....**.....
@@ -34,15 +35,17 @@ class Test_pixelGroups_active_select(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_pixels.pixels_load_from_string(
-            txt, callerPlaceName="test_base1 in test_pixelGroups_active_select")
-        print(pixels)
-        print(f"TODO: continue TESTING")
+            txt, callerPlaceName=testName)
 
-        coords_pixelGroups_Glyphs = img_pixel_select.pixelGroups_active_select(pixels)
+        print(pixels)
+
+        pixelGroups_Glyphs = img_pixel_select.pixelGroups_active_select(pixels)
 
         print(f"=== Detected pixel groups (glyphs),  ===")
-        for (xGroupPixel, yGroupPixel), group in coords_pixelGroups_Glyphs.items():
-            group.display_in_terminal()
+        for pixelGroup in pixelGroups_Glyphs:
+            pixelGroup.display_in_terminal()
+
+        self.assertIn((5, 0), pixelGroups_Glyphs[0].pixels )
 
 
 class Test_isActive_checkAllSelectors(unittest.TestCase):

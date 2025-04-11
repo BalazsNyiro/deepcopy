@@ -88,9 +88,10 @@ def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int],
 
 
 
-# TODO: TEST
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
-                              selectorFunctions=[(pixelGroupSelector_default, {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) -> dict[tuple[int, int], PixelGroup_Glyph]:
+                              selectorFunctions=[(pixelGroupSelector_default,
+                                                  {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) \
+        -> list[PixelGroup_Glyph]:
 
     """
 
@@ -101,12 +102,13 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
     :param selectorFunctions:  one or more selector fun, and params for the selector.
                                by default the pixels are active, so part of a character.
                                if any of the selector thinks that the pixel is not active, the end result is NotActive.
-    :return:
+
+    :return: coord->glyph, and list of glyphs
     """
 
     coordsAnalysedOnce = set()
 
-    pixelGroups: dict[tuple[int, int], PixelGroup_Glyph] = dict()
+    pixelGroups: list[PixelGroup_Glyph] = list()
 
     pixelGroupNow = PixelGroup_Glyph()
 
@@ -139,7 +141,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
             # only Active pixels are inserted into the Groups, so a new group has to be created ONLY if the previous one has any active Pixels
             if pixelGroupNow.has_pixels():
                 # the top-left coord of the group is the registration point
-                pixelGroups[(pixelGroupNow.x_min, pixelGroupNow.y_min)] = pixelGroupNow
+                pixelGroups.append(pixelGroupNow)
 
                 pixelGroupNow = PixelGroup_Glyph()  # create a new one
 

@@ -25,7 +25,6 @@ print("""
 from PIL import Image
 
 sys.path.append("../0_base")
-import prg_general_config_and_state
 
 
 def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 0),
@@ -39,8 +38,8 @@ def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 
     :param txt: newline separated text, active pixel: *   inactivePixels: anythingElse, _ for example
     :return:
     """
-    errors = []
-    warnings = []
+    errors: list[str] = []
+    warnings: list[str] = []
     pixelsAllRow: list[tuple[tuple[int, int, int], ...]] = []
 
 
@@ -162,7 +161,7 @@ class PixelGroup_Glyph:
     groupCounter = 0
 
 
-    def __init__(self) -> None:
+    def     __init__(self) -> None:
         self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup_Glyph]] = dict()
         self.x_min = -1
         self.x_max = -1

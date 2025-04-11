@@ -41,15 +41,14 @@ class Test_active_pixel_group_detection(unittest.TestCase):
         imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png")
         pixelsInImg, _errors, _warnings = img_pixels.pixels_load_from_image(imgPath)
 
-        coords_pixelGroups = img_pixel_select.pixelGroups_active_select(pixelsInImg)
+        pixelGroups = img_pixel_select.pixelGroups_active_select(pixelsInImg)
 
-        self.assertTrue(len(coords_pixelGroups) == 28)  # 26 letters + 2 accents
+        self.assertTrue(len(pixelGroups) == 28)  # 26 letters + 2 accents
 
 
-        for (xGroupPixel, yGroupPixel), group in coords_pixelGroups.items():
+        for group in pixelGroups:
             group.display_in_terminal()
 
-        pixelGroups = coords_pixelGroups.values()
         areaWithAllPixelGroups = img_pixels.matrix_representation_shared_for_more_pixelgroups(pixelGroups)
 
         img_pixels.pixel_group_matrix_representation_print(areaWithAllPixelGroups)
