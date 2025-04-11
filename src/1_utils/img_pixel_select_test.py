@@ -57,6 +57,7 @@ class Test_pixelGroups_active_select(unittest.TestCase):
         self.assertTrue(
             len(pixelGroups_Glyphs[0].pixels) == txt.count("*")-2)
 
+
 class Test_isActive_checkAllSelectors(unittest.TestCase):
 
     def test_isActive_all_selector(self):

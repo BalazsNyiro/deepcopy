@@ -55,19 +55,18 @@ def coords_neighbours(x: int, y: int,
 # white: 255,255,255 black: 0,0,0
 def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
     """if the value is less than the limit, so the pixel is darker, then select"""
-    isActive = False
 
     # if any channel param is acceptable, set Active
     if rNow < params.get("rMax_toSelect", 127):
-        isActive = True
+        return True
 
     if gNow < params.get("gMax_toSelect", 127):
-        isActive = True
+        return True
 
     if bNow < params.get("bMax_toSelect", 127):
-        isActive = True
+        return True
 
-    return isActive
+    return False
 
 
 
