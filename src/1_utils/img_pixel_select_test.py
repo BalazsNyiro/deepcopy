@@ -16,6 +16,41 @@
 import unittest
 import img_pixel_select
 
+# python3 img_pixel_select_test.py
+
+class Test_pixelGroups_active_select(unittest.TestCase):
+
+    def test_pixelGroups_active_select(self):
+        print(f"TODO: TEST HERE")
+
+
+class Test_isActive_checkAllSelectors(unittest.TestCase):
+
+    def test_isActive_all_selector(self):
+
+        onePixelRgb = (200, 244, 199)  # too bright pixel
+
+        isActive = img_pixel_select.isActive_checkAllSelectors(
+            onePixelRgb,
+            [
+                (img_pixel_select.pixelGroupSelector_default,
+                {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
+            ] )
+
+        self.assertFalse(isActive)
+
+
+
+        isActive = img_pixel_select.isActive_checkAllSelectors(
+            onePixelRgb,
+            [
+                (img_pixel_select.pixelGroupSelector_default,
+                 {"rMax_toSelect": 222, "gMax_toSelect": 222, "bMax_toSelect": 222})
+            ] )
+
+        self.assertTrue(isActive)
+
+
 
 # python3 img_pixel_select_test.py
 class Test_coords_neighbour(unittest.TestCase):

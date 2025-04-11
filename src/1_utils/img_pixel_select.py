@@ -71,8 +71,10 @@ def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) ->
 
 
 
-# TODO: TEST
-def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int], selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
+def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int],
+                               selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
+    """is the current pixel RGB value is active/part of a wanted patter or not?"""
+
     isActiveByAllFun = True
     for (funDecideIsActive, paramsToSelector) in selectorFunctions:
         r, g, b = onePixelRgb
