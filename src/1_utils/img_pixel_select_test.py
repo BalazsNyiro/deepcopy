@@ -14,14 +14,33 @@
 # in the root directory of this source tree.
 
 import unittest
-import img_pixel_select
+import img_pixel_select, img_pixels
 
 # python3 img_pixel_select_test.py
 
+
+
+# python3 img_pixel_select_test.py Test_pixelGroups_active_select
 class Test_pixelGroups_active_select(unittest.TestCase):
 
     def test_pixelGroups_active_select(self):
-        print(f"TODO: TEST HERE")
+
+        txt = """
+            **
+           *  *
+          ******
+         *      *
+        *        *
+        """
+        pixels = img_pixels.pixels_load_from_string(txt)
+        print(pixels)
+        print(f"TODO: continue TESTING")
+
+        coords_pixelGroups_Glyphs = img_pixel_select.pixelGroups_active_select(pixels)
+
+        print(f"=== Detected pixel groups (glyphs) in file {imgPath} ===")
+        for (xGroupPixel, yGroupPixel), group in coords_pixelGroups_Glyphs.items():
+            group.display_in_terminal()
 
 
 class Test_isActive_checkAllSelectors(unittest.TestCase):

@@ -25,6 +25,31 @@ print("""
 from PIL import Image
 
 
+
+def pixels_load_from_string(txt: str, activePixelRgb=(0, 0, 0), inactivePixelRgb=(255, 255, 255)) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
+    """
+    Typically used from tests, or development process
+
+    :param txt: newline separated text, active pixel: *   inactivePixels: anythingElse, _ for example
+    :return:
+    """
+    errors = []
+    warnings = []
+    pixelsAllRow: list[tuple[tuple[int, int, int], ...]] = []
+
+    for row in txt.split("\n"):
+        pixelRow: list[tuple[int, int, int],] = []
+        for oneChar in row:
+            if oneChar == "*":
+                pixelRow.append(activePixelRgb)
+            else:
+                pixelRow.append(inactivePixelRgb)
+
+        pixelsAllRow.append(tuple(pixelRow))
+
+    return pixelsAllRow, errors, warnings
+
+
 def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
     """return with one RGB matrix as the image representation.
 
