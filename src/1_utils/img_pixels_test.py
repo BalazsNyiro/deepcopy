@@ -32,7 +32,7 @@ def path_abs_to_testfile(pathRelative: str):
 
 
 
-    # python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
+# python3 img_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 class Test_active_pixel_group_detection(unittest.TestCase):
 
 

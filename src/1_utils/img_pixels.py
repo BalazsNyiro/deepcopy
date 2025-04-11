@@ -17,6 +17,7 @@
 
 
 import os, time, sys, typing
+import img_pixel_select
 
 print("""
       Python image library (PIL) is important to load images. If the 'PIL import' is unsuccessful,
@@ -262,39 +263,6 @@ def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int], selectorFuncti
     return isActiveByAllFun
 
 
-def coords_neighbours(x: int, y: int,
-                      xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
-                      xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int,
-                      allowedDirections: set[int]={1,2,3,4,5,6,7,8}
-                      ) -> list[tuple[int, int], ]:
-    """return with possible neighbour coordinates"""
-
-    neighbours = list()
-
-    directions = { 1: (x,   y-1),
-                   2: (x+1, y-1),
-                   3: (x+1, y  ),
-                   4: (x+1, y+1),
-                   5: (x,   y+1),
-                   6: (x-1, y+1),
-                   7: (x-1, y  ),
-                   8: (x-1, y-1)
-                 }
-
-    for direction, (xNeighbour, yNeighbour) in directions.items():
-
-        if direction not in allowedDirections:
-            continue
-
-        if xNeighbour < xMinValidPossibleCoordValue or yNeighbour < yMinValidPossibleCoordValue:
-            continue # cannot go over the limits...
-
-        if xNeighbour > xMaxValidPossibleCoordValue or yNeighbour > yMaxValidPossibleCoordValue:
-            continue # cannot go over the limits...
-
-        neighbours.append( (xNeighbour, yNeighbour) )
-
-    return neighbours
 
 
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
@@ -340,7 +308,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                     pixelGroupNow.add_pixel_active(coordNowX, coordNowY, onePixelRgb)
 
                     # maybe the neighbours are detected from multiple places, insert them only once
-                    for (xPossibleNeighbour, yPossibleNeighbour) in coords_neighbours(coordNowX, coordNowY, 0, 0, len(row) - 1, len(pixelsAll) - 1):
+                    for (xPossibleNeighbour, yPossibleNeighbour) in img_pixel_select.coords_neighbours(coordNowX, coordNowY, 0, 0, len(row) - 1, len(pixelsAll) - 1):
                         if (xPossibleNeighbour, yPossibleNeighbour) not in checkTheseCoords:
                             checkTheseCoords.append( (xPossibleNeighbour, yPossibleNeighbour))
 
