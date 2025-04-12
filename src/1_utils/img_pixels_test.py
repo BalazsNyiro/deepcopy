@@ -47,9 +47,9 @@ class Test_active_pixel_group_detection(unittest.TestCase):
 
 
         for group in pixelGroups:
-            group.display_in_terminal()
+            group.matrix_representation_display_in_terminal()
 
-        areaWithAllPixelGroups = img_pixels.matrix_representation_shared_for_more_pixelgroups(pixelGroups)
+        areaWithAllPixelGroups = img_pixels.matrix_representation_of_more_pixelgroups(pixelGroups)
 
         img_pixels.pixel_group_matrix_representation_print(areaWithAllPixelGroups)
 
@@ -126,6 +126,78 @@ class TestLoadImageFile(unittest.TestCase):
         self.assertTrue(len(errors) == 1)
         self.assertTrue(len(pixelsInImg) == 0)
         self.assertTrue(warnings == list())
+
+
+# python3 img_pixels_test.py  Test_matrix_representation
+class Test_matrix_representation(unittest.TestCase):
+
+    def test_matrix_representation_empty_area(self):
+        pixelGroupForBackgroundNonActivePixels = \
+            img_pixels.PixelGroup_Glyph(backgroundInactiveGroupRepresenter=True)
+
+        x_min = 2
+        x_max = 6
+        y_min = 3
+        y_max = 8
+
+        areaPixels = img_pixels.matrix_representation_empty_area_create(
+            pixelGroupForBackgroundNonActivePixels,
+            x_min = x_min, x_max = x_max,
+            y_min = y_min, y_max = y_max
+        )
+
+        ########### Test inactive empty area #############
+        self.assertTrue(len(areaPixels) == (y_max-y_min+1))
+        self.assertTrue(len(areaPixels[0]) == (x_max-x_min+1))
+
+
+    def test_matrix_representation_with_active_pixels(self):
+        txt = """
+          .....**....... <- only STARs and DOTs are detected, any other chars are ignored
+          ....*..*......
+          ...******...**  <- extra active chars, don't belong to the first group
+          ..*......*....
+          .*........*...
+        """
+
+        testName = "test_matrix_representation_with_active_pixels"
+        pixels, errors, warnings = img_pixels.pixels_load_from_string(
+            txt, callerPlaceName=testName)
+
+        pixelGroups_Glyphs = img_pixel_select.pixelGroups_active_select(pixels)
+
+        matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
+
+        print("Test, matrix representation with active pixels")
+        img_pixels.pixel_group_matrix_representation_print(matrixRepresentationOfPixelGroup)
+
+        y = 0 # matrixRepresentation is y,x based!!!!
+        x = 0
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+
+        y = 4 # matrixRepresentation is y,x based!!!!
+        x = 0
+        print(f"""
+        This is tricky. Why x=0, y=4 is ACTIVE?
+        
+        Because the matrix representation starts with an active pixel:
+      
+        so the first column is TOTALLY EMPTY, it is not part of a representation. 
+        v this first column is NOT in the representation of A !!!!
+        .....**.......   ->  0: ....**....
+        ....*..*......       1: ...*..*...
+        ...******...**       2: ..******..
+        ..*......*....       3: .*......*.
+        .*........*...       4: *........*
+ 
+        
+        this has to be an active pixel:
+          
+        """)
+        self.assertFalse(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+
+
+
 
 
 if __name__ == '__main__':

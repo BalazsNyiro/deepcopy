@@ -43,7 +43,7 @@ class Test_pixelGroups_active_select(unittest.TestCase):
 
         print(f"=== Detected pixel groups (glyphs),  ===")
         for pixelGroup in pixelGroups_Glyphs:
-            pixelGroup.display_in_terminal()
+            pixelGroup.matrix_representation_display_in_terminal()
 
         # are these x,y coords in the detected pixels?
         for wanted in [(5, 0), ( 6, 0),

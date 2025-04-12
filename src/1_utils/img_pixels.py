@@ -158,22 +158,51 @@ class PixelGroup_Glyph:
     """represents active pixels, next to each other, together forming a glyph.
     A character can be represented by multiple glyphs, so by multiple PixelGroups
 
-
     (0, 0) coord represents the left-top corner.
     """
     groupCounter = 0
 
-
-    def     __init__(self) -> None:
+    def __init__(self, backgroundInactiveGroupRepresenter=False) -> None:
         self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup_Glyph]] = dict()
         self.x_min = -1
         self.x_max = -1
         self.y_min = -1
         self.y_max = -1
-        self.matrix_representation: list[list[PixelGroup_Glyph]] = []
 
         self.groupId = PixelGroup_Glyph.groupCounter
         PixelGroup_Glyph.groupCounter += 1
+
+        ###########################################################
+        self.matrix_representation: list[list[PixelGroup_Glyph]] = []
+        # matrixRepresentation is y,x based!!!
+
+        # Detailed example:
+        # one list represents one row, one row represents (x=0...x=N) pixels,
+        #
+        # line 0, y=0: '.**.' left: readable human version,   ['.', '*', '*', '.']
+        # line 1, y=1: '*..*' in reality the line of pixels:  ['*', '.', '.', '*']
+        # line 2, y=2: '****'                                 ['*', '*', '*', '*']
+        # line 3, y=3: '*  *'                                 ['*', ' ', ' ', '*']
+
+        """
+        Check this input and the representation:
+        the first column is TOTALLY EMPTY, it is not part of a representation. 
+        v this first column is NOT in the representation of A !!!!
+        .....**.......   ->  0: ....**....
+        ....*..*......       1: ...*..*...
+        ...******...**       2: ..******..
+        ..*......*....       3: .*......*.
+        .*........*...       4: *........*
+        """
+
+
+        # an image can have a lot of active pixels, but the significant part of the image is inactive (thousands)
+        # in the matrix_representation every pixel has an object, but because the background elems are not important,
+        # only one object represents them.
+        self.isBackgroundInactivePixelGroup = backgroundInactiveGroupRepresenter
+        # if this is True, the x_min,y_min,x_max,y_max values are invalid, because the biggest part of the image
+        # is inactive. in this case this is only a filler pixel.
+        ###########################################################
 
 
     def add_pixel_active(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
@@ -191,28 +220,38 @@ class PixelGroup_Glyph:
         self.y_max = max(self.y_max, y)
         self.y_min = min(self.y_min, y)
 
+
     def has_pixels(self) -> bool:
         return len(self.pixels) > 0
 
-    def display_in_terminal(self):
+
+    #################################################################################
+    def matrix_representation_refresh(self):
+        self.matrix_representation = matrix_representation_of_more_pixelgroups([self])
+        return self.matrix_representation
+
+
+    def matrix_representation_display_in_terminal(self):
         print(f"=========== {self.groupId} ==========")
-        self.matrix_representation = matrix_representation_shared_for_more_pixelgroups([self])
+        self.matrix_representation_refresh()
         pixel_group_matrix_representation_print(self.matrix_representation)
 
 
 def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
+
+        # matrixRepresentation is y,x based!!!!
     """
     fullOut = []
-    for row in matrix_representation:
+    for rowNum, row in enumerate(matrix_representation):
         rowDisplayed = []
         for pixelRepresentation in row:
             if pixelRepresentation.has_pixels():
                 rowDisplayed.append("*")
             else:
-                rowDisplayed.append(" ")
-        fullOut.append("".join(rowDisplayed))
+                rowDisplayed.append(".")
+        fullOut.append(f"{rowNum:>4}: " + "".join(rowDisplayed))
 
     fullOutStr = "\n".join(fullOut)
     print(fullOutStr)
@@ -220,14 +259,13 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
 
 
 #################################################################
-pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph()
+pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(backgroundInactiveGroupRepresenter=True)
 # TODO: maybe a new background collector has to be created for every page? not only one general?
 
 
 
-# TODO: TEST
-def matrix_representation_empty_area_create_list_of_lists(
-        pixelGroupBackgroundCollector: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup_Glyph]]:
+def matrix_representation_empty_area_create(
+        pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup_Glyph]]:
     """create an empty area
 
     Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
@@ -238,14 +276,13 @@ def matrix_representation_empty_area_create_list_of_lists(
     for _y in range(y_min, y_max + 1):
         row = []
         for _x in range(x_min, x_max + 1):
-            row.append(pixelGroupBackgroundCollector)
+            row.append(pixelGroupBackgroundRepresenter)  # in the matrix the background pixels are represented with this Glyph
         matrix_representation.append(row)
     return matrix_representation
 #################################################################
 
 
-# TODO: TEST
-def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
+def matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
     """can create a merged matrix representation for MORE PixelGroup elems"""
 
     xMinGlobal = -1
@@ -266,7 +303,7 @@ def matrix_representation_shared_for_more_pixelgroups(pixelGroupElems: list[Pixe
         yMaxGlobal = max(pixelGroup.y_max, yMaxGlobal)
 
     # empty space where new pixels are placed
-    areaPixels = matrix_representation_empty_area_create_list_of_lists(
+    areaPixels = matrix_representation_empty_area_create(
         pixelGroupForBackgroundNonActivePixels,
         x_min=xMinGlobal, x_max=xMaxGlobal,
         y_min=yMinGlobal, y_max=yMaxGlobal
