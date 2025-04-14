@@ -3,7 +3,7 @@ Python based OCR program with deep text structure analysing and style detecting
 
 Contact/Author: Balazs Nyiro, balazs.nyiro.ca@gmail.com
 
-How can you support:
+# How can you help
  - I need a Macintosh to test Deepcopy, so if you have an unused and can give that to me, that would be a help.
 
 # INSTALL support

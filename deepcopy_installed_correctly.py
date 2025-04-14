@@ -26,7 +26,7 @@ try:
 
 except:
     print("""
-          Python image library (PIL) is important to load images.
+          Python image library (PIL) is important to load images, deepcopy cannot run without this.
           PIL import was unsuccessful - please install pillow: 'pip install pillow'
           """)
 
@@ -40,7 +40,8 @@ try:
 
 except:
     print(f"Module multiprocessing is Not available")
-    print(f"try to import multiprocess... (https://stackoverflow.com/questions/61270799/python-multiprocessing-with-macos)")
+    print(f"try to use multiprocess, typically in MacOs... (https://stackoverflow.com/questions/61270799/python-multiprocessing-with-macos)")
+    print(f"multiprocess homepage: https://pypi.org/project/multiprocess/")
 
     try:
         import multiprocess as mp
@@ -48,5 +49,5 @@ except:
         print(f"Module multiprocess is Not available")
 
         print("Theoretically deepcopy can work without multiprocessing/multiprocess but radically slower")
-        print("Practically we will see this part - if you have problems, install multiprocess.")
+        print("Practically we will see this part - if you have problems, install multiprocess: 'pip install multiprocess'")
 

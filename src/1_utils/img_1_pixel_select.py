@@ -15,7 +15,7 @@
 
 
 import typing
-from img_pixels import PixelGroup_Glyph
+from img_0_pixels import PixelGroup_Glyph
 
 def coords_neighbours(x: int, y: int,
                       xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
