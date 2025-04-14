@@ -151,8 +151,9 @@ class Test_matrix_representation(unittest.TestCase):
         self.assertTrue(len(areaPixels[0]) == (x_max-x_min+1))
 
 
-    def test_matrix_representation_with_active_pixels(self):
-        txt = """
+
+
+    txtInput = """
           .....**....... <- only STARs and DOTs are detected, any other chars are ignored
           ....*..*......
           ...******...**  <- extra active chars, don't belong to the first group
@@ -160,9 +161,12 @@ class Test_matrix_representation(unittest.TestCase):
           .*........*...
         """
 
+    # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__no_empty_border_around_representation
+    def test_matrix_representation_with_active_pixels__no_empty_border_around_representation(self):
+
         testName = "test_matrix_representation_with_active_pixels"
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
-            txt, callerPlaceName=testName)
+            self.txtInpu, callerPlaceName=testName)
 
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
 
@@ -180,7 +184,7 @@ class Test_matrix_representation(unittest.TestCase):
         print(f"""
         This is tricky. Why x=0, y=4 is ACTIVE?
         
-        Because the matrix representation starts with an active pixel:
+        By default the matrix representation starts with an active pixel:
       
         so the first column is TOTALLY EMPTY, it is not part of a representation. 
         v this first column is NOT in the representation of A !!!!
@@ -197,7 +201,45 @@ class Test_matrix_representation(unittest.TestCase):
         self.assertFalse(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
 
 
+    # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
+    def test_matrix_representation_with_active_pixels__extra_empty_border_around_representation(self):
 
+        testName = "test_matrix_representation_with_active_pixels_plus_extra_empty_border_around_representation"
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
+            self.txtInput, callerPlaceName=testName)
+
+        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+
+        matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh({3,4,5,6})
+        
+        
+        # because of the border settings, the representation has a margin around the glyph:
+        """
+           0: ....................
+           1: ....................
+           2: ....................
+           3: ..........**........
+           4: .........*..*.......
+           5: ........******......
+           6: .......*......*.....
+           7: ......*........*....
+           8: ....................
+           9: ....................
+          10: ....................
+          11: ....................
+          12: ....................
+        """
+
+        print(f"Test: {testName}")
+        img_0_pixels.pixel_group_matrix_representation_print(matrixRepresentationOfPixelGroup)
+
+        y = 4  # matrixRepresentation is y,x based!!!!
+        x = 10
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+
+        y = 7  # matrixRepresentation is y,x based!!!!
+        x = 6
+        self.assertFalse(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
 
 
 if __name__ == '__main__':

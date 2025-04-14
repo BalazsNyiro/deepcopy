@@ -48,6 +48,9 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[PixelGroup
     # dict[int, int]
 
     for pixelGroup_glyph in pixelGroups_glyphs_all:
+
+        pixelGroup_glyph.matrix_representation_refresh((1, 1, 1, 1))
+
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
             "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":  glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph)}
 

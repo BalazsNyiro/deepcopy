@@ -226,8 +226,9 @@ class PixelGroup_Glyph:
 
 
     #################################################################################
-    def matrix_representation_refresh(self):
-        self.matrix_representation = matrix_representation_of_more_pixelgroups([self])
+    def matrix_representation_refresh(self,
+        addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0) ):
+        self.matrix_representation = matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
         return self.matrix_representation
 
 
@@ -282,8 +283,13 @@ def matrix_representation_empty_area_create(
 #################################################################
 
 
-def matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph]) -> list[list[PixelGroup_Glyph]]:
-    """can create a merged matrix representation for MORE PixelGroup elems"""
+def matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph],
+                                              addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)
+                                              ) -> list[list[PixelGroup_Glyph]]:
+    """can create a merged matrix representation for MORE PixelGroup elems
+
+    :param addExtraEmptyBorderAroundArea: the thickness of the border
+    """
 
     xMinGlobal = -1
     xMaxGlobal = -1
@@ -301,6 +307,18 @@ def matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_G
         xMaxGlobal = max(pixelGroup.x_max, xMaxGlobal)
         yMinGlobal = min(pixelGroup.y_min, yMinGlobal)
         yMaxGlobal = max(pixelGroup.y_max, yMaxGlobal)
+
+
+    ####################################################################################################
+    # add extra emtpy border around the area
+    extraBorderTop, extraBorderRight, extraBorderBottom, extraBorderLeft = addExtraEmptyBorderAroundArea
+    xMinGlobal -= extraBorderLeft
+    xMaxGlobal += extraBorderRight
+    yMinGlobal -= extraBorderTop
+    yMaxGlobal += extraBorderBottom
+    ####################################################################################################
+
+
 
     # empty space where new pixels are placed
     areaPixels = matrix_representation_empty_area_create(
