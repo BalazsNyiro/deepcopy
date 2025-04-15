@@ -346,6 +346,53 @@ def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[P
 
 
 
+# TODO: dedicated unittest
+def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
+        pixelGroup_glyph_matrix_representation: list[list[PixelGroup_Glyph]],
+        raiseExceptionIfNoBorder: bool=True) -> bool:
+    """True/False decision: is the outer border of a glyph representation is totally empty?
+    This can be important if a pixel detection has to start from a guaranteed non-active place
+    and the connected pixels can go around the glyph totally (so the border has to be totally inactive)
 
+    if the answer is False, that can cause problems in character recognition.
 
+    you need to see an empty border around the character, so first/last lines and columns are totally empty:
+    0: ............
+    1: .....**.....
+    2: ....*..*....
+    3: ...******...
+    4: ..*......*..
+    5: .*........*.
+    6: ............
 
+    """
+    isEmptyBorderDetected = True
+
+    coordsToCheck = set()
+
+    xLen = len(pixelGroup_glyph_matrix_representation[0])
+    yLen = len(pixelGroup_glyph_matrix_representation)
+
+    # add all X coords in first/last lines
+    for x in range(0, xLen):
+        coordsToCheck.add((x, 0     )) # first line
+        coordsToCheck.add((x, yLen-1)) # last  line
+
+    # add left/right columns
+    for y in range(0, yLen):
+        coordsToCheck.add((0,      y)) # first column
+        coordsToCheck.add((xLen-1, y)) # last  column
+
+    for (x, y) in coordsToCheck:
+        print(f"border coords check: {(x, y)}")
+        pixelNow = pixelGroup_glyph_matrix_representation[y][x]
+        if pixelNow.representedPixelGroupName != pixelTypeBackgroundInactive:
+
+            isEmptyBorderDetected = False
+
+            if raiseExceptionIfNoBorder:
+                raise ValueError("missing empty border around the pixelGroup")
+
+            break
+
+    return isEmptyBorderDetected

@@ -94,22 +94,10 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
 
 
     ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
-    # TODO: move it out into a seprated function
-    # you need to see an empty border around the character, so first/last lines and columns are totally empty:
-    # 0: ............
-    # 1: .....**.....
-    # 2: ....*..*....
-    # 3: ...******...
-    # 4: ..*......*..
-    # 5: .*........*.
-    # 6: ............
-
+    # def matrix_representation_has_emptyborder_around_glyph()
     if checkEmptyBorderAroundMatrixRepresentation:
-        for lineY, line in enumerate(pixelGroup_glyph_matrix_representation):
-            for lineX, pixelNow in enumerate(line):
-                if lineX == 0 or lineY == 0:
-                    if pixelNow.representedPixelGroupName != img_0_pixels.pixelTypeBackgroundInactive:
-                        raise ValueError("missing empty border around the pixelGroup")
+        img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(
+            pixelGroup_glyph_matrix_representation, raiseExceptionIfNoBorder=True)
     ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
 
 
@@ -120,6 +108,9 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
 
     pixelCoordsOutside_glyph = set()
+
+
+    # TODO: DROP function
     pixelCoordsToAnalyse = [(0,0)]
     pixelCoordsAnalysed = set()
 
@@ -141,7 +132,6 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
 
             for neighbourXyCoord in neighbours:
                 pixelCoordsToAnalyse.append(neighbourXyCoord)
-
 
 
     ############################################################
