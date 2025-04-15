@@ -229,20 +229,20 @@ class PixelGroup_Glyph:
     #################################################################################
     def matrix_representation_refresh(self,
         addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0) ):
-        self.matrix_representation = matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
+        self.matrix_representation = pixelGroup_matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
         return self.matrix_representation
 
 
     def matrix_representation_display_in_terminal(self):
         print(f"=========== {self.groupId} ==========")
         self.matrix_representation_refresh()
-        pixel_group_matrix_representation_print(self.matrix_representation)
+        pixelGroup_matrix_representation_print(self.matrix_representation)
 
 
 
 
 
-def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]) -> str:
+def pixelGroup_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -269,7 +269,7 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupN
 
 
 
-def matrix_representation_empty_area_create(
+def pixelGroup_matrix_representation_empty_area_create(
         pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup_Glyph]]:
     """create an empty area
 
@@ -287,9 +287,9 @@ def matrix_representation_empty_area_create(
 #################################################################
 
 
-def matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph],
-                                              addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)
-                                              ) -> list[list[PixelGroup_Glyph]]:
+def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph],
+                                                         addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)
+                                                         ) -> list[list[PixelGroup_Glyph]]:
     """can create a merged matrix representation for MORE PixelGroup elems
 
     :param addExtraEmptyBorderAroundArea: the thickness of the border
@@ -325,7 +325,7 @@ def matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_G
 
 
     # empty space where new pixels are placed
-    areaPixels = matrix_representation_empty_area_create(
+    areaPixels = pixelGroup_matrix_representation_empty_area_create(
         pixelGroupForBackgroundNonActivePixels,
         x_min=xMinGlobal, x_max=xMaxGlobal,
         y_min=yMinGlobal, y_max=yMaxGlobal

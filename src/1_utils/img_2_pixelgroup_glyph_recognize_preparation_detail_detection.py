@@ -55,7 +55,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
             "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":
-                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph.matrix_representation)}
+                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph.matrix_representation, checkEmptyBorderAroundMatrixRepresentation=False)}
 
 
 
@@ -86,10 +86,15 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
     """
 
     print(f"matrix representation for stat creation:")
-    img_0_pixels.pixel_group_matrix_representation_print(pixelGroup_glyph_matrix_representation)
+    img_0_pixels.pixelGroup_matrix_representation_print(pixelGroup_glyph_matrix_representation)
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
 
+
+
+
+    ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
+    # TODO: move it out into a seprated function
     # you need to see an empty border around the character, so first/last lines and columns are totally empty:
     # 0: ............
     # 1: .....**.....
@@ -105,6 +110,11 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
                 if lineX == 0 or lineY == 0:
                     if pixelNow.representedPixelGroupName != img_0_pixels.pixelTypeBackgroundInactive:
                         raise ValueError("missing empty border around the pixelGroup")
+    ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
+
+
+
+
 
 
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
@@ -127,7 +137,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
 
             neighbours = img_1_pixel_select.coords_neighbours(
                 pixelCoordNow[0], pixelCoordNow[1], 0, 0,
-                x_max_in_representation, y_max_in_representation, allowedDirections=(1, 3, 5, 7))
+                x_max_in_representation, y_max_in_representation, allowedDirections={1, 3, 5, 7})
 
             for neighbourXyCoord in neighbours:
                 pixelCoordsToAnalyse.append(neighbourXyCoord)
