@@ -51,7 +51,7 @@ class Test_active_pixel_group_detection(unittest.TestCase):
 
         areaWithAllPixelGroups = img_0_pixels.pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroups)
 
-        img_0_pixels.pixelGroup_matrix_representation_print(areaWithAllPixelGroups)
+        img_0_pixels.pixelGroup_matrix_representation_str(areaWithAllPixelGroups, printStr=True)
 
 
 
@@ -173,7 +173,7 @@ class Test_matrix_representation(unittest.TestCase):
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
 
         print("Test, matrix representation with active pixels")
-        img_0_pixels.pixelGroup_matrix_representation_print(matrixRepresentationOfPixelGroup)
+        img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -230,7 +230,7 @@ class Test_matrix_representation(unittest.TestCase):
         """
 
         print(f"Test: {testName}")
-        img_0_pixels.pixelGroup_matrix_representation_print(matrixRepresentationOfPixelGroup)
+        img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10

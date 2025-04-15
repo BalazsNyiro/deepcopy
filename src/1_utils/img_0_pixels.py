@@ -236,13 +236,12 @@ class PixelGroup_Glyph:
     def matrix_representation_display_in_terminal(self):
         print(f"=========== matrix group id: {self.groupId} ==========")
         self.matrix_representation_refresh()
-        pixelGroup_matrix_representation_print(self.matrix_representation)
+        pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
 
 
 
 
-
-def pixelGroup_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]) -> str:
+def pixelGroup_matrix_representation_str(matrix_representation:list[list[PixelGroup_Glyph]], printStr=False) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -259,7 +258,8 @@ def pixelGroup_matrix_representation_print(matrix_representation:list[list[Pixel
         fullOut.append(f"{rowNum:>4}: " + "".join(rowDisplayed))
 
     fullOutStr = "\n".join(fullOut)
-    print(fullOutStr)
+    if printStr:
+        print(fullOutStr)
     return fullOutStr
 
 
@@ -354,6 +354,10 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
     This can be important if a pixel detection has to start from a guaranteed non-active place
     and the connected pixels can go around the glyph totally (so the border has to be totally inactive)
 
+
+    From the caller side the empty border can be added, so if the program is absolute correct,
+    this validation is not necessary.
+
     if the answer is False, that can cause problems in character recognition.
 
     you need to see an empty border around the character, so first/last lines and columns are totally empty:
@@ -403,9 +407,12 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
 
             isEmptyBorderDetected = False
 
+            matrixStr = pixelGroup_matrix_representation_str(pixelGroup_glyph_matrix_representation)
+            errMsg = f"missing empty border around the pixelGroup {(x, y)} \n {matrixStr}"
             if raiseExceptionIfNoBorder:
-                raise ValueError("missing empty border around the pixelGroup")
-
+                raise ValueError(errMsg)
+            else:
+                print(errMsg)
             break
 
     return isEmptyBorderDetected

@@ -86,7 +86,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
     """
 
     print(f"matrix representation for stat creation:")
-    img_0_pixels.pixelGroup_matrix_representation_print(pixelGroup_glyph_matrix_representation)
+    img_0_pixels.pixelGroup_matrix_representation_str(pixelGroup_glyph_matrix_representation, printStr=True)
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
 
