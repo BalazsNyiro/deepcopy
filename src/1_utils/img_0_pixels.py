@@ -234,7 +234,7 @@ class PixelGroup_Glyph:
 
 
     def matrix_representation_display_in_terminal(self):
-        print(f"=========== {self.groupId} ==========")
+        print(f"=========== matrix group id: {self.groupId} ==========")
         self.matrix_representation_refresh()
         pixelGroup_matrix_representation_print(self.matrix_representation)
 
@@ -366,6 +366,19 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
     6: ............
 
     """
+
+    # with a normal image this situation cannot happen.
+    # (missing pixel data from lines, or missing lines)
+    if len(pixelGroup_glyph_matrix_representation) == 0 or \
+        len(pixelGroup_glyph_matrix_representation[0]) == 0:
+
+        if raiseExceptionIfNoBorder:
+            raise ValueError("EmtpyBorder: incorrect input, no real data in matrix representation")
+
+        return False
+
+
+
     isEmptyBorderDetected = True
 
     coordsToCheck = set()
@@ -384,7 +397,7 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
         coordsToCheck.add((xLen-1, y)) # last  column
 
     for (x, y) in coordsToCheck:
-        print(f"border coords check: {(x, y)}")
+        # print(f"border coords check: {(x, y)}")
         pixelNow = pixelGroup_glyph_matrix_representation[y][x]
         if pixelNow.representedPixelGroupName != pixelTypeBackgroundInactive:
 
