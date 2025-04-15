@@ -78,7 +78,6 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGrou
 
     # return list( list(1, 2))
 
-    # TODO:
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
     return 42  # fake number,
