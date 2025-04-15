@@ -22,6 +22,8 @@ Every pixelgroup has a unique ID, the statistics are stored based on that id.
 
 import typing
 import img_0_pixels
+import img_1_pixel_select
+
 
 def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixels.PixelGroup_Glyph]) -> dict[int, dict[str, int]]:
     """analyse every glyphs one by one to support the recognise step later.
@@ -65,6 +67,10 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
 def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]] ) -> int: #  list[ list[(int, int) ] ]:
     """count the closed inactive segments inside of a glyph.
 
+    The matrix representation HAS to have an empty border around the glyph: matrix_representation_refresh(1,1,1,1) in the caller function.
+
+
+
     This can be tricky; a simple example:
      - 'A' glyph has one closed section which is totally bordered with active pixels.
      - '8' glyph has two (non-overlapped) sections, totally separated from the outside inactive area
@@ -78,7 +84,52 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGrou
     """
 
     # return list( list(1, 2))
-    print(f"matrix representation 2: {pixelGroup_glyph_matrix_representation}")
+    print(f"matrix representation 2:")
+    img_0_pixels.pixel_group_matrix_representation_print(pixelGroup_glyph_matrix_representation)
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
+
+    # at this point we know that the matrix has an empty border, so the outside pixels can be collected
+
+    pixelCoordsOutside_glyph = set()
+    pixelCoordsToAnalyse = [(0,0)]
+    pixelCoordsAnalysed = set()
+
+    x_max_in_representation = len(pixelGroup_glyph_matrix_representation[0])-1
+    y_max_in_representation = len(pixelGroup_glyph_matrix_representation)-1
+
+    while pixelCoordsToAnalyse:
+        (pixelX, pixelY) = pixelCoordNow = pixelCoordsToAnalyse.pop(0)
+        if pixelCoordNow in pixelCoordsAnalysed: continue
+
+        pixelCoordsAnalysed.add(pixelCoordNow)
+
+        if pixelGroup_glyph_matrix_representation[pixelY][pixelX].representedPixelGroupName != img_0_pixels.pixelTypeForegroundActive:
+            pixelCoordsOutside_glyph.add(pixelCoordNow)
+
+            neighbours = img_1_pixel_select.coords_neighbours(
+                pixelCoordNow[0], pixelCoordNow[1], 0, 0,
+                x_max_in_representation, y_max_in_representation, allowedDirections=(1, 3, 5, 7))
+
+            for neighbourXyCoord in neighbours:
+                pixelCoordsToAnalyse.append(neighbourXyCoord)
+
+
+
+    ############################################################
+    pixelGroup_outside_the_char = img_0_pixels.PixelGroup_Glyph()
+    for (xOutside, yOutside) in pixelCoordsOutside_glyph:
+        pixelGroup_outside_the_char.add_pixel_active(xOutside, yOutside, (1,1,1))
+
+    print(f"pixels outside the character: {len(pixelCoordsOutside_glyph)} elems")
+    pixelGroup_outside_the_char.matrix_representation_refresh()
+    pixelGroup_outside_the_char.matrix_representation_display_in_terminal()
+
+    print(pixelCoordsOutside_glyph)
+
+
+
+
+
+    # raise ValueError(42)
     return 42  # fake number,
