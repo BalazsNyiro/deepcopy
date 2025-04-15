@@ -133,7 +133,7 @@ class Test_matrix_representation(unittest.TestCase):
 
     def test_matrix_representation_empty_area(self):
         pixelGroupForBackgroundNonActivePixels = \
-            img_0_pixels.PixelGroup_Glyph(backgroundInactiveGroupRepresenter=True)
+            img_0_pixels.PixelGroup_Glyph(representedPixelGroupName=img_0_pixels.pixelTypeBackgroundInactive)
 
         x_min = 2
         x_max = 6
@@ -166,7 +166,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         testName = "test_matrix_representation_with_active_pixels"
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
-            self.txtInpu, callerPlaceName=testName)
+            self.txtInput, callerPlaceName=testName)
 
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
 
@@ -177,7 +177,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeBackgroundInactive)
 
         y = 4 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -195,10 +195,8 @@ class Test_matrix_representation(unittest.TestCase):
         .*........*...       4: *........*
  
         
-        this has to be an active pixel:
-          
         """)
-        self.assertFalse(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeForegroundActive)
 
 
     # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
@@ -210,6 +208,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
 
+        # the extra border settings is the change, compared with the prev test case
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh({3,4,5,6})
         
         
@@ -235,11 +234,11 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeBackgroundInactive)
 
         y = 7  # matrixRepresentation is y,x based!!!!
         x = 6
-        self.assertFalse(matrixRepresentationOfPixelGroup[y][x].isBackgroundInactivePixelGroup)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeForegroundActive)
 
 
 if __name__ == '__main__':

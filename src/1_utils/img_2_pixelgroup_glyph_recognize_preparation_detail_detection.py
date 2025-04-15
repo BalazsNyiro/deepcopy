@@ -52,7 +52,8 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[PixelGroup
         pixelGroup_glyph.matrix_representation_refresh((1, 1, 1, 1))
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
-            "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":  glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph)}
+            "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":
+                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph)}
 
 
 
@@ -70,8 +71,14 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGrou
      Special cases :-) 
      - 'R' has one segment
      - '®' copyright symbol has 2, but they are embedded/overlapped, because the R is inside in a circle
+           currently the overlapping is not analysed, the isolated segments are detected as pixel-sets only
+           theoretically the copyright symbol has 2 pixelgroups, because the R and O are separated.
+           TODO: decide: does the program need to be prepared for overlapping symbols or not?
     """
 
     # return list( list(1, 2))
+
+    # TODO:
+    print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
     return 42  # fake number,

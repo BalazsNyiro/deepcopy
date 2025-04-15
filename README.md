@@ -1,6 +1,9 @@
 # deepcopy
 Python based OCR program with deep text structure analysing and style detecting
 
+# Goal - read from screenshots
+Read simple human texts (basic English/French/latin alphabet with numbers, and dot, questionmark, exclamation mark)
+
 Contact/Author: Balazs Nyiro, balazs.nyiro.ca@gmail.com
 
 # How can you help

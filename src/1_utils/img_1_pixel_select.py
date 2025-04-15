@@ -52,6 +52,10 @@ def coords_neighbours(x: int, y: int,
     return sorted(neighbours)
 
 
+########################################################################################################################
+
+
+
 # white: 255,255,255 black: 0,0,0
 def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) -> bool:
     """if the value is less than the limit, so the pixel is darker, then select"""

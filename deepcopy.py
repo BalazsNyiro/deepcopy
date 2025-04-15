@@ -40,7 +40,10 @@ def deepcopy_main(fileList: list[str]):
 
                 print(f"TODO: detect the text from the glyph")
 
-            statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[PixelGroup_Glyph]) -> dict:
+            stats = statistics_collect_about_pixelgroups(pixelGroups_glyphs_all)
+            print("pixelgroup statistics")
+            print(stats)
+
 
 if __name__ == '__main__':
 

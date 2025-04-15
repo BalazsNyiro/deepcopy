@@ -14,7 +14,8 @@
 # in the root directory of this source tree.
 
 
-
+pixelTypeBackgroundInactive = "backgroundInactivePixel"
+pixelTypeForegroundActive = "foregroundActivePixel_partOfGlyph"
 
 import os, time, sys, typing
 
@@ -162,7 +163,7 @@ class PixelGroup_Glyph:
     """
     groupCounter = 0
 
-    def __init__(self, backgroundInactiveGroupRepresenter=False) -> None:
+    def __init__(self, representedPixelGroupName: str=pixelTypeForegroundActive) -> None:
         self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup_Glyph]] = dict()
         self.x_min = -1
         self.x_max = -1
@@ -199,7 +200,7 @@ class PixelGroup_Glyph:
         # an image can have a lot of active pixels, but the significant part of the image is inactive (thousands)
         # in the matrix_representation every pixel has an object, but because the background elems are not important,
         # only one object represents them.
-        self.isBackgroundInactivePixelGroup = backgroundInactiveGroupRepresenter
+        self.representedPixelGroupName = representedPixelGroupName
         # if this is True, the x_min,y_min,x_max,y_max values are invalid, because the biggest part of the image
         # is inactive. in this case this is only a filler pixel.
         ###########################################################
@@ -260,7 +261,7 @@ def pixel_group_matrix_representation_print(matrix_representation:list[list[Pixe
 
 
 #################################################################
-pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(backgroundInactiveGroupRepresenter=True)
+pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupName=pixelTypeBackgroundInactive)
 # TODO: maybe a new background collector has to be created for every page? not only one general?
 
 
