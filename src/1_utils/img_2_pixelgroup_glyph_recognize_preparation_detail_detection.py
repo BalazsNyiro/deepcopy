@@ -52,7 +52,6 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
     for pixelGroup_glyph in pixelGroups_glyphs_all:
 
         pixelGroup_glyph.matrix_representation_refresh((1, 1, 1, 1))
-        print(f"matrix representation 1: {pixelGroup_glyph.matrix_representation}")
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
             "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":
@@ -64,7 +63,10 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
     return stats_of_pixelGroups_glyphs
 
 
-def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]] ) -> int: #  list[ list[(int, int) ] ]:
+def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
+        pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]],
+        checkEmptyBorderAroundMatrixRepresentation: bool = True
+) -> int: #  list[ list[(int, int) ] ]:
     """count the closed inactive segments inside of a glyph.
 
     The matrix representation HAS to have an empty border around the glyph: matrix_representation_refresh(1,1,1,1) in the caller function.
@@ -83,10 +85,26 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGrou
            TODO: decide: does the program need to be prepared for overlapping symbols or not?
     """
 
-    # return list( list(1, 2))
-    print(f"matrix representation 2:")
+    print(f"matrix representation for stat creation:")
     img_0_pixels.pixel_group_matrix_representation_print(pixelGroup_glyph_matrix_representation)
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
+
+
+    # you need to see an empty border around the character, so first/last lines and columns are totally empty:
+    # 0: ............
+    # 1: .....**.....
+    # 2: ....*..*....
+    # 3: ...******...
+    # 4: ..*......*..
+    # 5: .*........*.
+    # 6: ............
+
+    if checkEmptyBorderAroundMatrixRepresentation:
+        for lineY, line in enumerate(pixelGroup_glyph_matrix_representation):
+            for lineX, pixelNow in enumerate(line):
+                if lineX == 0 or lineY == 0:
+                    if pixelNow.representedPixelGroupName != img_0_pixels.pixelTypeBackgroundInactive:
+                        raise ValueError("missing empty border around the pixelGroup")
 
 
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
