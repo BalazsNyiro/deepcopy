@@ -21,9 +21,9 @@ Every pixelgroup has a unique ID, the statistics are stored based on that id.
 """
 
 import typing
-from img_0_pixels import PixelGroup_Glyph
+import img_0_pixels
 
-def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[PixelGroup_Glyph]) -> dict[int, dict[str, int]]:
+def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixels.PixelGroup_Glyph]) -> dict[int, dict[str, int]]:
     """analyse every glyphs one by one to support the recognise step later.
 
     This section is about data collection about the pixelgroups.
@@ -50,10 +50,11 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[PixelGroup
     for pixelGroup_glyph in pixelGroups_glyphs_all:
 
         pixelGroup_glyph.matrix_representation_refresh((1, 1, 1, 1))
+        print(f"matrix representation 1: {pixelGroup_glyph.matrix_representation}")
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
             "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":
-                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph)}
+                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph.matrix_representation)}
 
 
 
@@ -61,7 +62,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[PixelGroup
     return stats_of_pixelGroups_glyphs
 
 
-def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph: PixelGroup_Glyph) -> int: #  list[ list[(int, int) ] ]:
+def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]] ) -> int: #  list[ list[(int, int) ] ]:
     """count the closed inactive segments inside of a glyph.
 
     This can be tricky; a simple example:
@@ -77,7 +78,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGrou
     """
 
     # return list( list(1, 2))
-
+    print(f"matrix representation 2: {pixelGroup_glyph_matrix_representation}")
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
     return 42  # fake number,

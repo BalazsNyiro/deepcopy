@@ -239,6 +239,9 @@ class PixelGroup_Glyph:
         pixel_group_matrix_representation_print(self.matrix_representation)
 
 
+
+
+
 def pixel_group_matrix_representation_print(matrix_representation:list[list[PixelGroup_Glyph]]) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
