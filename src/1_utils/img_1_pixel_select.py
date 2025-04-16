@@ -67,46 +67,50 @@ def coords_neighbours(x: int, y: int,
 
 ########################################################################################################################
 # TODO: dedicated unittest for this:
-def coords_drop_collect_from_starting_point(
+def coords_drop_collect_pixelgroups_from_starting_point(
         pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]],
-        xStart: int=0,
-        yStart: int=0,
+        xStartInMatrix: int=0,
+        yStartInMatrix: int=0,
 
-        allowedDirections: set[int] = {1, 3, 5, 7}
+        allowedDirections: set[int] = {1, 3, 5, 7},
         # it means that the collection cannot move diagonal, only horizontal/vertical
 
-):
+) -> img_0_pixels.PixelGroup_Glyph:
     """collect all coords, in a given direction.
 
     :param allowedDirections: direction standards are documented in img_1_pixels_select.py
 
     TODO?: receive a parameter: conditionFunToCollect(matrix_representation, currentX, currentY)
     """
-    pixelCoords_collected = set()
+    pixelGroup_collected = img_0_pixels.PixelGroup_Glyph()
 
-    pixelCoords_to_analyse = [(xStart,yStart)]
-    pixelCoords_analysed = set()
+    pixelCoords_to_analyse = [(xStartInMatrix, yStartInMatrix)]
+    pixelCoordsInMatrix_analysed = set()
 
     x_max_in_representation = len(pixelGroup_glyph_matrix_representation[0])-1
     y_max_in_representation = len(pixelGroup_glyph_matrix_representation)-1
 
     while pixelCoords_to_analyse:
-        (pixelX, pixelY) = pixelCoordNow = pixelCoords_to_analyse.pop(0)
-        if pixelCoordNow in pixelCoords_analysed: continue
+        (pixelXinMatrix, pixelYinMatrix) = pixelCoordNowInMatrix = pixelCoords_to_analyse.pop(0)
+        if pixelCoordNowInMatrix in pixelCoordsInMatrix_analysed: continue
 
-        pixelCoords_analysed.add(pixelCoordNow)
+        pixelCoordsInMatrix_analysed.add(pixelCoordNowInMatrix)
 
-        if pixelGroup_glyph_matrix_representation[pixelY][pixelX].representedPixelGroupName != img_0_pixels.pixelTypeForegroundActive:
-            pixelCoords_collected.add(pixelCoordNow)
+        if pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix].representedPixelGroupName != img_0_pixels.pixelsNameForegroundActive:
+            objBehindPixelInOrigMatrix = pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix]
+
+            # (r,g b) = objBehindPixelInOrigMatrix.pixels[(pixelXinMatrix,pixelYinMatrix)]["rgb"]
+            # TODO: fix colors here:
+            pixelGroup_collected.add_pixel(pixelXinMatrix, pixelYinMatrix, (0, 0, 0) )
 
             neighbours = coords_neighbours(
-                pixelCoordNow[0], pixelCoordNow[1], 0, 0,
+                pixelCoordNowInMatrix[0], pixelCoordNowInMatrix[1], 0, 0,
                 x_max_in_representation, y_max_in_representation, allowedDirections=allowedDirections)
 
             for neighbourXyCoord in neighbours:
                 pixelCoords_to_analyse.append(neighbourXyCoord)
 
-    return pixelCoords_collected
+    return pixelGroup_collected
 ########################################################################################################################
 
 
@@ -189,7 +193,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
 
                 if isActive_checkAllSelectors(onePixelRgb, selectorFunctions):
                     # print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
-                    pixelGroupNow.add_pixel_active(coordNowX, coordNowY, onePixelRgb)
+                    pixelGroupNow.add_pixel(coordNowX, coordNowY, onePixelRgb)
 
                     # maybe the neighbours are detected from multiple places, insert them only once
                     for (xPossibleNeighbour, yPossibleNeighbour) in coords_neighbours(coordNowX, coordNowY, 0, 0, len(row) - 1, len(pixelsAll) - 1):

@@ -14,8 +14,8 @@
 # in the root directory of this source tree.
 
 
-pixelTypeBackgroundInactive = "backgroundInactivePixel"
-pixelTypeForegroundActive = "foregroundActivePixel_partOfGlyph"
+pixelsNameBackgroundInactive = "pixelsBackgroundInactive"
+pixelsNameForegroundActive = "pixelsForegroundActive_partOfGlyph"
 
 import os, time, sys, typing
 
@@ -163,7 +163,7 @@ class PixelGroup_Glyph:
     """
     groupCounter = 0
 
-    def __init__(self, representedPixelGroupName: str=pixelTypeForegroundActive) -> None:
+    def __init__(self, representedPixelGroupName: str=pixelsNameForegroundActive) -> None:
         self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup_Glyph]] = dict()
         self.x_min = -1
         self.x_max = -1
@@ -200,13 +200,14 @@ class PixelGroup_Glyph:
         # an image can have a lot of active pixels, but the significant part of the image is inactive (thousands)
         # in the matrix_representation every pixel has an object, but because the background elems are not important,
         # only one object represents them.
+        # the pixelGroup_glyph objects are pixel collectors.
         self.representedPixelGroupName = representedPixelGroupName
         # if this is True, the x_min,y_min,x_max,y_max values are invalid, because the biggest part of the image
         # is inactive. in this case this is only a filler pixel.
         ###########################################################
 
 
-    def add_pixel_active(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
+    def add_pixel(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
         if not self.pixels:
             self.x_min = x
             self.x_max = x
@@ -264,7 +265,7 @@ def pixelGroup_matrix_representation_str(matrix_representation:list[list[PixelGr
 
 
 #################################################################
-pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupName=pixelTypeBackgroundInactive)
+pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupName=pixelsNameBackgroundInactive)
 # TODO: maybe a new background collector has to be created for every page? not only one general?
 
 
@@ -402,7 +403,7 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
     for (x, y) in coordsToCheck:
         # print(f"border coords check: {(x, y)}")
         pixelNow = pixelGroup_glyph_matrix_representation[y][x]
-        if pixelNow.representedPixelGroupName != pixelTypeBackgroundInactive:
+        if pixelNow.representedPixelGroupName != pixelsNameBackgroundInactive:
 
             isEmptyBorderDetected = False
 

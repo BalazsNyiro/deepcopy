@@ -55,7 +55,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
             "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":
-                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph.matrix_representation, checkEmptyBorderAroundMatrixRepresentation=False)}
+                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph, checkEmptyBorderAroundMatrixRepresentation=False)}
 
 
 
@@ -64,7 +64,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
 
 
 def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
-        pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]],
+        pixelGroup_glyph: img_0_pixels.PixelGroup_Glyph,
         checkEmptyBorderAroundMatrixRepresentation: bool = True
 ) -> int: #  list[ list[(int, int) ] ]:
     """count the closed inactive segments inside of a glyph.
@@ -86,7 +86,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
     """
 
     print(f"matrix representation for stat creation:")
-    img_0_pixels.pixelGroup_matrix_representation_str(pixelGroup_glyph_matrix_representation, printStr=True)
+    img_0_pixels.pixelGroup_matrix_representation_str(pixelGroup_glyph.matrix_representation, printStr=True)
     print(f" create a general 'drop' function with gravity_directions_at_start and gravity_directions_after_first_collision params ")
 
 
@@ -97,29 +97,31 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
     # def matrix_representation_has_emptyborder_around_glyph()
     if checkEmptyBorderAroundMatrixRepresentation:
         img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(
-            pixelGroup_glyph_matrix_representation, raiseExceptionIfNoBorder=True)
+            pixelGroup_glyph.matrix_representation, raiseExceptionIfNoBorder=True)
     ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
 
 
 
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
-    pixelCoordsOutside_glyph: set[tuple[int, int]] = img_1_pixel_select.coords_drop_collect_from_starting_point(
-        pixelGroup_glyph_matrix_representation, allowedDirections={1, 3, 5, 7})
+    pixelCoordsOutside_Glyph_collector = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+        pixelGroup_glyph.matrix_representation, allowedDirections={1, 3, 5, 7})
 
 
-    ############################################################
-    pixelGroup_outside_the_char = img_0_pixels.PixelGroup_Glyph()
-    for (xOutside, yOutside) in pixelCoordsOutside_glyph:
-        pixelGroup_outside_the_char.add_pixel_active(xOutside, yOutside, (1,1,1))
+    ############ VISUALISE THE COLLECTED PIXELGROUP: ################################################
+    # pixelGroup_outside_the_char = img_0_pixels.PixelGroup_Glyph()
+    # for (xOutside, yOutside) in pixelCoordsOutside_glyph:
+    #     pixelGroup_outside_the_char.add_pixel_active(xOutside, yOutside, (1,1,1))
 
-    print(f"pixels outside the character: {len(pixelCoordsOutside_glyph)} elems")
-    pixelGroup_outside_the_char.matrix_representation_refresh()
-    pixelGroup_outside_the_char.matrix_representation_display_in_terminal()
+    # print(f"pixels outside the character: {len(pixelCoordsOutside_glyph)} elems")
+    # pixelGroup_outside_the_char.matrix_representation_refresh()
+    # pixelGroup_outside_the_char.matrix_representation_display_in_terminal()
 
-    print(pixelCoordsOutside_glyph)
+    # print(pixelCoordsOutside_glyph)
 
-
-
+    ######################################################
+    # coordinate_flags_empty_storage = img_1_pixel_select.coords_operation__generate_coords_dict_flags_storage(
+    #     pixelGroup_glyph.x_min, pixelGroup_glyph.y_min, pixelGroup_glyph.x_max, pixelGroup_glyph.y_max
+    # )
 
 
     # raise ValueError(42)

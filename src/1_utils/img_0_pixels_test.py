@@ -133,7 +133,7 @@ class Test_matrix_representation(unittest.TestCase):
 
     def test_matrix_representation_empty_area(self):
         pixelGroupForBackgroundNonActivePixels = \
-            img_0_pixels.PixelGroup_Glyph(representedPixelGroupName=img_0_pixels.pixelTypeBackgroundInactive)
+            img_0_pixels.PixelGroup_Glyph(representedPixelGroupName=img_0_pixels.pixelsNameBackgroundInactive)
 
         x_min = 2
         x_max = 6
@@ -177,7 +177,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeBackgroundInactive)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameBackgroundInactive)
 
         y = 4 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -196,7 +196,7 @@ class Test_matrix_representation(unittest.TestCase):
  
         
         """)
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeForegroundActive)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameForegroundActive)
 
 
     # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
@@ -234,11 +234,11 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeBackgroundInactive)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameBackgroundInactive)
 
         y = 7  # matrixRepresentation is y,x based!!!!
         x = 6
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName==img_0_pixels.pixelTypeForegroundActive)
+        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameForegroundActive)
 
 
 if __name__ == '__main__':

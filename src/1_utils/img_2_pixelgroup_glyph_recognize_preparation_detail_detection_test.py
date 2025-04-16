@@ -28,14 +28,15 @@ class Test_glyph_statistics(unittest.TestCase):
           ....*..*......
           ...******...**  <- extra active chars, don't belong to the first group
           ..*......*....
-          .*........*...
+          .**********...
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
 
         pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1,1,1,1))
-        img_2_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroups_Glyphs[0].matrix_representation)
+        enclosedInactiveSegmentsNum = img_2_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroups_Glyphs[0].matrix_representation)
+        self.assertEqual(enclosedInactiveSegmentsNum, 2)
 
 
 
