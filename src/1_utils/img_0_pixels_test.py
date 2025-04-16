@@ -176,7 +176,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
-        self.assertTrue(img_0_pixels.pixelsNameBackgroundInactive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
+        self.assertTrue(img_0_pixels.pixelsNameBackgroundInactive in matrixRepresentationOfPixelGroup[y][x][2].representedPixelGroupNames)
 
         y = 4 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -195,7 +195,7 @@ class Test_matrix_representation(unittest.TestCase):
  
         
         """)
-        self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
+        self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x][2].representedPixelGroupNames)
 
 
     # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
@@ -233,11 +233,11 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10
-        self.assertTrue(img_0_pixels.pixelsNameBackgroundInactive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
+        self.assertTrue(img_0_pixels.pixelsNameBackgroundInactive in matrixRepresentationOfPixelGroup[y][x][2].representedPixelGroupNames)
 
         y = 7  # matrixRepresentation is y,x based!!!!
         x = 6
-        self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
+        self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x][2].representedPixelGroupNames)
 
 
 if __name__ == '__main__':

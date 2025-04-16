@@ -159,10 +159,6 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
 
 
 
-class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
-    rgb: tuple[int, int, int]
-    pixelGroupObj: PixelGroup_Glyph
-
 
 class PixelGroup_Glyph:
     """represents active pixels, next to each other, together forming a glyph.
@@ -270,6 +266,11 @@ class PixelGroup_Glyph:
             self.matrix_representation_refresh()
             # print(self.matrix_representation)
         pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
+
+
+class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
+    rgb: tuple[int, int, int]
+    pixelGroupObj: PixelGroup_Glyph
 
 
 
