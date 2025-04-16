@@ -102,36 +102,9 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
 
 
 
-
-
-
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
-
-    pixelCoordsOutside_glyph = set()
-
-
-    # TODO: DROP function
-    pixelCoordsToAnalyse = [(0,0)]
-    pixelCoordsAnalysed = set()
-
-    x_max_in_representation = len(pixelGroup_glyph_matrix_representation[0])-1
-    y_max_in_representation = len(pixelGroup_glyph_matrix_representation)-1
-
-    while pixelCoordsToAnalyse:
-        (pixelX, pixelY) = pixelCoordNow = pixelCoordsToAnalyse.pop(0)
-        if pixelCoordNow in pixelCoordsAnalysed: continue
-
-        pixelCoordsAnalysed.add(pixelCoordNow)
-
-        if pixelGroup_glyph_matrix_representation[pixelY][pixelX].representedPixelGroupName != img_0_pixels.pixelTypeForegroundActive:
-            pixelCoordsOutside_glyph.add(pixelCoordNow)
-
-            neighbours = img_1_pixel_select.coords_neighbours(
-                pixelCoordNow[0], pixelCoordNow[1], 0, 0,
-                x_max_in_representation, y_max_in_representation, allowedDirections={1, 3, 5, 7})
-
-            for neighbourXyCoord in neighbours:
-                pixelCoordsToAnalyse.append(neighbourXyCoord)
+    pixelCoordsOutside_glyph: set[tuple[int, int]] = img_1_pixel_select.coords_drop_collect_from_starting_point(
+        pixelGroup_glyph_matrix_representation, allowedDirections={1, 3, 5, 7})
 
 
     ############################################################

@@ -15,14 +15,27 @@
 
 
 import typing
-from img_0_pixels import PixelGroup_Glyph
+import img_0_pixels
+
+direction_standards_in_the_whole_project = \
+"""
+    relative directionsStandards, . represents the current point,
+    so 1 represents a dot above the current point, 3 is the right.:
+    
+      812
+      7.3
+      654
+
+"""
+
+
 
 def coords_neighbours(x: int, y: int,
                       xMinValidPossibleCoordValue: int, yMinValidPossibleCoordValue: int,
                       xMaxValidPossibleCoordValue: int, yMaxValidPossibleCoordValue: int,
                       allowedDirections: set[int]={1,2,3,4,5,6,7,8}
                       ) -> list[tuple[int, int], ]:
-    """return with possible neighbour coordinates (select pixels next to <x,y> )"""
+    """return with possible direct neighbour coordinates (select pixels next to <x,y> ) """
 
     neighbours = list()
 
@@ -52,6 +65,47 @@ def coords_neighbours(x: int, y: int,
     return sorted(neighbours)
 
 
+########################################################################################################################
+def coords_drop_collect_from_starting_point(
+        pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]],
+        xStart: int=0,
+        yStart: int=0,
+
+        allowedDirections: set[int] = {1, 3, 5, 7}
+        # it means that the collection cannot move diagonal, only horizontal/vertical
+
+):
+    """collect all coords, in a given direction.
+
+    :param allowedDirections: direction standards are documented in img_1_pixels_select.py
+
+    TODO?: receive a parameter: conditionFunToCollect(matrix_representation, currentX, currentY)
+    """
+    pixelCoords_collected = set()
+
+    pixelCoordsToAnalyse = [(xStart,yStart)]
+    pixelCoordsAnalysed = set()
+
+    x_max_in_representation = len(pixelGroup_glyph_matrix_representation[0])-1
+    y_max_in_representation = len(pixelGroup_glyph_matrix_representation)-1
+
+    while pixelCoordsToAnalyse:
+        (pixelX, pixelY) = pixelCoordNow = pixelCoordsToAnalyse.pop(0)
+        if pixelCoordNow in pixelCoordsAnalysed: continue
+
+        pixelCoordsAnalysed.add(pixelCoordNow)
+
+        if pixelGroup_glyph_matrix_representation[pixelY][pixelX].representedPixelGroupName != img_0_pixels.pixelTypeForegroundActive:
+            pixelCoords_collected.add(pixelCoordNow)
+
+            neighbours = coords_neighbours(
+                pixelCoordNow[0], pixelCoordNow[1], 0, 0,
+                x_max_in_representation, y_max_in_representation, allowedDirections=allowedDirections)
+
+            for neighbourXyCoord in neighbours:
+                pixelCoordsToAnalyse.append(neighbourXyCoord)
+
+    return pixelCoords_collected
 ########################################################################################################################
 
 
@@ -94,7 +148,7 @@ def isActive_checkAllSelectors(onePixelRgb: tuple[int, int, int],
 def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                               selectorFunctions=[(pixelGroupSelector_default,
                                                   {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) \
-        -> list[PixelGroup_Glyph]:
+        -> list[img_0_pixels.PixelGroup_Glyph]:
 
     """
 
@@ -111,9 +165,9 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
 
     coordsAnalysedOnce = set()
 
-    pixelGroups: list[PixelGroup_Glyph] = list()
+    pixelGroups: list[img_0_pixels.PixelGroup_Glyph] = list()
 
-    pixelGroupNow = PixelGroup_Glyph()
+    pixelGroupNow = img_0_pixels.PixelGroup_Glyph()
 
     for y, row in enumerate(pixelsAll):
         for x in range(0, len(row)):
@@ -146,7 +200,7 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
                 # the top-left coord of the group is the registration point
                 pixelGroups.append(pixelGroupNow)
 
-                pixelGroupNow = PixelGroup_Glyph()  # create a new one
+                pixelGroupNow = img_0_pixels.PixelGroup_Glyph()  # create a new one
 
     return pixelGroups
 
