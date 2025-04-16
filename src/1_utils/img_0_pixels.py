@@ -346,7 +346,6 @@ def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[P
 
 
 
-# TODO: dedicated unittest
 def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
         pixelGroup_glyph_matrix_representation: list[list[PixelGroup_Glyph]],
         raiseExceptionIfNoBorder: bool=True) -> bool:
