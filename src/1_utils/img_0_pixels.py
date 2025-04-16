@@ -17,6 +17,8 @@
 pixelsNameBackgroundInactive = "pixelsBackgroundInactive"
 pixelsNameForegroundActive = "pixelsForegroundActive_partOfGlyph"
 
+inactivePixelRgbDefaultVal = (255, 255, 255)
+
 import os, time, sys, typing
 
 print("""
@@ -29,7 +31,7 @@ sys.path.append("../0_base")
 
 
 def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 0),
-                            inactivePixelRgb: tuple[int, int, int]=(255, 255, 255),
+                            inactivePixelRgb: tuple[int, int, int]=inactivePixelRgbDefaultVal,
                             activePixelRepresenter: str="*", inactivePixelRepresenter: str=".",
                             callerPlaceName=""
                             ) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
@@ -201,13 +203,34 @@ class PixelGroup_Glyph:
         # in the matrix_representation every pixel has an object, but because the background elems are not important,
         # only one object represents them.
         # the pixelGroup_glyph objects are pixel collectors.
-        self.representedPixelGroupName = representedPixelGroupName
+
+        # one pixel group can have more than one flags/names
+        self.representedPixelGroupNames: set[str] = set()
+        self.representedPixelGroupNames.add(representedPixelGroupName)
         # if this is True, the x_min,y_min,x_max,y_max values are invalid, because the biggest part of the image
         # is inactive. in this case this is only a filler pixel.
         ###########################################################
 
 
-    def add_pixel(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
+    def pixels_remove(self, xyCoordAll: list[tuple[int, int]]):
+        for xyCoord in xyCoordAll:
+            if xyCoord in self.pixels:
+                print(f"remove pixel:", xyCoord )
+                del self.pixels[xyCoord]
+            else:
+                print(f"warning: coord was not in pixels: {xyCoord}")
+
+
+    def pixels_add_with_nonimportant_rgb(
+            self, xStart: int, yStart: int,
+            xEnd: int, yEnd: int, rgb=inactivePixelRgbDefaultVal,
+    ):
+        """the object is a pixel collector only, sometime the rgb val is not important"""
+        for x in range(xStart, xEnd+1):
+            for y in range(yStart, yEnd+1):
+                self.pixel_add(x, y, rgbTuple=rgb)
+
+    def pixel_add(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
         if not self.pixels:
             self.x_min = x
             self.x_max = x
@@ -234,29 +257,43 @@ class PixelGroup_Glyph:
         return self.matrix_representation
 
 
-    def matrix_representation_display_in_terminal(self):
-        print(f"=========== matrix group id: {self.groupId} ==========")
-        self.matrix_representation_refresh()
+    def matrix_representation_display_in_terminal(self, refreshTheMatrix: bool=True):
+        print(f"=========== matrix group id: {self.groupId} names: {self.representedPixelGroupNames}==========")
+        if refreshTheMatrix:
+            self.matrix_representation_refresh()
+            # print(self.matrix_representation)
         pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
 
 
 
 
-def pixelGroup_matrix_representation_str(matrix_representation:list[list[tuple[int, int, PixelGroup_Glyph]]], printStr=False) -> str:
+def pixelGroup_matrix_representation_str(matrix_representation:list[list[tuple[int, int, PixelGroup_Glyph]]], printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
         # matrixRepresentation is y,x based!!!!
     """
     fullOut = []
-    for rowNum, row in enumerate(matrix_representation):
+    for row in matrix_representation:
         rowDisplayed = []
-        for (_xAbs, _yAbs, pixelRepresentation) in row:
-            if pixelRepresentation.has_pixels():
+
+        yAbsDisplay = "-"
+
+        for (_xAbs, yAbs, pixelRepresentation) in row:
+            display = False
+            for wantedFlag in wantedFlagsToDisplay:
+                if wantedFlag in pixelRepresentation.representedPixelGroupNames:
+                    display = True
+                    break
+
+            if display:
                 rowDisplayed.append("*")
             else:
                 rowDisplayed.append(".")
-        fullOut.append(f"{rowNum:>4}: " + "".join(rowDisplayed))
+
+            yAbsDisplay = yAbs
+
+        fullOut.append(f"{yAbsDisplay:>4}: " + "".join(rowDisplayed))
 
     fullOutStr = "\n".join(fullOut)
     if printStr:
@@ -271,7 +308,9 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupN
 
 
 def pixelGroup_matrix_representation_empty_area_create(
-        pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
+        pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100,
+        defaultEmptyColors: tuple[int, int, int] = (255, 255, 255)
+) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
     """create an empty area
 
     Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
@@ -283,6 +322,7 @@ def pixelGroup_matrix_representation_empty_area_create(
         row = []
         for xAbs in range(x_min, x_max + 1):
             row.append((xAbs, yAbs, pixelGroupBackgroundRepresenter))  # in the matrix the background pixels are represented with this Glyph
+            pixelGroupBackgroundRepresenter.pixel_add(xAbs, yAbs, defaultEmptyColors)
         matrix_representation.append(row)
     return matrix_representation
 #################################################################
@@ -346,6 +386,25 @@ def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[P
     return areaPixels
 
 
+def pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
+pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]],
+        wantedRepresentedNames: set[str]
+) -> list[tuple[int, int]]:
+    """the matrix coords are different from th represented pixel coords, because the matrix is smaller.
+    collect coords where in the background the PixelGlyph has a special flag/represented name
+    """
+
+    collector = []
+    for yRow, row in enumerate(pixelGroup_glyph_matrix_representation):
+        for xRow, (xAbs, yAbs, pixelGroup_glyph_obj) in enumerate(row):
+            if wantedRepresentedNames & pixelGroup_glyph_obj.representedPixelGroupNames:
+                collector.append((xRow, yRow))
+
+    return collector
+
+
+
+
 
 def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
         pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]],
@@ -403,7 +462,7 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
     for (x, y) in coordsToCheck:
         # print(f"border coords check: {(x, y)}")
         (_xAbs, _yAbs, pixelNow) = pixelGroup_glyph_matrix_representation[y][x]
-        if pixelNow.representedPixelGroupName != pixelsNameBackgroundInactive:
+        if pixelsNameBackgroundInactive not in pixelNow.representedPixelGroupNames:
 
             isEmptyBorderDetected = False
 

@@ -37,21 +37,20 @@ class Test_active_pixel_group_detection(unittest.TestCase):
 
 
     def test_active_pixel_group_detection(self):
+        testName = "test_active_pixel_group_detection"
+        txtB = """
+          .*.
+          ***
+          .*.
+        """
 
-        imgPath = path_abs_to_testfile("../../samples/sample_abc_lower_ubuntu_light_300_grayscale.png")
-        pixelsInImg, _errors, _warnings = img_0_pixels.pixels_load_from_image(imgPath)
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txtB, callerPlaceName=testName)
+        # print("pixels orig:", pixels)
+        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        # print("pixels in the group:", pixelGroups_Glyphs[0].pixels)
 
-        pixelGroups = img_1_pixel_select.pixelGroups_active_select(pixelsInImg)
-
-        self.assertTrue(len(pixelGroups) == 28)  # 26 letters + 2 accents
-
-
-        for group in pixelGroups:
-            group.matrix_representation_display_in_terminal()
-
-        areaWithAllPixelGroups = img_0_pixels.pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroups)
-
-        img_0_pixels.pixelGroup_matrix_representation_str(areaWithAllPixelGroups, printStr=True)
+        img_0_pixels.pixelGroup_matrix_representation_str(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
+        self.assertTrue(len(pixelGroups_Glyphs[0].pixels) == 5)
 
 
 
@@ -177,7 +176,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameBackgroundInactive)
+        self.assertTrue(img_0_pixels.pixelsNameBackgroundInactive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
 
         y = 4 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -196,7 +195,7 @@ class Test_matrix_representation(unittest.TestCase):
  
         
         """)
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameForegroundActive)
+        self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
 
 
     # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
@@ -234,11 +233,11 @@ class Test_matrix_representation(unittest.TestCase):
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameBackgroundInactive)
+        self.assertTrue(img_0_pixels.pixelsNameBackgroundInactive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
 
         y = 7  # matrixRepresentation is y,x based!!!!
         x = 6
-        self.assertTrue(matrixRepresentationOfPixelGroup[y][x].representedPixelGroupName == img_0_pixels.pixelsNameForegroundActive)
+        self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x].representedPixelGroupNames)
 
 
 if __name__ == '__main__':

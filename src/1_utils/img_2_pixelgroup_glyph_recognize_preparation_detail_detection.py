@@ -55,7 +55,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = {
             "glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph":
-                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(pixelGroup_glyph, checkEmptyBorderAroundMatrixRepresentation=False)}
+                glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(pixelGroup_glyph, checkEmptyBorderAroundMatrixRepresentation=False)}
 
 
 
@@ -63,7 +63,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
     return stats_of_pixelGroups_glyphs
 
 
-def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
+def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(
         pixelGroup_glyph: img_0_pixels.PixelGroup_Glyph,
         checkEmptyBorderAroundMatrixRepresentation: bool = True
 ) -> int: #  list[ list[(int, int) ] ]:
@@ -104,25 +104,57 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(
 
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
     pixelCoordsOutside_Glyph_collector = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
-        pixelGroup_glyph.matrix_representation, allowedDirections={1, 3, 5, 7})
+        pixelGroup_glyph.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive})
 
 
     ############ VISUALISE THE COLLECTED PIXELGROUP: ################################################
-    # pixelGroup_outside_the_char = img_0_pixels.PixelGroup_Glyph()
-    # for (xOutside, yOutside) in pixelCoordsOutside_glyph:
-    #     pixelGroup_outside_the_char.add_pixel_active(xOutside, yOutside, (1,1,1))
+    print(f"0 - pixels outside the character: {len(pixelCoordsOutside_Glyph_collector.pixels)} elems")
+    pixelCoordsOutside_Glyph_collector.matrix_representation_refresh()
+    pixelCoordsOutside_Glyph_collector.matrix_representation_display_in_terminal()
 
-    # print(f"pixels outside the character: {len(pixelCoordsOutside_glyph)} elems")
-    # pixelGroup_outside_the_char.matrix_representation_refresh()
-    # pixelGroup_outside_the_char.matrix_representation_display_in_terminal()
-
-    # print(pixelCoordsOutside_glyph)
-
-    ######################################################
+    ################## InsidePixelDetect ####################################
     # coordinate_flags_empty_storage = img_1_pixel_select.coords_operation__generate_coords_dict_flags_storage(
     #     pixelGroup_glyph.x_min, pixelGroup_glyph.y_min, pixelGroup_glyph.x_max, pixelGroup_glyph.y_max
     # )
 
+    xLeft   = pixelGroup_glyph.matrix_representation[ 0][ 0][0]  # the first elem is the abs x pos
+    yTop    = pixelGroup_glyph.matrix_representation[ 0][ 0][1]  # the second elem is the abs y pos
+    xRight  = pixelGroup_glyph.matrix_representation[ 0][-1][0]  # last pixels's first X coord
+    yBottom = pixelGroup_glyph.matrix_representation[-1][-1][1]  # last line, last pixels Y coord, second elem
 
-    # raise ValueError(42)
-    return 42  # fake number,
+    insidePixelCollector = img_0_pixels.PixelGroup_Glyph()
+    insidePixelCollector.pixels_add_with_nonimportant_rgb(xStart=xLeft, yStart=yTop, xEnd=xRight, yEnd=yBottom)
+    insidePixelCollector.pixels_remove(pixelGroup_glyph.pixels.keys())
+    insidePixelCollector.pixels_remove(pixelCoordsOutside_Glyph_collector.pixels.keys())
+
+    print(f"1 - pixels inside the character, isolated from outside pixels:")
+    insidePixelCollector.matrix_representation_display_in_terminal()
+
+    insideGroups = []
+
+    while insidePixelCollector.has_pixels():
+        if not insidePixelCollector.has_pixels(): break
+
+        # input(f"{removeCounter} --> <ENTER>, inside pixel collector pixels: {insidePixelCollector.pixels.keys()}  representedNames: {insidePixelCollector.representedPixelGroupNames}")
+        insidePixelCollector.matrix_representation_refresh()
+        # print(f"matrix representation: {insidePixelCollector.matrix_representation}")
+
+        activeRelativeMatrixCoords = img_0_pixels.pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
+            insidePixelCollector.matrix_representation, wantedRepresentedNames={img_0_pixels.pixelsNameForegroundActive}
+        )
+        oneCoordX, oneCoordY = activeRelativeMatrixCoords[0]
+
+        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+            insidePixelCollector.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameForegroundActive},
+            xStartInMatrix=oneCoordX, yStartInMatrix=oneCoordY
+        )
+
+        insidePixelCollector.pixels_remove(emptyGroup.pixels.keys())
+
+        if not emptyGroup.pixels:
+            print("no more pixels in empty Group")
+            break
+
+        insideGroups.append(emptyGroup)
+
+    return len(insideGroups)

@@ -45,7 +45,8 @@ class Test_pixelGroups_active_select(unittest.TestCase):
         for pixelGroup in pixelGroups_Glyphs:
             pixelGroup.matrix_representation_display_in_terminal()
 
-        # are these x,y coords in the detected pixels?
+
+        print(" are these x,y coords in the detected pixels?")
         for wanted in [(5, 0), ( 6, 0),
                        (4, 1), ( 7, 1),
                        (3, 2), ( 4, 2), (5, 2), (6, 2), (7, 2), (8, 2),

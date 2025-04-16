@@ -73,6 +73,7 @@ def coords_drop_collect_pixelgroups_from_starting_point(
         yStartInMatrix: int=0,
 
         allowedDirections: set[int] = {1, 3, 5, 7},
+        wantedRepresentedPixelGroupNames: set[str] = {img_0_pixels.pixelsNameForegroundActive}
         # it means that the collection cannot move diagonal, only horizontal/vertical
 
 ) -> img_0_pixels.PixelGroup_Glyph:
@@ -96,12 +97,14 @@ def coords_drop_collect_pixelgroups_from_starting_point(
 
         pixelCoordsInMatrix_analysed.add(pixelCoordNowInMatrix)
 
-        (_xAbs, _yAbs, objBehindPixelNow) = pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix]
-        if objBehindPixelNow.representedPixelGroupName != img_0_pixels.pixelsNameForegroundActive:
+        (xAbs, yAbs, objBehindPixelNow) = pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix]
 
-            # (r,g b) = objBehindPixelInOrigMatrix.pixels[(pixelXinMatrix,pixelYinMatrix)]["rgb"]
-            # TODO: fix colors here:
-            pixelGroup_collected.add_pixel(pixelXinMatrix, pixelYinMatrix, (0, 0, 0) )
+
+        # if any of the current flags are in the wanted flags:
+        if len(objBehindPixelNow.representedPixelGroupNames & wantedRepresentedPixelGroupNames)>0:
+
+            pixelGroup_collected.pixel_add(xAbs, yAbs,
+                                           objBehindPixelNow.pixels[(xAbs, yAbs)]["rgb"])
 
             neighbours = coords_neighbours(
                 pixelCoordNowInMatrix[0], pixelCoordNowInMatrix[1], 0, 0,
@@ -190,10 +193,11 @@ def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
 
                 # pixelsAll: have rows, one row represent one row of pixels in a line, so the first selector is Y coord.
                 onePixelRgb = pixelsAll[coordNowY][coordNowX]  # this is correct, here Y is the first selector
+                # print(f"onePixelRgb: ", onePixelRgb)
 
                 if isActive_checkAllSelectors(onePixelRgb, selectorFunctions):
                     # print(f"active pixel detected: {pixelGroupNow.groupId}", coordNowX, coordNowY)
-                    pixelGroupNow.add_pixel(coordNowX, coordNowY, onePixelRgb)
+                    pixelGroupNow.pixel_add(coordNowX, coordNowY, onePixelRgb)
 
                     # maybe the neighbours are detected from multiple places, insert them only once
                     for (xPossibleNeighbour, yPossibleNeighbour) in coords_neighbours(coordNowX, coordNowY, 0, 0, len(row) - 1, len(pixelsAll) - 1):
