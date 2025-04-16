@@ -124,8 +124,8 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
 
     insidePixelCollector = img_0_pixels.PixelGroup_Glyph()
     insidePixelCollector.pixels_add_with_nonimportant_rgb(xStart=xLeft, yStart=yTop, xEnd=xRight, yEnd=yBottom)
-    insidePixelCollector.pixels_remove(pixelGroup_glyph.pixels.keys())
-    insidePixelCollector.pixels_remove(pixelCoordsOutside_Glyph_collector.pixels.keys())
+    insidePixelCollector.pixels_remove(list(pixelGroup_glyph.pixels.keys()))
+    insidePixelCollector.pixels_remove(list(pixelCoordsOutside_Glyph_collector.pixels.keys()))
 
     print(f"1 - pixels inside the character, isolated from outside pixels:")
     insidePixelCollector.matrix_representation_display_in_terminal()
@@ -149,7 +149,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
             xStartInMatrix=oneCoordX, yStartInMatrix=oneCoordY
         )
 
-        insidePixelCollector.pixels_remove(emptyGroup.pixels.keys())
+        insidePixelCollector.pixels_remove(list(emptyGroup.pixels.keys()))
 
         if not emptyGroup.pixels:
             print("no more pixels in empty Group")

@@ -157,6 +157,13 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
 
 
 
+
+
+class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
+    rgb: tuple[int, int, int]
+    pixelGroupObj: PixelGroup_Glyph
+
+
 class PixelGroup_Glyph:
     """represents active pixels, next to each other, together forming a glyph.
     A character can be represented by multiple glyphs, so by multiple PixelGroups
@@ -166,7 +173,7 @@ class PixelGroup_Glyph:
     groupCounter = 0
 
     def __init__(self, representedPixelGroupName: str=pixelsNameForegroundActive) -> None:
-        self.pixels : dict[tuple[int, int], dict[str, tuple[int, int, int] | PixelGroup_Glyph]] = dict()
+        self.pixels : dict[tuple[int, int], Pixel_elem_in_PixelGroup_Glyph] = dict()
         self.x_min = -1
         self.x_max = -1
         self.y_min = -1
@@ -277,7 +284,7 @@ def pixelGroup_matrix_representation_str(matrix_representation:list[list[tuple[i
     for row in matrix_representation:
         rowDisplayed = []
 
-        yAbsDisplay = "-"
+        yAbs = -9
 
         for (_xAbs, yAbs, pixelRepresentation) in row:
             display = False
@@ -291,9 +298,7 @@ def pixelGroup_matrix_representation_str(matrix_representation:list[list[tuple[i
             else:
                 rowDisplayed.append(".")
 
-            yAbsDisplay = yAbs
-
-        fullOut.append(f"{yAbsDisplay:>4}: " + "".join(rowDisplayed))
+        fullOut.append(f"{yAbs:>4}: " + "".join(rowDisplayed))
 
     fullOutStr = "\n".join(fullOut)
     if printStr:
