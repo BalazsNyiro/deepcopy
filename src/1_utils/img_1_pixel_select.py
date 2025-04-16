@@ -66,6 +66,7 @@ def coords_neighbours(x: int, y: int,
 
 
 ########################################################################################################################
+# TODO: dedicated unittest for this:
 def coords_drop_collect_from_starting_point(
         pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]],
         xStart: int=0,
@@ -83,17 +84,17 @@ def coords_drop_collect_from_starting_point(
     """
     pixelCoords_collected = set()
 
-    pixelCoordsToAnalyse = [(xStart,yStart)]
-    pixelCoordsAnalysed = set()
+    pixelCoords_to_analyse = [(xStart,yStart)]
+    pixelCoords_analysed = set()
 
     x_max_in_representation = len(pixelGroup_glyph_matrix_representation[0])-1
     y_max_in_representation = len(pixelGroup_glyph_matrix_representation)-1
 
-    while pixelCoordsToAnalyse:
-        (pixelX, pixelY) = pixelCoordNow = pixelCoordsToAnalyse.pop(0)
-        if pixelCoordNow in pixelCoordsAnalysed: continue
+    while pixelCoords_to_analyse:
+        (pixelX, pixelY) = pixelCoordNow = pixelCoords_to_analyse.pop(0)
+        if pixelCoordNow in pixelCoords_analysed: continue
 
-        pixelCoordsAnalysed.add(pixelCoordNow)
+        pixelCoords_analysed.add(pixelCoordNow)
 
         if pixelGroup_glyph_matrix_representation[pixelY][pixelX].representedPixelGroupName != img_0_pixels.pixelTypeForegroundActive:
             pixelCoords_collected.add(pixelCoordNow)
@@ -103,7 +104,7 @@ def coords_drop_collect_from_starting_point(
                 x_max_in_representation, y_max_in_representation, allowedDirections=allowedDirections)
 
             for neighbourXyCoord in neighbours:
-                pixelCoordsToAnalyse.append(neighbourXyCoord)
+                pixelCoords_to_analyse.append(neighbourXyCoord)
 
     return pixelCoords_collected
 ########################################################################################################################
