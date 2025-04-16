@@ -174,7 +174,7 @@ class PixelGroup_Glyph:
         PixelGroup_Glyph.groupCounter += 1
 
         ###########################################################
-        self.matrix_representation: list[list[PixelGroup_Glyph]] = []
+        self.matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]] = []
         # matrixRepresentation is y,x based!!!
 
         # Detailed example:
@@ -242,7 +242,7 @@ class PixelGroup_Glyph:
 
 
 
-def pixelGroup_matrix_representation_str(matrix_representation:list[list[PixelGroup_Glyph]], printStr=False) -> str:
+def pixelGroup_matrix_representation_str(matrix_representation:list[list[tuple[int, int, PixelGroup_Glyph]]], printStr=False) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -251,7 +251,7 @@ def pixelGroup_matrix_representation_str(matrix_representation:list[list[PixelGr
     fullOut = []
     for rowNum, row in enumerate(matrix_representation):
         rowDisplayed = []
-        for pixelRepresentation in row:
+        for (_xAbs, _yAbs, pixelRepresentation) in row:
             if pixelRepresentation.has_pixels():
                 rowDisplayed.append("*")
             else:
@@ -271,18 +271,18 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupN
 
 
 def pixelGroup_matrix_representation_empty_area_create(
-        pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[PixelGroup_Glyph]]:
+        pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100 ) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
     """create an empty area
 
     Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
     different from
     """
 
-    matrix_representation: list[list[PixelGroup_Glyph]] = list()
-    for _y in range(y_min, y_max + 1):
+    matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]] = list()
+    for yAbs in range(y_min, y_max + 1):
         row = []
-        for _x in range(x_min, x_max + 1):
-            row.append(pixelGroupBackgroundRepresenter)  # in the matrix the background pixels are represented with this Glyph
+        for xAbs in range(x_min, x_max + 1):
+            row.append((xAbs, yAbs, pixelGroupBackgroundRepresenter))  # in the matrix the background pixels are represented with this Glyph
         matrix_representation.append(row)
     return matrix_representation
 #################################################################
@@ -290,7 +290,7 @@ def pixelGroup_matrix_representation_empty_area_create(
 
 def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph],
                                                          addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)
-                                                         ) -> list[list[PixelGroup_Glyph]]:
+                                                         ) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
     """can create a merged matrix representation for MORE PixelGroup elems
 
     :param addExtraEmptyBorderAroundArea: the thickness of the border
@@ -341,14 +341,14 @@ def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[P
 
             # add the pixel obj
             # print("add pixel obj into representation MORE pixelgroups:", type(pixelGroup))
-            areaPixels[yInAreaPixels][xInAreaPixels] = pixelGroup
+            areaPixels[yInAreaPixels][xInAreaPixels] = (xAbsPosInOrigImage, yAbsPosInOrigImage, pixelGroup)
 
     return areaPixels
 
 
 
 def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
-        pixelGroup_glyph_matrix_representation: list[list[PixelGroup_Glyph]],
+        pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]],
         raiseExceptionIfNoBorder: bool=True) -> bool:
     """True/False decision: is the outer border of a glyph representation is totally empty?
     This can be important if a pixel detection has to start from a guaranteed non-active place
@@ -402,7 +402,7 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
 
     for (x, y) in coordsToCheck:
         # print(f"border coords check: {(x, y)}")
-        pixelNow = pixelGroup_glyph_matrix_representation[y][x]
+        (_xAbs, _yAbs, pixelNow) = pixelGroup_glyph_matrix_representation[y][x]
         if pixelNow.representedPixelGroupName != pixelsNameBackgroundInactive:
 
             isEmptyBorderDetected = False

@@ -68,7 +68,7 @@ def coords_neighbours(x: int, y: int,
 ########################################################################################################################
 # TODO: dedicated unittest for this:
 def coords_drop_collect_pixelgroups_from_starting_point(
-        pixelGroup_glyph_matrix_representation: list[list[img_0_pixels.PixelGroup_Glyph]],
+        pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, img_0_pixels.PixelGroup_Glyph]]],
         xStartInMatrix: int=0,
         yStartInMatrix: int=0,
 
@@ -96,8 +96,8 @@ def coords_drop_collect_pixelgroups_from_starting_point(
 
         pixelCoordsInMatrix_analysed.add(pixelCoordNowInMatrix)
 
-        if pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix].representedPixelGroupName != img_0_pixels.pixelsNameForegroundActive:
-            objBehindPixelInOrigMatrix = pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix]
+        (_xAbs, _yAbs, objBehindPixelNow) = pixelGroup_glyph_matrix_representation[pixelYinMatrix][pixelXinMatrix]
+        if objBehindPixelNow.representedPixelGroupName != img_0_pixels.pixelsNameForegroundActive:
 
             # (r,g b) = objBehindPixelInOrigMatrix.pixels[(pixelXinMatrix,pixelYinMatrix)]["rgb"]
             # TODO: fix colors here:
