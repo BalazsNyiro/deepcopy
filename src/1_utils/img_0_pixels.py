@@ -35,6 +35,10 @@ inactivePixelRgbDefaultVal = (255, 255, 255)
 typeAlias_pixelRgb = tuple[int, int, int]
 typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
 typeAlias_matrix_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
+
+class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
+    rgb: typeAlias_pixelRgb
+    pixelGroupObj: 'PixelGroup_Glyph'
 ################################################################
 
 
@@ -292,9 +296,6 @@ class PixelGroup_Glyph:
         return retVal, errors
 
 
-class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
-    rgb: tuple[int, int, int]
-    pixelGroupObj: PixelGroup_Glyph
 
 
 
