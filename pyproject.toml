@@ -1,0 +1,2 @@
+[tool.mypy]
+mypy_path = "src/p1_pixels,src/p0_base"
