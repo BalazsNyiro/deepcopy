@@ -124,7 +124,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_matrix_pixelRgb, l
         # one color channel:
         if len(colorSamplePixelTuple) == 1:  # so colorVal will be an integer, not a tuple in this loop:
             for y in range(0, imgHeight):
-                pixelRow: list[tuple[int, int, int], ] = []
+                pixelRow: list[typeAlias_pixelRgb ] = []
                 for x in range(0, imgWidth):
                     colorVal = imageLoaded.getpixel((x, y))
                     # print(colorVal)
