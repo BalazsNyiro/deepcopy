@@ -7,9 +7,7 @@ else
   # mypy src/p0_base/prg_general_config_and_state.py
   # mypy src/p1_pixels/img_0_pixels.py
 
-  mypy --python-executable  deepcopy.py		
-
-  for FILE_PY in */*/*.py; do
+  for FILE_PY in deepcopy.py */*/*.py; do
 
     if [[ "$FILE_PY" != *"_test.py" ]]; then
 

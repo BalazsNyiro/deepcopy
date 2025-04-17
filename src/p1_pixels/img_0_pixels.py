@@ -231,7 +231,7 @@ class PixelGroup_Glyph:
     def pixels_remove(self, xyCoordAll: list[tuple[int, int]]):
         for xyCoord in xyCoordAll:
             if xyCoord in self.pixels:
-                print(f"remove pixel:", xyCoord )
+                # print(f"remove pixel:", xyCoord )
                 del self.pixels[xyCoord]
             else:
                 print(f"warning: coord was not in pixels: {xyCoord}")

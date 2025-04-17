@@ -16,7 +16,8 @@
 import os, sys, argparse
 
 dirDeepcopyRoot = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(dirDeepcopyRoot, 'src/p1_pixels'))
+sys.path.extend([os.path.join(dirDeepcopyRoot, 'src/p0_base'), os.path.join(dirDeepcopyRoot, 'src/p1_pixels')])
+print(f"sys.path: {sys.path}")
 
 import img_0_pixels, img_1_pixel_select
 import img_2_pixelgroup_glyph_recognize_preparation_detail_detection
