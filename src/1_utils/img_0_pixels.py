@@ -242,7 +242,7 @@ class PixelGroup_Glyph:
             for y in range(yStart, yEnd+1):
                 self.pixel_add(x, y, rgbTuple=rgb)
 
-    def pixel_add(self, x: int, y: int, rgbTuple: tuple[int, int, int]):
+    def pixel_add(self, x: int, y: int, rgbTuple: typeAlias_pixelRgb):
         if not self.pixels:
             self.x_min = x
             self.x_max = x
