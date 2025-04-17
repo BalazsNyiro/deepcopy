@@ -268,6 +268,21 @@ class PixelGroup_Glyph:
         pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
 
 
+    def matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(self) -> tuple[tuple[int, int, int, int], list[str]]:
+        """the current matrix representations coords (can be different from glyphs coords, if extra border is added!"""
+        errors = []
+        if self.pixels:
+            xAbsLeft   = self.matrix_representation[0][0][0]  # the first elem is the abs x pos
+            yAbsTop    = self.matrix_representation[0][0][1]  # the second elem is the abs y pos
+            xAbsRight  = self.matrix_representation[0][-1][0]  # last pixels's first X coord
+            yAbsBottom = self.matrix_representation[-1][-1][ 1]  # last line, last pixels Y coord, second elem
+            retVal = (xAbsLeft, yAbsTop, xAbsRight, yAbsBottom)
+        else:
+            retVal = (-1, -1, -1, -1)
+            errors = ["noPixelInGlyph"]
+        return retVal, errors
+
+
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: tuple[int, int, int]
     pixelGroupObj: PixelGroup_Glyph
@@ -315,7 +330,7 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupN
 
 def pixelGroup_matrix_representation_empty_area_create(
         pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100,
-        defaultEmptyColors: tuple[int, int, int] = (255, 255, 255)
+        defaultEmptyColors: tuple[int, int, int] = inactivePixelRgbDefaultVal
 ) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
     """create an empty area
 
