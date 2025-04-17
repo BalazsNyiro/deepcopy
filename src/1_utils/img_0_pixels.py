@@ -34,7 +34,7 @@ inactivePixelRgbDefaultVal = (255, 255, 255)
 
 typeAlias_pixelRgb = tuple[int, int, int]
 typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
-typeAlias_matrix_pixelRgb = list[typeAlias_row_pixelRgb]
+typeAlias_matrix_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
 ################################################################
 
 
@@ -52,7 +52,7 @@ def pixels_load_from_string(txt: str, activePixelRgb: typeAlias_pixelRgb=(0, 0, 
     """
     errors: list[str] = []
     warnings: list[str] = []
-    pixelsAllRow: typeAlias_matrix_pixelRgb = []
+    pixelsAllRow: list[typeAlias_row_pixelRgb]= []
 
 
     rowLengthsUsed = set()  # theoretically all rows have similar num of pixels,
@@ -79,7 +79,7 @@ def pixels_load_from_string(txt: str, activePixelRgb: typeAlias_pixelRgb=(0, 0, 
                 errors.append(msg)
                 print(msg)
 
-    return pixelsAllRow, errors, warnings
+    return tuple(pixelsAllRow), errors, warnings
 
 
 def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_matrix_pixelRgb, list[str], list[str]]:
@@ -94,7 +94,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_matrix_pixelRgb, l
     if not os.path.isfile(imagePath):
         errors.append(f"unknown image file path, cannot load: {imagePath}")
 
-    pixelsAllRow: typeAlias_matrix_pixelRgb = []
+    pixelsAllRow: list[typeAlias_row_pixelRgb] = []
     if not errors:
 
         imageLoaded = Image.open(imagePath)
@@ -162,7 +162,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_matrix_pixelRgb, l
 
                 pixelsAllRow.append(tuple(pixelRow))
 
-    return pixelsAllRow, errors, warnings
+    return tuple(pixelsAllRow), errors, warnings
 
 
 
