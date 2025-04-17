@@ -14,11 +14,6 @@
 # in the root directory of this source tree.
 
 
-pixelsNameBackgroundInactive = "pixelsBackgroundInactive"
-pixelsNameForegroundActive = "pixelsForegroundActive_partOfGlyph"
-
-inactivePixelRgbDefaultVal = (255, 255, 255)
-
 import os, time, sys, typing
 
 print("""
@@ -30,11 +25,25 @@ from PIL import Image
 sys.path.append("../0_base")
 
 
-def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 0),
-                            inactivePixelRgb: tuple[int, int, int]=inactivePixelRgbDefaultVal,
+################################################################
+pixelsNameBackgroundInactive = "pixelsBackgroundInactive"
+pixelsNameForegroundActive = "pixelsForegroundActive_partOfGlyph"
+
+inactivePixelRgbDefaultVal = (255, 255, 255)
+################################################################
+
+typeAlias_pixelRgb = tuple[int, int, int]
+typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
+typeAlias_matrix_pixelRgb = list[typeAlias_row_pixelRgb]
+################################################################
+
+
+
+def pixels_load_from_string(txt: str, activePixelRgb: typeAlias_pixelRgb=(0, 0, 0),
+                            inactivePixelRgb: typeAlias_pixelRgb=inactivePixelRgbDefaultVal,
                             activePixelRepresenter: str="*", inactivePixelRepresenter: str=".",
                             callerPlaceName=""
-                            ) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
+                            ) -> tuple[typeAlias_matrix_pixelRgb, list[str], list[str]]:
     """
     Typically used from tests, or development process
 
@@ -43,14 +52,14 @@ def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 
     """
     errors: list[str] = []
     warnings: list[str] = []
-    pixelsAllRow: list[tuple[tuple[int, int, int], ...]] = []
+    pixelsAllRow: typeAlias_matrix_pixelRgb = []
 
 
     rowLengthsUsed = set()  # theoretically all rows have similar num of pixels,
                             # practically if we have more than one length, maybe that is a mistake
 
     for row in txt.split("\n"):
-        pixelRow: list[tuple[int, int, int],] = []
+        pixelRow: list[typeAlias_pixelRgb] = []
 
         for oneChar in row:
             if oneChar == activePixelRepresenter:
@@ -73,7 +82,7 @@ def pixels_load_from_string(txt: str, activePixelRgb: tuple[int,int,int]=(0, 0, 
     return pixelsAllRow, errors, warnings
 
 
-def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, int], ...]], list[str], list[str]]:
+def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_matrix_pixelRgb, list[str], list[str]]:
     """return with one RGB matrix as the image representation.
 
     Grayscale images are converted to RGB, Alpha channel is neglected.
@@ -85,7 +94,7 @@ def pixels_load_from_image(imagePath: str) -> tuple[list[tuple[tuple[int, int, i
     if not os.path.isfile(imagePath):
         errors.append(f"unknown image file path, cannot load: {imagePath}")
 
-    pixelsAllRow: list[tuple[tuple[int, int, int], ...]] = []
+    pixelsAllRow: typeAlias_matrix_pixelRgb = []
     if not errors:
 
         imageLoaded = Image.open(imagePath)
