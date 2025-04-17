@@ -22,7 +22,7 @@ print("""
       """)
 from PIL import Image
 
-sys.path.append("../0_base")
+sys.path.append("../p0_base")
 
 
 ################################################################
@@ -34,7 +34,7 @@ inactivePixelRgbDefaultVal = (255, 255, 255)
 
 typeAlias_pixelRgb = tuple[int, int, int]
 typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
-typeAlias_matrix_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
+typeAlias_array2D_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
 
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: typeAlias_pixelRgb
@@ -47,7 +47,7 @@ def pixels_load_from_string(txt: str, activePixelRgb: typeAlias_pixelRgb=(0, 0, 
                             inactivePixelRgb: typeAlias_pixelRgb=inactivePixelRgbDefaultVal,
                             activePixelRepresenter: str="*", inactivePixelRepresenter: str=".",
                             callerPlaceName=""
-                            ) -> tuple[typeAlias_matrix_pixelRgb, list[str], list[str]]:
+                            ) -> tuple[typeAlias_array2D_pixelRgb, list[str], list[str]]:
     """
     Typically used from tests, or development process
 
@@ -86,7 +86,7 @@ def pixels_load_from_string(txt: str, activePixelRgb: typeAlias_pixelRgb=(0, 0, 
     return tuple(pixelsAllRow), errors, warnings
 
 
-def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_matrix_pixelRgb, list[str], list[str]]:
+def pixels_load_from_image(imagePath: str) -> tuple[typeAlias_array2D_pixelRgb, list[str], list[str]]:
     """return with one RGB matrix as the image representation.
 
     Grayscale images are converted to RGB, Alpha channel is neglected.

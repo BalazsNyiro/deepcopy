@@ -160,7 +160,7 @@ class Test_matrix_representation(unittest.TestCase):
           .*........*...
         """
 
-    # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__no_empty_border_around_representation
+    # in src/p1_pixels dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__no_empty_border_around_representation
     def test_matrix_representation_with_active_pixels__no_empty_border_around_representation(self):
 
         testName = "test_matrix_representation_with_active_pixels"
@@ -198,7 +198,7 @@ class Test_matrix_representation(unittest.TestCase):
         self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x][2].representedPixelGroupNames)
 
 
-    # in src/1_utils dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
+    # in src/p1_pixels dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__extra_empty_border_around_representation
     def test_matrix_representation_with_active_pixels__extra_empty_border_around_representation(self):
 
         testName = "test_matrix_representation_with_active_pixels_plus_extra_empty_border_around_representation"

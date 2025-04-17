@@ -153,7 +153,7 @@ def isActive_checkAllSelectors(onePixelRgb: img_0_pixels.typeAlias_pixelRgb,
 
 
 
-def pixelGroups_active_select(pixelsAll: list[list[tuple[int, int, int]]],
+def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb,
                               selectorFunctions=[(pixelGroupSelector_default,
                                                   {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) \
         -> list[img_0_pixels.PixelGroup_Glyph]:

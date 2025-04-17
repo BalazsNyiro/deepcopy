@@ -16,9 +16,10 @@
 import os, sys, argparse
 
 dirDeepcopyRoot = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(dirDeepcopyRoot, 'src/1_utils'))
+sys.path.append(os.path.join(dirDeepcopyRoot, 'src/p1_pixels'))
 
 import img_0_pixels, img_1_pixel_select
+import img_2_pixelgroup_glyph_recognize_preparation_detail_detection
 
 
 def deepcopy_main(fileList: list[str]):
@@ -32,15 +33,15 @@ def deepcopy_main(fileList: list[str]):
 
         if not errors:
 
-            pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixelsInImg)
+            pixelGroups_Glyphs_all = img_1_pixel_select.pixelGroups_active_select(pixelsInImg)
 
             print(f"=== Detected pixel groups (glyphs) in file {imgPath} ===")
-            for group in pixelGroups_Glyphs:
+            for group in pixelGroups_Glyphs_all:
                 group.matrix_representation_display_in_terminal()
 
                 print(f"TODO: detect the text from the glyph")
 
-            stats = statistics_collect_about_pixelgroups(pixelGroups_glyphs_all)
+            stats = img_2_pixelgroup_glyph_recognize_preparation_detail_detection.statistics_collect_about_pixelgroups(pixelGroups_Glyphs_all)
             print("pixelgroup statistics")
             print(stats)
 

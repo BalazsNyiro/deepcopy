@@ -4,8 +4,10 @@
 if [ "$(which mypy > /dev/null; echo $?)" -eq "1" ]; then
   echo "please install mypy: 'pip install mypy'"
 else
-  # mypy src/0_base/prg_general_config_and_state.py
-  # mypy src/1_utils/img_0_pixels.py
+  # mypy src/p0_base/prg_general_config_and_state.py
+  # mypy src/p1_pixels/img_0_pixels.py
+
+  mypy --python-executable  deepcopy.py		
 
   for FILE_PY in */*/*.py; do
 

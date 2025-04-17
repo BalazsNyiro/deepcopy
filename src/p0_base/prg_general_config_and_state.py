@@ -49,7 +49,7 @@ class Prg:
         # the root is 3 levels above this file.
         self.data["deepcopy_dir_root"] = os.path.dirname(   # root level
             os.path.dirname(                                # src
-                os.path.dirname(                            # 0_base
+                os.path.dirname(                            # p0_base
                     os.path.abspath(__file__))))
 
 
