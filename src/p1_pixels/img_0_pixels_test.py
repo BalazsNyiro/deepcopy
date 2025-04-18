@@ -130,6 +130,38 @@ class TestLoadImageFile(unittest.TestCase):
 # python3 img_0_pixels_test.py  Test_matrix_representation
 class Test_matrix_representation(unittest.TestCase):
 
+    txtInput = """
+          .....**....... <- only STARs and DOTs are detected, any other chars are ignored
+          ....*..*......
+          ...******...**  <- extra active chars, don't belong to the first group
+          ..*......*....
+          .*........*...
+        """
+
+    # python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_output
+    def test_matrix_representation_output(self):
+        testName = "test_matrix_representation_output"
+        print(f"Test: {testName}")
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
+            self.txtInput, callerPlaceName=testName)
+
+        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+
+        matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
+        matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup)
+        print(matrixReprStr)
+        
+        wantedOut = "" + \
+                    "   0: ....**....\n" + \
+                    "   1: ...*..*...\n" + \
+                    "   2: ..******..\n" + \
+                    "   3: .*......*.\n" + \
+                    "   4: *........*"
+
+        self.assertEqual(wantedOut, matrixReprStr)
+
+
     def test_matrix_representation_empty_area(self):
         pixelGroupForBackgroundNonActivePixels = \
             img_0_pixels.PixelGroup_Glyph(representedPixelGroupName=img_0_pixels.pixelsNameBackgroundInactive)
@@ -152,14 +184,6 @@ class Test_matrix_representation(unittest.TestCase):
 
 
 
-    txtInput = """
-          .....**....... <- only STARs and DOTs are detected, any other chars are ignored
-          ....*..*......
-          ...******...**  <- extra active chars, don't belong to the first group
-          ..*......*....
-          .*........*...
-        """
-
     # in src/p1_pixels dir: python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_with_active_pixels__no_empty_border_around_representation
     def test_matrix_representation_with_active_pixels__no_empty_border_around_representation(self):
 
@@ -171,7 +195,7 @@ class Test_matrix_representation(unittest.TestCase):
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
 
-        print("Test, matrix representation with active pixels")
+        print(f"Test: {testName}")
         img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 0 # matrixRepresentation is y,x based!!!!

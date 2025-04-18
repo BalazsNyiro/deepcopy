@@ -280,7 +280,7 @@ class PixelGroup_Glyph:
         if refreshTheMatrix:
             self.matrix_representation_refresh()
             # print(self.matrix_representation)
-        pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
+        return pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
 
 
     def matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(self) -> tuple[tuple[int, int, int, int], list[str]]:
