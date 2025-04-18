@@ -26,7 +26,7 @@ import img_1_pixel_select
 from img_0_pixels import PixelGroup_Glyph
 
 
-def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixels.PixelGroup_Glyph]) -> dict[int, dict[str, int|list[PixelGroup_Glyph]]]:
+def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: dict[int, img_0_pixels.PixelGroup_Glyph]) -> dict[int, dict[str, int|list[PixelGroup_Glyph]]]:
     """analyse every glyphs one by one to support the recognise step later.
 
     This section is about data collection about the pixelgroups.
@@ -50,7 +50,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: list[img_0_pixe
     # int |
     # dict[int, int]
 
-    for pixelGroup_glyph in pixelGroups_glyphs_all:
+    for pixelGroup_id, pixelGroup_glyph in pixelGroups_glyphs_all.items():
 
         if not pixelGroup_glyph.pixels: continue
         # theoretically this is not possible, practically it's a validation

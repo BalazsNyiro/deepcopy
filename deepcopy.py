@@ -37,7 +37,7 @@ def deepcopy_main(fileList: list[str]):
             pixelGroups_Glyphs_all = img_1_pixel_select.pixelGroups_active_select(pixelsInImg)
 
             print(f"=== Detected pixel groups (glyphs) in file {imgPath} ===")
-            for group in pixelGroups_Glyphs_all:
+            for groupId, group in pixelGroups_Glyphs_all.items():
                 group.matrix_representation_display_in_terminal()
 
                 print(f"TODO: detect the text from the glyph")

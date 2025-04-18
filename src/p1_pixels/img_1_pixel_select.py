@@ -156,7 +156,7 @@ def isActive_checkAllSelectors(onePixelRgb: img_0_pixels.typeAlias_pixelRgb,
 def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb,
                               selectorFunctions=[(pixelGroupSelector_default,
                                                   {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) \
-        -> list[img_0_pixels.PixelGroup_Glyph]:
+        ->dict[int, img_0_pixels.PixelGroup_Glyph]:
 
     """
 
@@ -173,7 +173,7 @@ def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb
 
     coordsAnalysedOnce = set()
 
-    pixelGroups: list[img_0_pixels.PixelGroup_Glyph] = list()
+    pixelGroups: dict[int, img_0_pixels.PixelGroup_Glyph] = dict()
 
     pixelGroupNow = img_0_pixels.PixelGroup_Glyph()
 
@@ -207,7 +207,7 @@ def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb
             # only Active pixels are inserted into the Groups, so a new group has to be created ONLY if the previous one has any active Pixels
             if pixelGroupNow.has_pixels():
                 # the top-left coord of the group is the registration point
-                pixelGroups.append(pixelGroupNow)
+                pixelGroups[pixelGroupNow.groupId] = pixelGroupNow
 
                 pixelGroupNow = img_0_pixels.PixelGroup_Glyph()  # create a new one
 
