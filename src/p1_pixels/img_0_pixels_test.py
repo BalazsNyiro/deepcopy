@@ -54,7 +54,8 @@ class Test_drop_group_collector(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
 
@@ -132,7 +133,8 @@ class Test_collect_relative_matrix_coords(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
         coordsInactiveInMatrix= img_0_pixels.pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
@@ -157,7 +159,10 @@ class Test_active_pixel_group_detection(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+
         print("pixels in the group:", pixelGroups_Glyphs[0].pixels)
 
         pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
@@ -258,7 +263,8 @@ class Test_matrix_representation(unittest.TestCase):
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
             self.txtInput, callerPlaceName=testName)
 
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
         matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup)
@@ -313,7 +319,8 @@ class Test_matrix_representation(unittest.TestCase):
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
             self.txtInput, callerPlaceName=testName)
 
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
 
@@ -351,7 +358,8 @@ class Test_matrix_representation(unittest.TestCase):
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
             self.txtInput, callerPlaceName=testName)
 
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         # the extra border settings is the change, compared with the prev test case
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh({3,4,5,6})

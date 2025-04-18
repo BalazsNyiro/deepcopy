@@ -34,7 +34,8 @@ class Test_glyph_statistics(unittest.TestCase):
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txtB, callerPlaceName=testName)
         print(pixels)
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
         print(pixelGroups_Glyphs[0].pixels)
 
         print("txtB matrix representation:")
@@ -46,7 +47,7 @@ class Test_glyph_statistics(unittest.TestCase):
 
         print("txtB closed inactive segment detect:")
         enclosedInactiveSegmentsNum, errors = img_2_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(pixelGroups_Glyphs[0])
-        self.assertEqual(enclosedInactiveSegmentsNum, 2)
+        self.assertEqual(len(enclosedInactiveSegmentsNum), 2)
 
 
 
@@ -63,7 +64,8 @@ class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittes
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
         img_0_pixels.pixelGroup_matrix_representation_convert_to_str(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
@@ -78,7 +80,8 @@ class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittes
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1,1,1,1))
 

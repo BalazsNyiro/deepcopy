@@ -39,7 +39,8 @@ class Test_pixelGroups_active_select(unittest.TestCase):
 
         print(pixels)
 
-        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         print(f"=== Detected pixel groups (glyphs),  ===")
         for pixelGroup in pixelGroups_Glyphs:
