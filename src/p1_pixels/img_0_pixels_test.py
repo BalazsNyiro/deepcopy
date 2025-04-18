@@ -32,12 +32,99 @@ def path_abs_to_testfile(pathRelative: str):
 
 
 
+# python3 img_0_pixels_test.py  Test_drop_group_collector
+class Test_drop_group_collector(unittest.TestCase):
+    """connected pixels detection"""
+
+    def test_drop_collector_simple(self):
+
+        testName = "test_drop_collector_simple"
+        print(f"Test: {testName}")
+
+        txt = """
+          ************
+          ***........*     Dot/ by default the {1,3,5,7} directions
+          **.*********    Dot/ cannot detect this diagonal
+          *.*........*   Dot/
+          *.*.******.*
+          *.*......*.*
+          *.********.*
+          *..........*
+          ************
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+
+        pixelGroups_Glyphs[0].matrix_representation_refresh()
+
+
+        # {1, 3, 5, 7}: can detect horzontal or vertical connections,
+        # so diagonal is not detected
+        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+            pixelGroups_Glyphs[0].matrix_representation,
+            allowedDirections={1, 3, 5, 7},
+            wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive},
+            xStartInMatrix=3, yStartInMatrix=1
+        )
+
+        emptyGroup.matrix_representation_display_in_terminal()
+        self.assertTrue(len(emptyGroup.pixels) == 8)
+
+        # detect all way:
+        """
+        total * 41, . 29 
+                       1
+              1234567890
+           1: ..********
+           2: .*........
+           3: *.********
+           4: *.*......*
+           5: *.******.*
+           6: *........*
+           7: **********
+        """
+        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+            pixelGroups_Glyphs[0].matrix_representation,
+            allowedDirections={1, 2, 3, 4, 5, 6, 7, 8},
+            wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive},
+            xStartInMatrix=3, yStartInMatrix=1
+        )
+
+        emptyGroup.matrix_representation_display_in_terminal()
+        self.assertTrue(len(emptyGroup.pixels) == 41)
+
+
+        ###### only special directions are allowed:
+        """
+        total * 7, . 14 
+              123
+           1: ..*
+           2: .*.
+           3: *..
+           4: *..
+           5: *..
+           6: *..
+           7: *..
+        """
+        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+            pixelGroups_Glyphs[0].matrix_representation,
+            allowedDirections={5, 6},
+            wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive},
+            xStartInMatrix=3, yStartInMatrix=1
+        )
+
+        emptyGroup.matrix_representation_display_in_terminal()
+        self.assertTrue(len(emptyGroup.pixels) == 7)
+
 
 # python3 img_0_pixels_test.py Test_collect_relative_matrix_coords
 class Test_collect_relative_matrix_coords(unittest.TestCase):
 
     def test_collect_relative_matrix_coords(self):
         testName = "test_active_pixel_group_detection"
+        print(f"Test: {testName}")
+
         txt = """
           .*.
           ***
@@ -185,7 +272,8 @@ class Test_matrix_representation(unittest.TestCase):
         in the current example,
         in the representation's X axis.
         """
-        wantedOut = "               1\n" + \
+        wantedOut = "total * 14, . 36\n" + \
+                    "               1\n" + \
                     "      1234567890\n" + \
                     "   0: ....**....\n" + \
                     "   1: ...*..*...\n" + \

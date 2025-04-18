@@ -347,6 +347,9 @@ def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAl
     fullOut = [headlineXaxis(xAbsMin, xAbsMax)]
     # fullOut = []
 
+    counterDisplayed = 0
+    counterNonDisplayed = 0
+
     for row in matrix_representation:
         rowDisplayed = []
 
@@ -361,12 +364,14 @@ def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAl
 
             if display:
                 rowDisplayed.append("*")
+                counterDisplayed += 1
             else:
                 rowDisplayed.append(".")
+                counterNonDisplayed += 1
 
         fullOut.append(f"{yAbs:>{yAxisIndent}}: " + "".join(rowDisplayed))
 
-    fullOutStr = "\n".join(fullOut)
+    fullOutStr = f"total * {counterDisplayed}, . {counterNonDisplayed}\n" + "\n".join(fullOut)
     if printStr:
         print(fullOutStr)
     return fullOutStr
