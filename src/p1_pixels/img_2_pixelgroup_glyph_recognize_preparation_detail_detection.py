@@ -123,8 +123,8 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
         insidePixelCollector.pixels_remove(list(pixelGroup_glyph.pixels.keys()))
         insidePixelCollector.pixels_remove(list(pixelCoordsOutside_Glyph_collector.pixels.keys()))
 
-        print(f"1 - pixels inside the character, isolated from outside pixels:")
-        insidePixelCollector.matrix_representation_display_in_terminal()
+        # print(f"1 - pixels inside the character, isolated from outside pixels:")
+        # insidePixelCollector.matrix_representation_display_in_terminal()
 
 
         while insidePixelCollector.has_pixels():

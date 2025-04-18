@@ -44,13 +44,15 @@ def deepcopy_main(fileList: list[str]):
 
             stats = img_2_pixelgroup_glyph_recognize_preparation_detail_detection.statistics_collect_about_pixelgroups(pixelGroups_Glyphs_all)
             print("pixelgroup statistics")
-            print(stats)
+            for key, val in stats.items():
+                print(key, val)
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(prog="deepcopy", description="Recognize text in pixel-based images.")
-    parser.add_argument("--imageFilePaths", help="comma separated image files. PNG files are preferred", action='store', required=True)
+    parser.add_argument("--imageFilePaths", help="comma separated image files. PNG files are preferred",
+                        action='store', required=False, default="samples/lorem_ipsum_small.png")
     Args = parser.parse_args()
 
     deepcopy_main(Args.imageFilePaths.split(","))
