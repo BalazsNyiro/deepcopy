@@ -15,8 +15,13 @@
 
 
 
-
 import os, sys
+
+sys.path.append("src/p0_base")
+import prg_general_config_and_state
+prg = prg_general_config_and_state.Prg()  # check python version
+
+
 print("This script checks the available modules, to see if deepcopy can work or not")
 
 try:
@@ -31,11 +36,11 @@ except:
           """)
 
 print(f"multiprocessing is useful to speed up image recognition - deepcopy can work without this, but will be slow.")
-print(f"multiprocessing is working on Linux/Win only, multiprocess works on Mac - so please install any of them to speed up the program")
+print(f"module 'multiprocessing' is working on Linux/Win only, module 'multiprocess' works on Mac")
 
 try:
     print(f"multiprocessing on Linux/Win... (https://stackoverflow.com/questions/61270799/python-multiprocessing-with-macos)")
-    import multiprocessing as mp
+    import multiprocessing
     print(f"multiprocessing import was successful")
 
 except:
@@ -44,7 +49,7 @@ except:
     print(f"multiprocess homepage: https://pypi.org/project/multiprocess/")
 
     try:
-        import multiprocess as mp
+        import multiprocess
     except:
         print(f"Module multiprocess is Not available")
 

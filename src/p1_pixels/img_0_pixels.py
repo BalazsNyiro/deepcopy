@@ -36,6 +36,8 @@ typeAlias_pixelRgb = tuple[int, int, int]
 typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
 typeAlias_array2D_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
 
+typeAlias_matrix_representation = list[list[tuple[int, int, 'PixelGroup_Glyph']]]
+
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: typeAlias_pixelRgb
     pixelGroupObj: 'PixelGroup_Glyph'
@@ -192,7 +194,7 @@ class PixelGroup_Glyph:
         PixelGroup_Glyph.groupCounter += 1
 
         ###########################################################
-        self.matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]] = []
+        self.matrix_representation: typeAlias_matrix_representation = []
         # matrixRepresentation is y,x based!!!
 
         # Detailed example:
@@ -300,7 +302,7 @@ class PixelGroup_Glyph:
 
 
 
-def pixelGroup_matrix_representation_str(matrix_representation:list[list[tuple[int, int, PixelGroup_Glyph]]], printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
+def pixelGroup_matrix_representation_str(matrix_representation:typeAlias_matrix_representation, printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -341,14 +343,14 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupN
 def pixelGroup_matrix_representation_empty_area_create(
         pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100,
         defaultEmptyColors: tuple[int, int, int] = inactivePixelRgbDefaultVal
-) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
+) -> typeAlias_matrix_representation:
     """create an empty area
 
     Be careful: list of rows, a row: list of strings, string: one char, represents one pixel.
     different from
     """
 
-    matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]] = list()
+    matrix_representation: typeAlias_matrix_representation = list()
     for yAbs in range(y_min, y_max + 1):
         row = []
         for xAbs in range(x_min, x_max + 1):
@@ -361,7 +363,7 @@ def pixelGroup_matrix_representation_empty_area_create(
 
 def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[PixelGroup_Glyph],
                                                          addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)
-                                                         ) -> list[list[tuple[int, int, PixelGroup_Glyph]]]:
+                                                         ) -> typeAlias_matrix_representation:
     """can create a merged matrix representation for MORE PixelGroup elems
 
     :param addExtraEmptyBorderAroundArea: the thickness of the border
@@ -418,7 +420,7 @@ def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[P
 
 
 def pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
-pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]],
+pixelGroup_glyph_matrix_representation: typeAlias_matrix_representation,
         wantedRepresentedNames: set[str]
 ) -> list[tuple[int, int]]:
     """the matrix coords are different from th represented pixel coords, because the matrix is smaller.
@@ -438,7 +440,7 @@ pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, PixelGroup_Gly
 
 
 def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
-        pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, PixelGroup_Glyph]]],
+        pixelGroup_glyph_matrix_representation: typeAlias_matrix_representation,
         raiseExceptionIfNoBorder: bool=True) -> bool:
     """True/False decision: is the outer border of a glyph representation is totally empty?
     This can be important if a pixel detection has to start from a guaranteed non-active place

@@ -68,7 +68,7 @@ def coords_neighbours(x: int, y: int,
 ########################################################################################################################
 # TODO: dedicated unittest for this:
 def coords_drop_collect_pixelgroups_from_starting_point(
-        pixelGroup_glyph_matrix_representation: list[list[tuple[int, int, img_0_pixels.PixelGroup_Glyph]]],
+        pixelGroup_glyph_matrix_representation: img_0_pixels.typeAlias_matrix_representation,
         xStartInMatrix: int=0,
         yStartInMatrix: int=0,
 
