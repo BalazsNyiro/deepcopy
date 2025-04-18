@@ -66,7 +66,7 @@ class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittes
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
-        img_0_pixels.pixelGroup_matrix_representation_str(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
+        img_0_pixels.pixelGroup_matrix_representation_convert_to_str(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
 
         self.assertFalse(img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(pixelGroups_Glyphs[0].matrix_representation, raiseExceptionIfNoBorder=False))
         #######################################################################################

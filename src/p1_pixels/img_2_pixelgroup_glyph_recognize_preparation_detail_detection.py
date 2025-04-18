@@ -95,7 +95,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
     if checkEmptyBorderAroundMatrixRepresentation:
         if not img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(
             pixelGroup_glyph.matrix_representation, raiseExceptionIfNoBorder=False):
-            errorsInStatClosedInactive.append(f"no empty border around glyph: \n{img_0_pixels.pixelGroup_matrix_representation_str(pixelGroup_glyph.matrix_representation)}\n\n")
+            errorsInStatClosedInactive.append(f"no empty border around glyph: \n{img_0_pixels.pixelGroup_matrix_representation_convert_to_str(pixelGroup_glyph.matrix_representation)}\n\n")
     ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
 
 

@@ -280,7 +280,7 @@ class PixelGroup_Glyph:
         if refreshTheMatrix:
             self.matrix_representation_refresh()
             # print(self.matrix_representation)
-        return pixelGroup_matrix_representation_str(self.matrix_representation, printStr=True)
+        return pixelGroup_matrix_representation_convert_to_str(self.matrix_representation, printStr=True)
 
 
     def matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(self) -> tuple[tuple[int, int, int, int], list[str]]:
@@ -302,7 +302,7 @@ class PixelGroup_Glyph:
 
 
 
-def pixelGroup_matrix_representation_str(matrix_representation:typeAlias_matrix_representation, printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
+def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAlias_matrix_representation, printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -313,6 +313,7 @@ def pixelGroup_matrix_representation_str(matrix_representation:typeAlias_matrix_
 
         in the representation, X headline, the numbers are displayed vertically.
     """
+
 
     yAxisIndent = 4
 
@@ -332,6 +333,11 @@ def pixelGroup_matrix_representation_str(matrix_representation:typeAlias_matrix_
             out.append(f"{'':>{  yAxisIndent-1                      + 3 }}" + "".join(headLine))
         return "\n".join(out)
 
+
+    if len(matrix_representation) < 1:
+        msg = "The matrix representation is empty"
+        print(msg)
+        return msg
 
     rowFirst = matrix_representation[0]
     # print(f"rowFirst: {rowFirst}")
@@ -455,8 +461,8 @@ def pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represe
 pixelGroup_glyph_matrix_representation: typeAlias_matrix_representation,
         wantedRepresentedNames: set[str]
 ) -> list[tuple[int, int]]:
-    """the matrix coords are different from th represented pixel coords, because the matrix is smaller.
-    collect coords where in the background the PixelGlyph has a special flag/represented name
+    """the matrix coords are different from the represented pixel coords, because the matrix is smaller.
+    collect relativeMatrixCoords where in the background the PixelGlyph has a special flag/represented name
     """
 
     collector = []
@@ -531,7 +537,7 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
 
             isEmptyBorderDetected = False
 
-            matrixStr = pixelGroup_matrix_representation_str(pixelGroup_glyph_matrix_representation)
+            matrixStr = pixelGroup_matrix_representation_convert_to_str(pixelGroup_glyph_matrix_representation)
             errMsg = f"missing empty border around the pixelGroup {(x, y)} \n {matrixStr}"
             if raiseExceptionIfNoBorder:
                 raise ValueError(errMsg)

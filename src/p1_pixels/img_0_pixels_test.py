@@ -32,25 +32,50 @@ def path_abs_to_testfile(pathRelative: str):
 
 
 
+
+# python3 img_0_pixels_test.py Test_collect_relative_matrix_coords
+class Test_collect_relative_matrix_coords(unittest.TestCase):
+
+    def test_collect_relative_matrix_coords(self):
+        testName = "test_active_pixel_group_detection"
+        txt = """
+          .*.
+          ***
+          .*.
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
+
+        pixelGroups_Glyphs[0].matrix_representation_refresh()
+        coordsInactiveInMatrix= img_0_pixels.pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
+            pixelGroups_Glyphs[0].matrix_representation, {img_0_pixels.pixelsNameBackgroundInactive}
+        )
+        self.assertTrue(len(coordsInactiveInMatrix) == 4)
+
+
+
 # python3 img_0_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 class Test_active_pixel_group_detection(unittest.TestCase):
 
 
     def test_active_pixel_group_detection(self):
         testName = "test_active_pixel_group_detection"
-        txtB = """
+        print(f"Test: {testName}")
+
+        txt = """
           .*.
           ***
           .*.
         """
 
-        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txtB, callerPlaceName=testName)
-        # print("pixels orig:", pixels)
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
-        # print("pixels in the group:", pixelGroups_Glyphs[0].pixels)
+        print("pixels in the group:", pixelGroups_Glyphs[0].pixels)
 
-        img_0_pixels.pixelGroup_matrix_representation_str(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
+        pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
         self.assertTrue(len(pixelGroups_Glyphs[0].pixels) == 5)
+        self.assertTrue(len(pixelGroups_Glyphs) == 1)
 
 
 
@@ -149,14 +174,15 @@ class Test_matrix_representation(unittest.TestCase):
         pixelGroups_Glyphs = img_1_pixel_select.pixelGroups_active_select(pixels)
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
-        matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup)
+        matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup)
         print(matrixReprStr)
 
         """
         VERY IMPORTANT: in txtInput, the first column IS EMPTY.
         the matrix representation doesn't represent the totally empty
         columns/prefix lines, only where there is a real pixel value.
-        Because of that, the first used Absolute X coord is 1, and not,
+        Because of that, the first used Absolute X coord is 1, and not 0
+        in the current example,
         in the representation's X axis.
         """
         wantedOut = "               1\n" + \
@@ -204,7 +230,7 @@ class Test_matrix_representation(unittest.TestCase):
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
 
         print(f"Test: {testName}")
-        img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup, printStr=True)
+        img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -261,7 +287,7 @@ class Test_matrix_representation(unittest.TestCase):
         """
 
         print(f"Test: {testName}")
-        img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup, printStr=True)
+        img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10
