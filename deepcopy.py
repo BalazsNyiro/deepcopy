@@ -44,8 +44,9 @@ def deepcopy_main(fileList: list[str]):
 
             stats = img_2_pixelgroup_glyph_recognize_preparation_detail_detection.statistics_collect_about_pixelgroups(pixelGroups_Glyphs_all)
             print("pixelgroup statistics")
-            for key, val in stats.items():
-                print(key, val)
+            for pixelGroupId, statOut in stats.items():
+                pixelGroups_Glyphs_all[pixelGroupId].matrix_representation_display_in_terminal()
+                print(pixelGroupId, statOut)
 
 
 if __name__ == '__main__':

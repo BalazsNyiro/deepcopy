@@ -1,10 +1,10 @@
 # deepcopy
 Python based OCR program with deep text structure analysing and style detecting
 
-# Goal - read from screenshots
+## Goal - read from screenshots
 Read simple human texts (basic English/French/latin alphabet with numbers, and dot, questionmark, exclamation mark)
 
-Nice to have: 
+## Goal - long term
 - translate words under mouse cursor (local dictionary builder, work with more dictionary)
 
 
@@ -17,12 +17,18 @@ Contact/Author: Balazs Nyiro, balazs.nyiro.ca@gmail.com
 deepcopy_installed_correctly.py -> check available modules and print install hints.
 
 # INSTALL
+## requirements.txt based install
+```
+pip install -r requirements.txt
+```
+
+## manual install to use deepcopy
  - important python3 modules
    - python3-pil  
      - apt install python3-pil    (install with apt package manager)
      - pip install pillow         (install with pip)
-   - multiprocessing (works on Linux/win)
-   - multiprocess   (only Mac)    (pip install multiprocess)  pip install multiprocess
+   - multiprocess   (only Mac)    (pip install multiprocess) 
+  
  
 # INSTALL for development
 
