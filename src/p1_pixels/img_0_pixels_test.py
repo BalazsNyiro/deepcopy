@@ -151,8 +151,16 @@ class Test_matrix_representation(unittest.TestCase):
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
         matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_str(matrixRepresentationOfPixelGroup)
         print(matrixReprStr)
-        
-        wantedOut = "" + \
+
+        """
+        VERY IMPORTANT: in txtInput, the first column IS EMPTY.
+        the matrix representation doesn't represent the totally empty
+        columns/prefix lines, only where there is a real pixel value.
+        Because of that, the first used Absolute X coord is 1, and not,
+        in the representation's X axis.
+        """
+        wantedOut = "               1\n" + \
+                    "      1234567890\n" + \
                     "   0: ....**....\n" + \
                     "   1: ...*..*...\n" + \
                     "   2: ..******..\n" + \

@@ -306,9 +306,41 @@ def pixelGroup_matrix_representation_str(matrix_representation:typeAlias_matrix_
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
-        # matrixRepresentation is y,x based!!!!
+        # matrixRepresentation internal structure is y,x based!!!!
+
+
+        in the str representation, ABSOLUTE x, y coords are visible, where the glyph is stored in the original image
+
+        in the representation, X headline, the numbers are displayed vertically.
     """
-    fullOut = []
+
+    yAxisIndent = 4
+
+    def headlineXaxis(xMin: int, xMax: int):
+        """generate vertical X titles before the representation"""
+        lenMax = max(len(str(xMin)), len(str(xMax)))
+        headLines: list[list[str]] = [list() for _ in range(0, lenMax)]
+
+        for x in range(xMin, xMax+1):
+            txt = f"{x:>{lenMax}}"
+            for idx, character in enumerate(list(txt)):
+                headLines[idx].append(character)
+
+        out = []
+        for headLine in headLines:
+            #                    vvvvvvvvv same column like axis Y  vvv relocate above the correct column
+            out.append(f"{'':>{  yAxisIndent-1                      + 3 }}" + "".join(headLine))
+        return "\n".join(out)
+
+
+    rowFirst = matrix_representation[0]
+    # print(f"rowFirst: {rowFirst}")
+    xAbsMin = rowFirst[0][0]
+    xAbsMax = rowFirst[-1][0]
+
+    fullOut = [headlineXaxis(xAbsMin, xAbsMax)]
+    # fullOut = []
+
     for row in matrix_representation:
         rowDisplayed = []
 
@@ -326,7 +358,7 @@ def pixelGroup_matrix_representation_str(matrix_representation:typeAlias_matrix_
             else:
                 rowDisplayed.append(".")
 
-        fullOut.append(f"{yAbs:>4}: " + "".join(rowDisplayed))
+        fullOut.append(f"{yAbs:>{yAxisIndent}}: " + "".join(rowDisplayed))
 
     fullOutStr = "\n".join(fullOut)
     if printStr:
