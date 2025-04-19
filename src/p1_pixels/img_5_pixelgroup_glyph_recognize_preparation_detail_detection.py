@@ -102,7 +102,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
 
     ############ VISUALISE THE COLLECTED PIXELGROUP: ################################################
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
-    pixelCoordsOutside_Glyph_collector = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+    pixelCoordsOutside_Glyph_collector = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
         pixelGroup_glyph.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive})
     # print(f"0 - pixels outside the character: {len(pixelCoordsOutside_Glyph_collector.pixels)} elems")
     # pixelCoordsOutside_Glyph_collector.matrix_representation_refresh()
@@ -139,7 +139,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
             )
             oneCoordX, oneCoordY = activeRelativeMatrixCoords[0]
 
-            emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+            emptyGroup = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
                 insidePixelCollector.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameForegroundActive},
                 xStartInMatrix=oneCoordX, yStartInMatrix=oneCoordY
             )

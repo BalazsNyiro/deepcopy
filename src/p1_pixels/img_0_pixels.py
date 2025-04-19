@@ -37,6 +37,7 @@ typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
 typeAlias_array2D_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
 
 typeAlias_matrix_representation = list[list[tuple[int, int, 'PixelGroup_Glyph']]]
+typeAlias_errorMessages = tuple[str]
 
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: typeAlias_pixelRgb
@@ -551,3 +552,33 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
             break
 
     return isEmptyBorderDetected
+
+
+
+
+def pixelgroup_matrix_errorCreateIfEmpty(matrixRepr: typeAlias_matrix_representation, caller="", noErrorRetVal=list()) -> typeAlias_errorMessages:
+    """produce errors if the matrix repr is empty """
+    if not matrixRepr:
+        return [f"ERROR in '{caller}' no rows in matrix representation"]
+
+    if not matrixRepr[0]:
+        return [f"ERROR in '{caller}' missing characters in matrix row in a representation (the row is empty)"]
+
+    return noErrorRetVal  # the list is generated only once in fun definition
+
+
+def pixelgroup_matrix_repr_select_top_left_coord(pixelGroup_Glyph: PixelGroup_Glyph,
+                                                 wantedNames: set[str]={pixelsNameForegroundActive}) -> tuple [tuple[int, int], typeAlias_errorMessages]:
+    """select the top/left coord.
+
+    """
+
+    errors = pixelgroup_matrix_errorCreateIfEmpty(pixelGroup_Glyph.matrix_representation)
+
+    for y in range(0, len(pixelGroup_Glyph.matrix_representation)):
+        row = pixelGroup_Glyph.matrix_representation[y]
+        for x, (_absX, _absY, glyphInRow) in enumerate(row):
+            if wantedNames & glyphInRow.representedPixelGroupNames:
+                return (x, y), errors
+
+    return (0, 0), errors

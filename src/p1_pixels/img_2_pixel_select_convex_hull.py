@@ -15,6 +15,8 @@
 
 import math
 
+from img_0_pixels import typeAlias_matrix_representation
+
 """naive complex hull functions.
 
 The Glyphs are typically small areas, so a naive algorithm can be enough first.
@@ -59,3 +61,13 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
         arctan = arctan + 2*math.pi
 
     return arctan, []
+
+
+
+def convex_hull_points_collect(matrixRepr: typeAlias_matrix_representation):
+    """detect convex hull points in a matrix representation
+
+    naive implementation, this is a very frequently used fun, so optimization is necessary later
+
+    """
+

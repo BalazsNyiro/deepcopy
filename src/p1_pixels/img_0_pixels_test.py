@@ -19,7 +19,7 @@
 # python3 img_0_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 
 import unittest, platform, sys, os, time
-import img_0_pixels
+import img_0_pixels, img_3_pixel_select
 
 from unittest.mock import Mock
 from unittest.mock import patch
@@ -30,6 +30,39 @@ def path_abs_to_testfile(pathRelative: str):
     """with absolute path the test """
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), pathRelative)
 
+
+# python3 img_0_pixels_test.py   Test_pixelgroup_matrix_repr_select_top_left
+class Test_pixelgroup_matrix_repr_select_top_left(unittest.TestCase):
+
+    def test_select_top_left_coord(self):
+        testName = "select_top_left_coord_in_matrix_representation"
+
+        # two left empty column are NOT in matrix representation!
+        # so as a human, the top-left is (2, 0)
+        txt = """
+          ....*.*..  
+          ...*.**..  
+          ..*....*. 
+          ..*****..
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+
+        pixelGroups_Glyphs[0].matrix_representation_refresh()
+
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(pixelGroups_Glyphs[0])
+        print(f"topLeft coord: {topLeftCoord}")
+        self.assertEqual(topLeftCoord, (2, 0))
+
+        emptyGrp = img_0_pixels.PixelGroup_Glyph()
+        topLeftCoord, err = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(emptyGrp)
+        self.assertEqual(err, ["ERROR in '' no rows in matrix representation"])
+
+        emptyGrp.matrix_representation = [[]]
+        topLeftCoord, err = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(emptyGrp)
+        self.assertEqual(err, ["ERROR in '' missing characters in matrix row in a representation (the row is empty)"])
 
 
 # python3 img_0_pixels_test.py  Test_drop_group_collector
@@ -54,7 +87,7 @@ class Test_drop_group_collector(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
@@ -62,7 +95,7 @@ class Test_drop_group_collector(unittest.TestCase):
 
         # {1, 3, 5, 7}: can detect horzontal or vertical connections,
         # so diagonal is not detected
-        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+        emptyGroup = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
             pixelGroups_Glyphs[0].matrix_representation,
             allowedDirections={1, 3, 5, 7},
             wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive},
@@ -85,7 +118,7 @@ class Test_drop_group_collector(unittest.TestCase):
            6: *........*
            7: **********
         """
-        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+        emptyGroup = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
             pixelGroups_Glyphs[0].matrix_representation,
             allowedDirections={1, 2, 3, 4, 5, 6, 7, 8},
             wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive},
@@ -108,7 +141,7 @@ class Test_drop_group_collector(unittest.TestCase):
            6: *..
            7: *..
         """
-        emptyGroup = img_1_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+        emptyGroup = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
             pixelGroups_Glyphs[0].matrix_representation,
             allowedDirections={5, 6},
             wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive},
@@ -133,7 +166,7 @@ class Test_collect_relative_matrix_coords(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
@@ -160,7 +193,7 @@ class Test_active_pixel_group_detection(unittest.TestCase):
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
 
-        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         print("pixels in the group:", pixelGroups_Glyphs[0].pixels)
@@ -263,7 +296,7 @@ class Test_matrix_representation(unittest.TestCase):
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
             self.txtInput, callerPlaceName=testName)
 
-        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
@@ -319,7 +352,7 @@ class Test_matrix_representation(unittest.TestCase):
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
             self.txtInput, callerPlaceName=testName)
 
-        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
@@ -358,7 +391,7 @@ class Test_matrix_representation(unittest.TestCase):
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
             self.txtInput, callerPlaceName=testName)
 
-        pixelGroups_Glyphs_id_group_dict = img_1_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         # the extra border settings is the change, compared with the prev test case
