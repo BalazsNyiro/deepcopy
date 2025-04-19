@@ -22,7 +22,7 @@ Every pixelgroup has a unique ID, the statistics are stored based on that id.
 
 import typing
 import img_0_pixels
-import img_1_pixel_select
+import img_3_pixel_select
 from img_0_pixels import PixelGroup_Glyph
 
 

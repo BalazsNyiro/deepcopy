@@ -19,8 +19,8 @@ dirDeepcopyRoot = os.path.dirname(os.path.abspath(__file__))
 sys.path.extend([os.path.join(dirDeepcopyRoot, 'src/p0_base'), os.path.join(dirDeepcopyRoot, 'src/p1_pixels')])
 print(f"sys.path: {sys.path}")
 
-import img_0_pixels, img_1_pixel_select
-import img_2_pixelgroup_glyph_recognize_preparation_detail_detection
+import img_0_pixels, img_3_pixel_select
+import img_5_pixelgroup_glyph_recognize_preparation_detail_detection
 
 
 def deepcopy_main(fileList: list[str]):

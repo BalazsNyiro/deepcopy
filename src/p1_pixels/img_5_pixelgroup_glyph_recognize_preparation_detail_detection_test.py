@@ -13,10 +13,10 @@
 # Please read the complete LICENSE file
 # in the root directory of this source tree.
 
-import unittest, img_0_pixels, img_1_pixel_select, img_2_pixelgroup_glyph_recognize_preparation_detail_detection
+import unittest, img_0_pixels, img_3_pixel_select, img_5_pixelgroup_glyph_recognize_preparation_detail_detection
 
 
-# python3  img_2_pixelgroup_glyph_recognize_preparation_detail_detection_test.py Test_glyph_statistics
+# python3  img_5_pixelgroup_glyph_recognize_preparation_detail_detection_test.py Test_glyph_statistics
 class Test_glyph_statistics(unittest.TestCase):
 
     def test_glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(self):
@@ -51,7 +51,7 @@ class Test_glyph_statistics(unittest.TestCase):
 
 
 
-# python3  img_2_pixelgroup_glyph_recognize_preparation_detail_detection_test.py  Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph
+# python3  img_5_pixelgroup_glyph_recognize_preparation_detail_detection_test.py  Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph
 class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittest.TestCase):
 
     def test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(self):

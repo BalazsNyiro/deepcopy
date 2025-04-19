@@ -19,7 +19,7 @@
 # python3 img_0_pixels_test.py  Test_active_pixel_group_detection.test_active_pixel_group_detection
 
 import unittest, platform, sys, os, time
-import img_0_pixels, img_1_pixel_select
+import img_0_pixels
 
 from unittest.mock import Mock
 from unittest.mock import patch

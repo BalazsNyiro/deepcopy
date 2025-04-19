@@ -14,13 +14,13 @@
 # in the root directory of this source tree.
 
 import unittest
-import img_1_pixel_select, img_0_pixels
+import img_3_pixel_select, img_0_pixels
 
-# python3 img_1_pixel_select_test.py
+# python3 img_3_pixel_select_test.py
 
 
 
-# python3 img_1_pixel_select_test.py Test_pixelGroups_active_select
+# python3 img_3_pixel_select_test.py Test_pixelGroups_active_select
 class Test_pixelGroups_active_select(unittest.TestCase):
 
     def test_pixelGroups_active_select(self):
@@ -88,7 +88,7 @@ class Test_isActive_checkAllSelectors(unittest.TestCase):
 
 
 
-# python3 img_1_pixel_select_test.py
+# python3 img_3_pixel_select_test.py
 class Test_coords_neighbour(unittest.TestCase):
 
     def test_find_neighbours_basic(self):
