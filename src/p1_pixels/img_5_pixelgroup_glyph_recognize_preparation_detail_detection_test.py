@@ -46,7 +46,7 @@ class Test_glyph_statistics(unittest.TestCase):
         pixelGroups_Glyphs[0].matrix_representation_display_in_terminal(refreshTheMatrix=False)
 
         print("txtB closed inactive segment detect:")
-        enclosedInactiveSegmentsNum, errors = img_2_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(pixelGroups_Glyphs[0])
+        enclosedInactiveSegmentsNum, errors = img_5_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(pixelGroups_Glyphs[0])
         self.assertEqual(len(enclosedInactiveSegmentsNum), 2)
 
 
