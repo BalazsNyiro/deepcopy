@@ -37,7 +37,7 @@ typeAlias_row_pixelRgb = tuple[typeAlias_pixelRgb, ...]
 typeAlias_array2D_pixelRgb = tuple[typeAlias_row_pixelRgb, ...]
 
 typeAlias_matrix_representation = list[list[tuple[int, int, 'PixelGroup_Glyph']]]
-typeAlias_errorMessages = tuple[str]
+typeAlias_errorMessages = list[str]
 
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: typeAlias_pixelRgb
