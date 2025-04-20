@@ -572,18 +572,51 @@ def pixelgroup_matrix_errorCreateIfEmpty(matrixRepr: typeAlias_matrix_representa
     return noErrorRetVal  # the list is generated only once in fun definition
 
 
-def pixelgroup_matrix_repr_select_top_left_coord(pixelGroup_Glyph: PixelGroup_Glyph,
-                                                 wantedNames: set[str]={pixelsNameForegroundActive}) -> tuple [tuple[int, int], typeAlias_errorMessages]:
-    """select the top/left coord.
+def pixelgroup_matrix_repr_select_corner_coord(pixelGroup_Glyph: PixelGroup_Glyph,
+                                               wantedNames: set[str]={pixelsNameForegroundActive},
+                                               wantedCorner: tuple[str, str] = ("top", "left"),
+                                               wantedCoordType: str = "relativeInMatrix") -> tuple [list[tuple[int, int]], typeAlias_errorMessages]:
+
+    """select the top|bottom,  left|right  relativeInMatrix|absInPage coord.
 
     """
 
     errors = pixelgroup_matrix_errorCreateIfEmpty(pixelGroup_Glyph.matrix_representation)
 
-    for y in range(0, len(pixelGroup_Glyph.matrix_representation)):
-        row = pixelGroup_Glyph.matrix_representation[y]
-        for x, (_absX, _absY, glyphInRow) in enumerate(row):
-            if wantedNames & glyphInRow.representedPixelGroupNames:
-                return (x, y), errors
+    selectedsAbs: list[tuple[int, int]] = []  # zero or one elem can be selected with the wanted name
+    selectedsRel: list[tuple[int, int]] = []
 
-    return (0, 0), errors
+    ####################################################################
+    for y, row in enumerate(pixelGroup_Glyph.matrix_representation):
+
+        detectionCounterInRow = 0
+        for x, (absX, absY, glyphInRow) in enumerate(row):
+
+            if wantedNames & glyphInRow.representedPixelGroupNames:
+
+                detectionCounterInRow += 1
+                if detectionCounterInRow == 1:
+                    selectedsAbs.clear()  # remove possible selections from prev rows, important for "bottom" selections
+                    selectedsRel.clear()
+
+                selectedsRel.append((x, y))
+                selectedsAbs.append((absX, absY))
+
+        if wantedCorner[0] == "top" and selectedsRel:
+            break
+    ####################################################################
+
+    if not selectedsRel:  # no detected coord
+        return selectedsRel, errors
+
+    if wantedCoordType == "relativeInMatrix":
+        if wantedCorner[1] == "left":
+            return selectedsRel[:1], errors
+        else:
+            return selectedsRel[-1:], errors
+
+    # absolute coord in matrix:
+    if wantedCorner[1] == "left":
+        return selectedsAbs[:1], errors
+    else:
+        return selectedsAbs[-1:], errors

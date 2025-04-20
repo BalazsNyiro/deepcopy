@@ -31,19 +31,21 @@ def path_abs_to_testfile(pathRelative: str):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), pathRelative)
 
 
-# python3 img_0_pixels_test.py   Test_pixelgroup_matrix_repr_select_top_left
-class Test_pixelgroup_matrix_repr_select_top_left(unittest.TestCase):
+# python3 img_0_pixels_test.py Test_pixelgroup_matrix_repr_select_corner
+class Test_pixelgroup_matrix_repr_select_corner(unittest.TestCase):
 
     def test_select_top_left_coord(self):
-        testName = "select_top_left_coord_in_matrix_representation"
+        testName = "select_corner_coord_in_matrix_representation"
 
         # two left empty column are NOT in matrix representation!
         # so as a human, the top-left is (2, 0)
         txt = """
+          .........  
           ....*.*..  
           ...*.**..  
           ..*....*. 
           ..*****..
+          .........
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
@@ -51,19 +53,56 @@ class Test_pixelgroup_matrix_repr_select_top_left(unittest.TestCase):
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
+        pixelGroups_Glyphs[0].matrix_representation_display_in_terminal(refreshTheMatrix=False)
 
-        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(pixelGroups_Glyphs[0])
-        print(f"topLeft coord: {topLeftCoord}")
-        self.assertEqual(topLeftCoord, (2, 0))
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+            pixelGroups_Glyphs[0], wantedCorner=("top", "left"))
+        print(f"topLeft relative coord: {topLeftCoord}")
+        self.assertEqual(topLeftCoord, [(2, 0)])
 
         emptyGrp = img_0_pixels.PixelGroup_Glyph()
-        topLeftCoord, err = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(emptyGrp)
+        topLeftCoord, err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(emptyGrp)
         self.assertEqual(err, ["ERROR in '' no rows in matrix representation"])
 
         emptyGrp.matrix_representation = [[]]
-        topLeftCoord, err = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(emptyGrp)
+        topLeftCoord, err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(emptyGrp)
         self.assertEqual(err, ["ERROR in '' missing characters in matrix row in a representation (the row is empty)"])
 
+
+
+        #### ABS top-left:
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+            pixelGroups_Glyphs[0], wantedCorner=("top", "left"), wantedCoordType="absInPage")
+        print(f"topLeft absolute coord: {topLeftCoord}")
+        self.assertEqual(topLeftCoord, [(4, 1)])
+
+        #### ABS top-right:
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+            pixelGroups_Glyphs[0], wantedCorner=("top", "right"), wantedCoordType="absInPage")
+        print(f"topLeft absolute coord: {topLeftCoord}")
+        self.assertEqual(topLeftCoord, [(6, 1)])
+
+        #### ABS bottom-left:
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+            pixelGroups_Glyphs[0], wantedCorner=("bottom", "left"), wantedCoordType="absInPage")
+        print(f"bottomLeft absolute coord: {topLeftCoord}")
+        self.assertEqual(topLeftCoord, [(2, 4)])
+
+        #### ABS bottom-right:
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+            pixelGroups_Glyphs[0], wantedCorner=("bottom", "right"), wantedCoordType="absInPage")
+        print(f"topLeft absolute coord: {topLeftCoord}")
+        self.assertEqual(topLeftCoord, [(6, 4)])
+
+
+
+
+        # no selection
+        topLeftCoord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+            pixelGroups_Glyphs[0], wantedCorner=("top", "left"),
+            wantedCoordType="absInPage", wantedNames={"unknown"}
+        )
+        self.assertEqual(topLeftCoord, [])
 
 # python3 img_0_pixels_test.py  Test_drop_group_collector
 class Test_drop_group_collector(unittest.TestCase):
