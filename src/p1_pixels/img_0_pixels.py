@@ -351,7 +351,7 @@ def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAl
     counterDisplayed = 0
     counterNonDisplayed = 0
 
-    for row in matrix_representation:
+    for yRelativeInMatrix, row in enumerate(matrix_representation):
         rowDisplayed = []
 
         yAbs = -9
@@ -370,9 +370,10 @@ def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAl
                 rowDisplayed.append(".")
                 counterNonDisplayed += 1
 
-        fullOut.append(f"{yAbs:>{yAxisIndent}}: " + "".join(rowDisplayed))
+        fullOut.append(f"{yAbs:>{yAxisIndent}}: " + "".join(rowDisplayed) + f"{yRelativeInMatrix:>{yAxisIndent}} (yRel)")
 
-    fullOutStr = f"total * {counterDisplayed}, . {counterNonDisplayed}\n" + "\n".join(fullOut)
+    fullOutStr = (f"total * {counterDisplayed}, . {counterNonDisplayed} (in matrix left/top output absolute coords are used, right/bottom: relative)\n" +
+                  "\n".join(fullOut) + "\n" + headlineXaxis(0, len(rowFirst)-1)) + " (xRel)\n"
     if printStr:
         print(fullOutStr)
     return fullOutStr
@@ -463,19 +464,23 @@ def pixelGroup_matrix_representation_of_more_pixelgroups(pixelGroupElems: list[P
     return areaPixels
 
 
-def pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
+def pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
 pixelGroup_glyph_matrix_representation: typeAlias_matrix_representation,
-        wantedRepresentedNames: set[str]
+        wantedRepresentedNames: set[str],
+        useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords: bool=False
 ) -> list[tuple[int, int]]:
     """the matrix coords are different from the represented pixel coords, because the matrix is smaller.
-    collect relativeMatrixCoords where in the background the PixelGlyph has a special flag/represented name
+    collect relativeMatrixCoords or absoluteCoords where in the background the PixelGlyph has a special flag/represented name
     """
 
     collector = []
     for yRow, row in enumerate(pixelGroup_glyph_matrix_representation):
         for xRow, (xAbs, yAbs, pixelGroup_glyph_obj) in enumerate(row):
             if wantedRepresentedNames & pixelGroup_glyph_obj.representedPixelGroupNames:
-                collector.append((xRow, yRow))
+                if useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords:
+                    collector.append((xAbs, yAbs))
+                else:
+                    collector.append((xRow, yRow))
 
     return collector
 

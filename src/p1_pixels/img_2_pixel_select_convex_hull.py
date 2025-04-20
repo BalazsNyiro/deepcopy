@@ -15,7 +15,7 @@
 
 import math
 
-from img_0_pixels import typeAlias_matrix_representation
+import img_0_pixels
 
 """naive complex hull functions.
 
@@ -64,10 +64,48 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
 
 
 
-def convex_hull_points_collect(matrixRepr: typeAlias_matrix_representation):
+def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, wantedPixelGroupNames: set[str]) -> list[tuple[int, int], list[str]]:
     """detect convex hull points in a matrix representation
 
     naive implementation, this is a very frequently used fun, so optimization is necessary later
 
+    The matrix representation is prepared before this fun call...
     """
 
+    topLeftCoord, errors = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(pixelGroup_Glyph)
+    print(f"topLeft coord: {topLeftCoord}")
+
+    convexHullPoints: list[tuple[int, int]] = list()
+
+    radiansCalculated: dict[tuple[tuple[int, int], tuple[int, int]], float]
+
+    coordinatesAll: list[tuple[int, int]] = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
+        pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
+        useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
+
+    # find the smallest radian
+    xSmallest = 0
+    ySmallest = 0
+    radianSmallest = 0
+    firstCycle = True
+
+    for (xTarget, yTarget) in coordinatesAll:
+
+        if xTarget == topLeftCoord[0] and yTarget == topLeftCoord[1]:
+            continue  # skip the start point, that cannot be checked
+
+        if firstCycle:
+            xSmallest = xTarget
+            ySmallest = yTarget
+            radianSmallest = radian_calculate_with_arctan(topLeftCoord[0], topLeftCoord[1], xSmallest, ySmallest)
+            continue
+
+        radianNow = radian_calculate_with_arctan(topLeftCoord[0], topLeftCoord[1], xTarget, yTarget)
+        if radianNow < radianSmallest:
+            xSmallest = xTarget
+            ySmallest = yTarget
+            radianSmallest = radianNow
+
+    print(f"smallest radian coord: ({xSmallest}, {ySmallest})")
+
+    return convexHullPoints, errors

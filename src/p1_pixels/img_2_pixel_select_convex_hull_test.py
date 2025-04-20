@@ -14,10 +14,32 @@
 # in the root directory of this source tree.
 
 import unittest, math
-import img_2_pixel_select_convex_hull
+
+import img_0_pixels
+import img_2_pixel_select_convex_hull, img_3_pixel_select
 
 # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull
 class Test_convex_hull(unittest.TestCase):
+
+    # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull
+    def test_convex_hull(self):
+        testName = "test_convex_hull"
+
+        txt = """
+          ....***..  
+          ....*.*..  
+          ..**..*** 
+          ..**..*..
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+        pixelGroups_Glyphs[0].matrix_representation_refresh()
+
+        pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
+        img_2_pixel_select_convex_hull.convex_hull_points_collect(pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
+
 
     def test_rad_calc(self):
 

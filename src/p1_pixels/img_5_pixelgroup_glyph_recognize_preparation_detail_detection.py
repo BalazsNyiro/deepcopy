@@ -134,7 +134,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
             insidePixelCollector.matrix_representation_refresh()
             # print(f"matrix representation: {insidePixelCollector.matrix_representation}")
 
-            activeRelativeMatrixCoords = img_0_pixels.pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
+            activeRelativeMatrixCoords = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
                 insidePixelCollector.matrix_representation, wantedRepresentedNames={img_0_pixels.pixelsNameForegroundActive}
             )
             oneCoordX, oneCoordY = activeRelativeMatrixCoords[0]

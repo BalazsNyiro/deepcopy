@@ -170,7 +170,7 @@ class Test_collect_relative_matrix_coords(unittest.TestCase):
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
-        coordsInactiveInMatrix= img_0_pixels.pixelGroup_matrix_representation_collect_relative_matrix_coords_with_represented_names(
+        coordsInactiveInMatrix= img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
             pixelGroups_Glyphs[0].matrix_representation, {img_0_pixels.pixelsNameBackgroundInactive}
         )
         self.assertTrue(len(coordsInactiveInMatrix) == 4)
@@ -311,14 +311,15 @@ class Test_matrix_representation(unittest.TestCase):
         in the current example,
         in the representation's X axis.
         """
-        wantedOut = "total * 14, . 36\n" + \
+        wantedOut = "total * 14, . 36 (in matrix left/top output absolute coords are used, right/bottom: relative)\n" + \
                     "               1\n" + \
                     "      1234567890\n" + \
-                    "   0: ....**....\n" + \
-                    "   1: ...*..*...\n" + \
-                    "   2: ..******..\n" + \
-                    "   3: .*......*.\n" + \
-                    "   4: *........*"
+                    "   0: ....**....   0 (yRel)\n" + \
+                    "   1: ...*..*...   1 (yRel)\n" + \
+                    "   2: ..******..   2 (yRel)\n" + \
+                    "   3: .*......*.   3 (yRel)\n" + \
+                    "   4: *........*   4 (yRel)\n" + \
+                    "      0123456789 (xRel)\n"
 
         self.assertEqual(wantedOut, matrixReprStr)
 
