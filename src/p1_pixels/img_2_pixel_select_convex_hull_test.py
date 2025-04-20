@@ -41,6 +41,34 @@ class Test_convex_hull(unittest.TestCase):
         img_2_pixel_select_convex_hull.convex_hull_points_collect(pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
 
 
+    # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull_find_next_point_in_hull
+    def test_convex_hull_find_next_point_in_hull(self):
+        testName = "test_convex_hull_find_next_point_in_hull"
+        print(f"Test: {testName}")
+
+        coords: list[tuple(int, int)] = [
+                    (2, 0), (3, 0),
+            (1, 1), (2, 1), (3, 1),
+                    (2, 2)]
+
+
+        pointStart = (3, 1)
+
+        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        print(f"hullElemNext: {hullElemNext}")
+
+        pointStart = hullElemNext
+        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        print(f"hullElemNext: {hullElemNext}")
+
+        pointStart = hullElemNext
+        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        print(f"hullElemNext: {hullElemNext}")
+
+        pointStart = hullElemNext
+        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        print(f"hullElemNext: {hullElemNext}")
+
     def test_rad_calc(self):
 
         testName = "test_rad_calc"

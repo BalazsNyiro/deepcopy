@@ -573,7 +573,7 @@ def pixelgroup_matrix_errorCreateIfEmpty(matrixRepr: typeAlias_matrix_representa
 
 
 def pixelgroup_matrix_repr_select_corner_coord(pixelGroup_Glyph: PixelGroup_Glyph,
-                                               wantedNames: set[str]={pixelsNameForegroundActive},
+                                               wantedRepresentedNames: set[str]={pixelsNameForegroundActive},
                                                wantedCorner: tuple[str, str] = ("top", "left"),
                                                wantedCoordType: str = "relativeInMatrix") -> tuple [list[tuple[int, int]], typeAlias_errorMessages]:
 
@@ -592,7 +592,7 @@ def pixelgroup_matrix_repr_select_corner_coord(pixelGroup_Glyph: PixelGroup_Glyp
         detectionCounterInRow = 0
         for x, (absX, absY, glyphInRow) in enumerate(row):
 
-            if wantedNames & glyphInRow.representedPixelGroupNames:
+            if wantedRepresentedNames & glyphInRow.representedPixelGroupNames:
 
                 detectionCounterInRow += 1
                 if detectionCounterInRow == 1:

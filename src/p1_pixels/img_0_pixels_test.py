@@ -105,7 +105,7 @@ class Test_pixelgroup_matrix_repr_select_corner(unittest.TestCase):
         # no selection
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
             pixelGroups_Glyphs[0], wantedCorner=("top", "left"),
-            wantedCoordType="absInPage", wantedNames={"unknown"}
+            wantedCoordType="absInPage", wantedRepresentedNames={"unknown"}
         )
         self.assertEqual(coordSelected, [])
 

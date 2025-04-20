@@ -57,10 +57,61 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     arctan = math.atan2(dy, dx)
 
     # use only positive values, to see the relations between vectors
-    if arctan < 0:
+    # The next point cannot be in right direction, the searching is always go in counterClockWise
+    # to the bigger radian direction.
+    # So radian 0 is always 2pi, there is no 0 value, to support counterClockWise complex hull searching
+
+    if arctan <= 0:
         arctan = arctan + 2*math.pi
 
     return arctan, []
+
+
+def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]]) -> tuple[tuple[int, int], list[str]]:
+    """in a given point set, find the next elem of the hull,
+    if start point is defined.
+
+    """
+    errors: list[str] = list()
+
+    if len(coordinatesAll) == 1:  # if there is only one elem, it's easy to select the next hull elem...
+        return pointStart, errors
+
+    if len(coordinatesAll) == 0:
+        return list(), ["if there is no elem, there is no possible candidate as next hull elem"]
+
+
+    radianMin: float = 0.0
+    radianMinNextHullPoint: tuple(int, int) = (0, 0)
+    firstForLoop: bool = True
+
+    for coordTarget in coordinatesAll:
+
+        if coordTarget == pointStart:
+            continue  # start and end point cannot be the same.
+
+        radianNow, errorsRadian = radian_calculate_with_arctan(
+            pointStart[0], pointStart[1], coordTarget[0], coordTarget[1])
+
+
+        # print(f"coordtarget: {coordTarget} {radianNow}")
+
+        errors.extend(errorsRadian)
+        if errorsRadian: continue
+        # don't continue the work if there was a problem with radian calc
+
+        # if this is the first point, so there is no better option, use this:
+        if firstForLoop:
+            firstForLoop = False
+            radianMin = radianNow
+            radianMinNextHullPoint = coordTarget
+        else:
+            if radianNow < radianMin:
+                radianMin = radianNow
+                radianMinNextHullPoint = coordTarget
+
+    # print(f"selected radian coord: {radianMinNextHullPoint} {radianMin}")
+    return radianMinNextHullPoint, errors
 
 
 
@@ -73,54 +124,29 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
     """
 
     # the order of the points are important, so I need to use a list
-    # currently it has only ONE element, the first point
-    convexHullPoints, errors = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(pixelGroup_Glyph)
+    # convexHullPoints currently has only ONE element, the first point
+    convexHullPoints, errors = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
+        pixelGroup_Glyph, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("top", "right"))
     print(f"Hull with one point only: {convexHullPoints}")
 
-    if not convexHullPoints:
-        msg = f"MAYBE ERROR: no selected top left coord in given PixelGroup!!"
-        return list(), errors+[msg]  # no hull coord in empty selection
+    if not convexHullPoints:  # theoretically for an empty set an empty answer is correct.
+        msg = f"WARNING: no selected top left coord in given PixelGroup!! wantedNames: {wantedPixelGroupNames} pixelGroup: {pixelGroup_Glyph}"
+        print(msg)
+        return list(), errors  # no hull coord in empty selection
+    ###################################################################################################
+
 
     coordinatesAll: list[tuple[int, int]] = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
         pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
 
-    loopCounter = 0
+    # loopCounter = 0
     while True:
         loopCounter += 1
         if loopCounter > 5:
             break
 
-        xSelected = 0
-        ySelected = 0
-        radianSelected = 0.0
-
-        firstLoop = True
-
-        for (xTarget, yTarget) in coordinatesAll:
-
-            dy = yTarget - convexHullPoints[-1][1]
-            dx = xTarget - convexHullPoints[-1][0]
-            if dy == 0 and dx == 0: continue   # if there is no delta, there is nothing to do
-
-            radianNow, errorsRadian = radian_calculate_with_arctan(convexHullPoints[-1][0], convexHullPoints[-1][1], xTarget, yTarget)
-            errors.extend(errorsRadian)
-
-            if firstLoop:
-                firstLoop = False
-                xSelected = xTarget
-                ySelected = yTarget
-                radianSelected = radianNow
-
-            if radianNow < radianSelected:
-                xSelected = xTarget
-                ySelected = yTarget
-                radianSelected = radianNow
-
-            print(f"radian target: {xTarget}, {yTarget} {radianNow}")
-
-        print(f"selected radian coord: ({xSelected}, {ySelected}) {radianSelected}")
 
         if (xSelected, ySelected) == convexHullPoints[0]:
             print("the circle is closed, the loop reached the first elem again")
