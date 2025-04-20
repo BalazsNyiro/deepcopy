@@ -69,6 +69,8 @@ class Test_convex_hull(unittest.TestCase):
         hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
 
+
+
     def test_rad_calc(self):
 
         testName = "test_rad_calc"

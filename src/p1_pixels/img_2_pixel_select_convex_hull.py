@@ -60,6 +60,8 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     # The next point cannot be in right direction, the searching is always go in counterClockWise
     # to the bigger radian direction.
     # So radian 0 is always 2pi, there is no 0 value, to support counterClockWise complex hull searching
+    # there is no 0 radian: every radian value is greater than 0, 0 is represented with 2pi,
+    # to create a monotonous increasing radian range.
 
     if arctan <= 0:
         arctan = arctan + 2*math.pi
@@ -78,11 +80,11 @@ def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: li
         return pointStart, errors
 
     if len(coordinatesAll) == 0:
-        return list(), ["if there is no elem, there is no possible candidate as next hull elem"]
+        return (0, 0), ["if there is no elem, there is no possible candidate as next hull elem"]
 
 
     radianMin: float = 0.0
-    radianMinNextHullPoint: tuple(int, int) = (0, 0)
+    radianMinNextHullPoint = (0, 0)
     firstForLoop: bool = True
 
     for coordTarget in coordinatesAll:
@@ -90,9 +92,10 @@ def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: li
         if coordTarget == pointStart:
             continue  # start and end point cannot be the same.
 
+        # there is no 0 radian: every radian value is greater than 0, 0 is represented with 2pi,
+        # to create a monotonous increasing radian range.
         radianNow, errorsRadian = radian_calculate_with_arctan(
             pointStart[0], pointStart[1], coordTarget[0], coordTarget[1])
-
 
         # print(f"coordtarget: {coordTarget} {radianNow}")
 
@@ -141,17 +144,16 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
 
-    # loopCounter = 0
-    while True:
-        loopCounter += 1
-        if loopCounter > 5:
-            break
+    # while True:
+    #     loopCounter += 1
+    #     if loopCounter > 5:
+    #         break
 
 
-        if (xSelected, ySelected) == convexHullPoints[0]:
-            print("the circle is closed, the loop reached the first elem again")
-            break  # the circle is closed, the loop reached the first elem again
+    #     if (xSelected, ySelected) == convexHullPoints[0]:
+    #         print("the circle is closed, the loop reached the first elem again")
+    #         break  # the circle is closed, the loop reached the first elem again
 
-        convexHullPoints.append((xSelected, ySelected))
+    #     convexHullPoints.append((xSelected, ySelected))
 
     return convexHullPoints, errors
