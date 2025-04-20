@@ -55,21 +55,47 @@ class Test_convex_hull(unittest.TestCase):
         pointStart = (3, 1)
 
         hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext: {hullElemNext}")
+        print(f"hullElemNext 1: {hullElemNext}")
+        self.assertEqual(hullElemNext, (3, 0))
 
         pointStart = hullElemNext
         hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext: {hullElemNext}")
+        print(f"hullElemNext 2: {hullElemNext}")
+        self.assertEqual(hullElemNext, (2, 0))
 
         pointStart = hullElemNext
         hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext: {hullElemNext}")
+        print(f"hullElemNext 3: {hullElemNext}")
+        self.assertEqual(hullElemNext, (1, 1))
 
         pointStart = hullElemNext
         hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        print(f"hullElemNext 4: {hullElemNext}")
+        self.assertEqual(hullElemNext, (3, 0))
+
+
+    def test_convex_hull_find_next_point_in_hull_specials(self):
+        testName = "test_convex_hull_find_next_point_in_hull_specials"
+        print(f"Test: {testName}")
+
+        coords = [ (2, 0) ]
+        pointStart = (2, 0)
+
+        # special case, there is only one elem, so the answer is
+        # the start point again
+        hullElemNext, errors = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
+        self.assertEqual(hullElemNext, pointStart)
+        self.assertTrue(len(errors) == 0)
 
+        ########## generate error: no coords, intentionally
+        coords = []
+        pointStart = (2, 0)
 
+        # special case, no avaialbe coord
+        hullElemNext, errors = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        print(f"hullElemNext: {hullElemNext}")
+        self.assertTrue(len(errors) > 0)
 
     def test_rad_calc(self):
 
