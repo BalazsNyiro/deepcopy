@@ -75,49 +75,41 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
     topLeftCoord, errors = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(pixelGroup_Glyph)
     print(f"topLeft coord: {topLeftCoord}")
 
-
     coordinatesAll: list[tuple[int, int]] = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
         pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
-
-
-    #########################################################
-    # reorganise coordinates: the top-left has to be the last elem, as a closer
-    coordinatesAll_lastIsTopLeft: list[tuple[int, int]] = list()
-    for coord in coordinatesAll:
-        if coord != topLeftCoord:
-            coordinatesAll_lastIsTopLeft.append(coord)
-    coordinatesAll_lastIsTopLeft.append(topLeftCoord)
-    print(f"coordinates all, topLeft is the last")
-    #########################################################
 
     # the order of the points are important, so I need to use a list
     convexHullPoints: list[tuple[int, int]] = [topLeftCoord]
 
 
-    coordActualHullElem = topLeftCoord
-
+    loopCounter = 0
     while True:
+        loopCounter += 1
+        if loopCounter > 5:
+            break
 
         xSelected = 0
         ySelected = 0
         radianSelected = 0
-        firstCycle = True
+
+        firstLoop = True
+
 
         for (xTarget, yTarget) in coordinatesAll:
 
-            if (xTarget, yTarget) in convexHullPoints:
-                continue  # don't calculate again the previously detected points
+            dy = yTarget - convexHullPoints[-1][1]
+            dx = xTarget - convexHullPoints[-1][0]
+            if dy == 0 and dx == 0: continue   # if there is no delta, there is nothing to do
 
+            radianNow = radian_calculate_with_arctan(convexHullPoints[-1][0], convexHullPoints[-1][1], xTarget, yTarget)
 
-            if firstCycle:
+            if firstLoop:
+                firstLoop = False
                 xSelected = xTarget
                 ySelected = yTarget
-                radianSelected = radian_calculate_with_arctan(coordActualHullElem[0], coordActualHullElem[1], xSelected, ySelected)
-                firstCycle = False
-                continue
+                radianSelected = radianNow
 
-            radianNow = radian_calculate_with_arctan(coordActualHullElem[0], coordActualHullElem[1], xTarget, yTarget)
             if radianNow < radianSelected:
                 xSelected = xTarget
                 ySelected = yTarget
@@ -125,12 +117,12 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
 
             print(f"radian target: {xTarget}, {yTarget} {radianNow}")
 
-        print(f"selected radian coord: ({xSelected}, {ySelected})")
-        coordActualHullElem = (xSelected, ySelected)
+        print(f"selected radian coord: ({xSelected}, {ySelected}) {radianSelected}")
 
-        if coordActualHullElem == topLeftCoord:
+        if (xSelected, ySelected) == topLeftCoord:
+            print("the circle is closed, the loop reached the first elem again")
             break  # the circle is closed, the loop reached the first elem again
 
-        convexHullPoints.append(coordActualHullElem)
+        convexHullPoints.append((xSelected, ySelected))
 
     return convexHullPoints, errors
