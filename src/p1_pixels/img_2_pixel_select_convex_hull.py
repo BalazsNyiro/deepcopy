@@ -75,37 +75,62 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
     topLeftCoord, errors = img_0_pixels.pixelgroup_matrix_repr_select_top_left_coord(pixelGroup_Glyph)
     print(f"topLeft coord: {topLeftCoord}")
 
-    convexHullPoints: list[tuple[int, int]] = list()
-
-    radiansCalculated: dict[tuple[tuple[int, int], tuple[int, int]], float]
 
     coordinatesAll: list[tuple[int, int]] = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
         pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
-    # find the smallest radian
-    xSmallest = 0
-    ySmallest = 0
-    radianSmallest = 0
-    firstCycle = True
 
-    for (xTarget, yTarget) in coordinatesAll:
+    #########################################################
+    # reorganise coordinates: the top-left has to be the last elem, as a closer
+    coordinatesAll_lastIsTopLeft: list[tuple[int, int]] = list()
+    for coord in coordinatesAll:
+        if coord != topLeftCoord:
+            coordinatesAll_lastIsTopLeft.append(coord)
+    coordinatesAll_lastIsTopLeft.append(topLeftCoord)
+    print(f"coordinates all, topLeft is the last")
+    #########################################################
 
-        if xTarget == topLeftCoord[0] and yTarget == topLeftCoord[1]:
-            continue  # skip the start point, that cannot be checked
+    # the order of the points are important, so I need to use a list
+    convexHullPoints: list[tuple[int, int]] = [topLeftCoord]
 
-        if firstCycle:
-            xSmallest = xTarget
-            ySmallest = yTarget
-            radianSmallest = radian_calculate_with_arctan(topLeftCoord[0], topLeftCoord[1], xSmallest, ySmallest)
-            continue
 
-        radianNow = radian_calculate_with_arctan(topLeftCoord[0], topLeftCoord[1], xTarget, yTarget)
-        if radianNow < radianSmallest:
-            xSmallest = xTarget
-            ySmallest = yTarget
-            radianSmallest = radianNow
+    coordActualHullElem = topLeftCoord
 
-    print(f"smallest radian coord: ({xSmallest}, {ySmallest})")
+    while True:
+
+        xSelected = 0
+        ySelected = 0
+        radianSelected = 0
+        firstCycle = True
+
+        for (xTarget, yTarget) in coordinatesAll:
+
+            if (xTarget, yTarget) in convexHullPoints:
+                continue  # don't calculate again the previously detected points
+
+
+            if firstCycle:
+                xSelected = xTarget
+                ySelected = yTarget
+                radianSelected = radian_calculate_with_arctan(coordActualHullElem[0], coordActualHullElem[1], xSelected, ySelected)
+                firstCycle = False
+                continue
+
+            radianNow = radian_calculate_with_arctan(coordActualHullElem[0], coordActualHullElem[1], xTarget, yTarget)
+            if radianNow < radianSelected:
+                xSelected = xTarget
+                ySelected = yTarget
+                radianSelected = radianNow
+
+            print(f"radian target: {xTarget}, {yTarget} {radianNow}")
+
+        print(f"selected radian coord: ({xSelected}, {ySelected})")
+        coordActualHullElem = (xSelected, ySelected)
+
+        if coordActualHullElem == topLeftCoord:
+            break  # the circle is closed, the loop reached the first elem again
+
+        convexHullPoints.append(coordActualHullElem)
 
     return convexHullPoints, errors
