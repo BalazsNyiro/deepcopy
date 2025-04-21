@@ -15,7 +15,7 @@
 
 import math
 
-import img_0_pixels, img_2_pixel_select_convex_hull
+import img_0_pixels
 
 """naive complex hull functions.
 
@@ -69,24 +69,25 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     return arctan, []
 
 
-def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]], radianLastSelected: float=0.0) -> tuple[tuple[int, int], list[str]]:
+def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]], radianLastSelected: float=0.0) -> (
+        tuple)[tuple[int, int], float, bool, list[str]]:
     """in a given point set, find the next elem of the hull,
     if start point is defined.
 
     radianLastSelected = 0.0 is the smallest possible radian val, every calculated value is greater than this
     """
     errors: list[str] = list()
+    minimumOneElemDetected: bool = False
+    radianMinInPoints: float = 0.0
 
     if len(coordinatesAll) == 1:  # if there is only one elem, it's easy to select the next hull elem...
-        return pointStart, errors
+        return pointStart, radianMinInPoints, minimumOneElemDetected, errors
 
     if len(coordinatesAll) == 0:
-        return (0, 0), ["if there is no elem, there is no possible candidate as next hull elem"]
+        return (0, 0), radianMinInPoints, minimumOneElemDetected, ["if there is no elem, there is no possible candidate as next hull elem"]
 
 
-    radianMinInPoints: float = 0.0
     radianMinNextHullPoint = (0, 0)
-    minimumOneElemDetected: bool = False
 
     for coordTarget in coordinatesAll:
 
@@ -147,13 +148,22 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
         pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
+    # TODO: OPTIMIZE. remove middle pixels, they cannot be the part of the hull,
+    # if the current solution is too slow
+    #   *    *
+    #  *m*  *m*   *m*     a middle pixel cannot be the part of the complex hull,
+    #   *                 if it has 4 or 3 neighbours. or maybe '2 oppose only?' Check that.
+
+
+
+
     hullPointsSet = set(convexHullPoints)
     pointStart = convexHullPoints[0]
     radianLastSelected = 0.0
 
     minimumOneElemDetected = True
     while minimumOneElemDetected:
-        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = _convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected)
         errors.extend(errorsFromHull)
 
         if minimumOneElemDetected:

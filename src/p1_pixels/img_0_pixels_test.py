@@ -440,7 +440,7 @@ class Test_matrix_representation(unittest.TestCase):
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         # the extra border settings is the change, compared with the prev test case
-        matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh({3,4,5,6})
+        matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh((3,4,5,6))
         
         
         # because of the border settings, the representation has a margin around the glyph:

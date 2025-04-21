@@ -11,7 +11,7 @@ else
   for FILE_PY in *.py  */*/*.py; do
     echo
     echo $FILE_PY
-    mypy $FILE_PY
+    mypy $FILE_PY  --check-untyped-defs
   done
 
 fi

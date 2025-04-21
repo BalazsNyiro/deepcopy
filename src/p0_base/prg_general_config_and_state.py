@@ -43,7 +43,7 @@ class Prg:
         self.initWarnings = []
 
         self.data = dict()
-        self.history = dict()
+        self.history: dict[str, list[dict[str, str]]] = dict()
 
         # In Python 3.9 and later, __file__ always stores an absolute path,
         # the root is 3 levels above this file.
@@ -88,21 +88,21 @@ class Prg:
         self.data[keyword] = val
         self.history.setdefault(keyword, list())
 
-        recordWhatHappened = {"valueUpdated": val, "whoUpdated": whoUpdated, "whyUpdated": whyUpdated}
+        recordWhatHappened = {"valueUpdated": str(val), "whoUpdated": whoUpdated, "whyUpdated": whyUpdated}
         self.history[keyword].append(recordWhatHappened)
 
 
 
 
-    def get_history(self, keyword: str):
-        errors = []
-        history = []
+    def get_history(self, keyword: str) -> tuple[list[dict[str, str]], list[str]]:
+        errors: list[str] = []
+        historyOfKeyword: list[dict[str, str]] = []
         if keyword not in self.history:
             errors.append(f"wanted keyword ({keyword}) is unknown in history")
         else:
-            history = self.history.get(keyword)
+            historyOfKeyword = self.history[keyword]
 
-        return history, errors
+        return historyOfKeyword, errors
 
     def get(self, keyword: str):
         """read wanted keyword from data
@@ -114,7 +114,7 @@ class Prg:
         value = ""
 
         if keyword in self.data:
-            value = self.data.get(keyword)
+            value = self.data[keyword]
         else:
             errors.append(f"unknown keyword in Prg.data: {keyword}")
 

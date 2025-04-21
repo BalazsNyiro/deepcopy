@@ -82,7 +82,7 @@ class Test_convex_hull(unittest.TestCase):
         testName = "test_convex_hull_find_next_point_in_hull"
         print(f"Test: {testName}")
 
-        coords: list[tuple(int, int)] = [
+        coords: list[tuple[int, int]] = [
                     (2, 0), (3, 0),
             (1, 1), (2, 1), (3, 1),
             (1, 2), (2, 2)]
@@ -134,7 +134,7 @@ class Test_convex_hull(unittest.TestCase):
 
         # special case, there is only one elem, so the answer is
         # the start point again
-        hullElemNext, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
+        hullElemNext, _, _, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
         self.assertEqual(hullElemNext, pointStart)
         self.assertTrue(len(errors) == 0)
@@ -144,7 +144,7 @@ class Test_convex_hull(unittest.TestCase):
         pointStart = (2, 0)
 
         # special case, no avaialbe coord
-        hullElemNext, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
+        hullElemNext, _, _, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
         self.assertTrue(len(errors) > 0)
 
