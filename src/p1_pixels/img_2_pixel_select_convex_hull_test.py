@@ -38,7 +38,11 @@ class Test_convex_hull(unittest.TestCase):
         pixelGroups_Glyphs[0].matrix_representation_refresh()
 
         pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
-        img_2_pixel_select_convex_hull.convex_hull_points_collect(pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
+        convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
+            pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
+
+        print(f"in test, convex hull points: {convexHullPoints}")
+
 
 
     # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull_find_next_point_in_hull
@@ -49,30 +53,45 @@ class Test_convex_hull(unittest.TestCase):
         coords: list[tuple(int, int)] = [
                     (2, 0), (3, 0),
             (1, 1), (2, 1), (3, 1),
-                    (2, 2)]
+            (1, 2), (2, 2)]
 
 
         pointStart = (3, 1)
+        radianLastSelected = 0.0
 
-        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext 1: {hullElemNext}")
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        print(f"hullElemNext 1: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (3, 0))
+        self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext 2: {hullElemNext}")
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        print(f"hullElemNext 2: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (2, 0))
+        self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext 3: {hullElemNext}")
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        print(f"hullElemNext 3: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (1, 1))
+        self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
-        print(f"hullElemNext 4: {hullElemNext}")
-        self.assertEqual(hullElemNext, (3, 0))
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        print(f"hullElemNext 4: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
+        self.assertEqual(hullElemNext, (1, 2))
+        self.assertTrue(minimumOneElemDetected)
 
+        pointStart = hullElemNext
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        print(f"hullElemNext 5: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
+        self.assertEqual(hullElemNext, (2, 2))
+        self.assertTrue(minimumOneElemDetected)
+
+        pointStart = hullElemNext
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errors = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        print(f"hullElemNext 6: {hullElemNext} {errors} minimumOneSelected: {minimumOneElemDetected}")
+        self.assertFalse(minimumOneElemDetected)
 
     def test_convex_hull_find_next_point_in_hull_specials(self):
         testName = "test_convex_hull_find_next_point_in_hull_specials"

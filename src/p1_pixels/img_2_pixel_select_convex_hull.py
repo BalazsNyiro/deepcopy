@@ -15,7 +15,7 @@
 
 import math
 
-import img_0_pixels
+import img_0_pixels, img_2_pixel_select_convex_hull
 
 """naive complex hull functions.
 
@@ -69,10 +69,11 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     return arctan, []
 
 
-def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]]) -> tuple[tuple[int, int], list[str]]:
+def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]], radianLastSelected: float=0.0) -> tuple[tuple[int, int], list[str]]:
     """in a given point set, find the next elem of the hull,
     if start point is defined.
 
+    radianLastSelected = 0.0 is the smallest possible radian val, every calculated value is greater than this
     """
     errors: list[str] = list()
 
@@ -83,9 +84,9 @@ def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: li
         return (0, 0), ["if there is no elem, there is no possible candidate as next hull elem"]
 
 
-    radianMin: float = 0.0
+    radianMinInPoints: float = 0.0
     radianMinNextHullPoint = (0, 0)
-    firstForLoop: bool = True
+    minimumOneElemDetected: bool = False
 
     for coordTarget in coordinatesAll:
 
@@ -104,17 +105,18 @@ def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: li
         # don't continue the work if there was a problem with radian calc
 
         # if this is the first point, so there is no better option, use this:
-        if firstForLoop:
-            firstForLoop = False
-            radianMin = radianNow
-            radianMinNextHullPoint = coordTarget
-        else:
-            if radianNow < radianMin:
-                radianMin = radianNow
+        if radianNow >= radianLastSelected:  # so go under-clock-wise
+            if not minimumOneElemDetected:
+                minimumOneElemDetected = True
+                radianMinInPoints = radianNow
                 radianMinNextHullPoint = coordTarget
+            else:
+                if radianNow < radianMinInPoints:
+                    radianMinInPoints = radianNow
+                    radianMinNextHullPoint = coordTarget
 
-    # print(f"selected radian coord: {radianMinNextHullPoint} {radianMin}")
-    return radianMinNextHullPoint, errors
+    # print(f"selected radian coord: {radianMinNextHullPoint} {radianMinInPoints} errors: {errors}")
+    return radianMinNextHullPoint, radianMinInPoints, minimumOneElemDetected, errors
 
 
 
@@ -129,31 +131,35 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
     # the order of the points are important, so I need to use a list
     # convexHullPoints currently has only ONE element, the first point
     convexHullPoints, errors = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-        pixelGroup_Glyph, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("top", "right"))
-    print(f"Hull with one point only: {convexHullPoints}")
+        pixelGroup_Glyph, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("bottom", "right"))
+    print(f"Hull with one start point: {convexHullPoints}")
 
     if not convexHullPoints:  # theoretically for an empty set an empty answer is correct.
-        msg = f"WARNING: no selected top left coord in given PixelGroup!! wantedNames: {wantedPixelGroupNames} pixelGroup: {pixelGroup_Glyph}"
+        msg = f"WARNING: no selected top right coord in given PixelGroup!! wantedNames: {wantedPixelGroupNames} pixelGroup: {pixelGroup_Glyph}"
         print(msg)
         return list(), errors  # no hull coord in empty selection
     ###################################################################################################
 
+    if len(pixelGroup_Glyph.pixels) == 1:  # for 1 point the hull has 1 elem
+        return convexHullPoints, errors
 
     coordinatesAll: list[tuple[int, int]] = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
         pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
+    hullPointsSet = set(convexHullPoints)
+    pointStart = convexHullPoints[0]
+    radianLastSelected = 0.0
 
-    # while True:
-    #     loopCounter += 1
-    #     if loopCounter > 5:
-    #         break
+    minimumOneElemDetected = True
+    while minimumOneElemDetected:
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected)
+        errors.extend(errorsFromHull)
 
+        if minimumOneElemDetected:
+            convexHullPoints.append(hullElemNext)
+            hullPointsSet.add(hullElemNext)  # it is faster to search in a set instead of convexHullPoints
 
-    #     if (xSelected, ySelected) == convexHullPoints[0]:
-    #         print("the circle is closed, the loop reached the first elem again")
-    #         break  # the circle is closed, the loop reached the first elem again
-
-    #     convexHullPoints.append((xSelected, ySelected))
+            pointStart = hullElemNext
 
     return convexHullPoints, errors
