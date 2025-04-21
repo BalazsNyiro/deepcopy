@@ -25,23 +25,55 @@ class Test_convex_hull(unittest.TestCase):
     def test_convex_hull(self):
         testName = "test_convex_hull"
 
+        def get_hull_points(txt, testName):
+            pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+            pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+            pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+            pixelGroups_Glyphs[0].matrix_representation_refresh()
+
+            pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
+            convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
+                pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
+
+            print(f"Test: {testName}, convex hull points: {convexHullPoints}")
+            return convexHullPoints
+
         txt = """
           ....***..  
           ....*.*..  
           ..**..*** 
           ..**..*..
         """
+        convexHullPoints = get_hull_points(txt, testName)
+        self.assertEqual(convexHullPoints, [(4, 3), (6, 2), (4, 0), (2, 0), (0, 2), (0, 3), (1, 3), (4, 3)])
 
-        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
-        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
-        pixelGroups_Glyphs[0].matrix_representation_refresh()
 
-        pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
-        convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-            pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
+        txt = """
+          .**.**.  
+          .*****.  
+          .**.**. 
+          .*...*.
+        """
+        convexHullPoints = get_hull_points(txt, testName)
+        self.assertEqual(convexHullPoints, [(4, 3), (4, 0), (0, 0), (0, 1), (0, 2), (0, 3), (4, 3)])
 
-        print(f"in test, convex hull points: {convexHullPoints}")
+
+        txt = """
+          .............*............
+          ....*........*........*...
+          ....*........*........*...
+          ....****.....**********...
+          ....*........*............
+          **************************
+          ....*........*.....*......
+          ....*........*...***......
+          ....*........*............
+          ....*........*............
+          ....*........*............
+          ....*.....................
+        """
+        convexHullPoints = get_hull_points(txt, testName)
+        self.assertEqual(convexHullPoints, [(4, 11), (13, 10), (25, 5), (22, 1), (13, 0), (4, 1), (0, 5), (4, 11)])
 
 
 
