@@ -204,9 +204,10 @@ class Test_collect_relative_matrix_coords(unittest.TestCase):
         print(f"Test: {testName}")
 
         txt = """
-          .*.
-          ***
-          .*.
+          ....
+          ..*.
+          .***
+          ..*.
         """
 
         pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
@@ -214,10 +215,24 @@ class Test_collect_relative_matrix_coords(unittest.TestCase):
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         pixelGroups_Glyphs[0].matrix_representation_refresh()
-        coordsInactiveInMatrix= img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
+
+        # with relative coords
+        coordsInactiveInMatrix = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
             pixelGroups_Glyphs[0].matrix_representation, {img_0_pixels.pixelsNameBackgroundInactive}
         )
         self.assertTrue(len(coordsInactiveInMatrix) == 4)
+        # the relative/abs coords are different
+        self.assertIn((2, 2), coordsInactiveInMatrix)
+
+        # with absolute coords
+        coordsInactiveInMatrix = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
+            pixelGroups_Glyphs[0].matrix_representation, {img_0_pixels.pixelsNameBackgroundInactive},
+            useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=True
+        )
+        self.assertTrue(len(coordsInactiveInMatrix) == 4)
+
+        # the relative/abs coords are different
+        self.assertIn((3, 3), coordsInactiveInMatrix)
 
 
 
@@ -344,7 +359,7 @@ class Test_matrix_representation(unittest.TestCase):
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
-        matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup)
+        matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(matrixRepresentationOfPixelGroup)
         print(matrixReprStr)
 
         """
@@ -367,6 +382,13 @@ class Test_matrix_representation(unittest.TestCase):
 
         self.assertEqual(wantedOut, matrixReprStr)
 
+
+    # python3 img_0_pixels_test.py  Test_matrix_representation.test_matrix_representation_without_matrix_repr_data
+    def test_matrix_representation_without_matrix_repr_data(self):
+        matrixReprStr = img_0_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(
+            list(), printStr=True)
+        
+        self.assertIn("The matrix representation is empty", matrixReprStr)
 
     def test_matrix_representation_empty_area(self):
         pixelGroupForBackgroundNonActivePixels = \
@@ -403,7 +425,7 @@ class Test_matrix_representation(unittest.TestCase):
         matrixRepresentationOfPixelGroup = pixelGroups_Glyphs[0].matrix_representation_refresh()
 
         print(f"Test: {testName}")
-        img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup, printStr=True)
+        img_0_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 0 # matrixRepresentation is y,x based!!!!
         x = 0
@@ -461,7 +483,7 @@ class Test_matrix_representation(unittest.TestCase):
         """
 
         print(f"Test: {testName}")
-        img_0_pixels.pixelGroup_matrix_representation_convert_to_str(matrixRepresentationOfPixelGroup, printStr=True)
+        img_0_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(matrixRepresentationOfPixelGroup, printStr=True)
 
         y = 4  # matrixRepresentation is y,x based!!!!
         x = 10
@@ -470,6 +492,63 @@ class Test_matrix_representation(unittest.TestCase):
         y = 7  # matrixRepresentation is y,x based!!!!
         x = 6
         self.assertTrue(img_0_pixels.pixelsNameForegroundActive in matrixRepresentationOfPixelGroup[y][x][2].representedPixelGroupNames)
+
+# python3  img_0_pixels_test.py  Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph
+class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittest.TestCase):
+
+    def test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(self):
+        testName = "test_pixelGroup_matrix_representation_has_emptyborder_around_glyph"
+
+        txt = """
+          .*.
+          ***
+          .*.
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+
+        pixelGroups_Glyphs[0].matrix_representation_refresh()
+        img_0_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
+
+        self.assertFalse(img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(pixelGroups_Glyphs[0].matrix_representation, raiseExceptionIfNoBorder=False))
+
+        # missing empty border around the pixelGroup, there are pixels
+        self.assertRaises(ValueError,
+                         img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph,
+                         pixelGroups_Glyphs[0].matrix_representation,
+                         raiseExceptionIfNoBorder=True
+                         )
+
+        # no pixel in representation, with exception
+        self.assertRaises(ValueError,
+                          img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph,
+                          list(),
+                          True
+                          )
+
+        # no pixel in representation, with False ret
+        self.assertFalse( img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(
+                           list(), False) )
+
+        #######################################################################################
+
+        txt = """
+          ....
+          .**.
+          ....
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+
+        pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1,1,1,1))
+
+        self.assertTrue(img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(pixelGroups_Glyphs[0].matrix_representation, raiseExceptionIfNoBorder=False))
+
+
 
 
 if __name__ == '__main__':

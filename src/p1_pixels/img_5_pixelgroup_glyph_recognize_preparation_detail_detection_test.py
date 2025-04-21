@@ -51,42 +51,5 @@ class Test_glyph_statistics(unittest.TestCase):
 
 
 
-# python3  img_5_pixelgroup_glyph_recognize_preparation_detail_detection_test.py  Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph
-class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittest.TestCase):
-
-    def test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(self):
-        testName = "test_pixelGroup_matrix_representation_has_emptyborder_around_glyph"
-
-        txt = """
-          .*.
-          ***
-          .*.
-        """
-
-        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
-        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
-
-        pixelGroups_Glyphs[0].matrix_representation_refresh()
-        img_0_pixels.pixelGroup_matrix_representation_convert_to_str(pixelGroups_Glyphs[0].matrix_representation, printStr=True)
-
-        self.assertFalse(img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(pixelGroups_Glyphs[0].matrix_representation, raiseExceptionIfNoBorder=False))
-        #######################################################################################
-
-        txt = """
-          ....
-          .**.
-          ....
-        """
-
-        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
-        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
-
-        pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1,1,1,1))
-
-        self.assertTrue(img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(pixelGroups_Glyphs[0].matrix_representation, raiseExceptionIfNoBorder=False))
-
-
 if __name__ == '__main__':
     unittest.main()

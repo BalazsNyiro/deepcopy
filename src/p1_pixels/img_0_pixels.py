@@ -281,7 +281,7 @@ class PixelGroup_Glyph:
         if refreshTheMatrix:
             self.matrix_representation_refresh()
             # print(self.matrix_representation)
-        return pixelGroup_matrix_representation_convert_to_str(self.matrix_representation, printStr=True)
+        return pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(self.matrix_representation, printStr=True)
 
 
     def matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(self) -> tuple[tuple[int, int, int, int], list[str]]:
@@ -301,9 +301,9 @@ class PixelGroup_Glyph:
 
 
 
-
-
-def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAlias_matrix_representation, printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
+def pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(
+        matrix_representation:typeAlias_matrix_representation,
+        printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -336,7 +336,14 @@ def pixelGroup_matrix_representation_convert_to_str(matrix_representation:typeAl
 
 
     if len(matrix_representation) < 1:
-        msg = "The matrix representation is empty"
+        msg = """The matrix representation is empty, there is nothing in the string output. Every active glyph has minimum 1 pixel,
+         so the representation should have minimum one elem, so theoretically this cannot happen, but in test cases
+         if the representation is not generated, there is a possibility to see this situation,
+         so this is a warning for the developer.
+         
+         if a glyph is collector of inactive pixels, then the str conversion has to
+         use the wantedFlagsToDisplay={...inactive...} selection.
+         """
         print(msg)
         return msg
 
@@ -548,7 +555,7 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
 
             isEmptyBorderDetected = False
 
-            matrixStr = pixelGroup_matrix_representation_convert_to_str(pixelGroup_glyph_matrix_representation)
+            matrixStr = pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(pixelGroup_glyph_matrix_representation)
             errMsg = f"missing empty border around the pixelGroup {(x, y)} \n {matrixStr}"
             if raiseExceptionIfNoBorder:
                 raise ValueError(errMsg)
