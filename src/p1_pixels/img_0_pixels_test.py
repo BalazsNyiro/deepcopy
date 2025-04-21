@@ -336,6 +336,30 @@ class TestLoadImageFile(unittest.TestCase):
         self.assertTrue(warnings == list())
 
 
+# python3 img_0_pixels_test.py Test_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom
+class Test_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(unittest.TestCase):
+
+    def test_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(self):
+
+        glyph = img_0_pixels.PixelGroup_Glyph()
+        glyph.pixel_add(10, 11, (1,2,3))
+        glyph.pixel_add(2, 22, (1,2,3))
+        glyph.pixel_add(20, 21, (4,5,6))
+
+        glyph.matrix_representation_refresh()
+        coordsAbs, _errors = glyph.matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom()
+        self.assertEqual(coordsAbs, (2, 11, 20, 22))
+
+
+    def test_missing_pixels_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(self):
+
+        glyph = img_0_pixels.PixelGroup_Glyph()
+        coordsAbs, errors = glyph.matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom()
+
+        self.assertEqual(coordsAbs, (-1, -1, -1, -1))
+        self.assertEqual(errors, ["noPixelInGlyph"])
+
+
 # python3 img_0_pixels_test.py  Test_matrix_representation
 class Test_matrix_representation(unittest.TestCase):
 
