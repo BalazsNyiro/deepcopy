@@ -69,7 +69,7 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     return arctan, []
 
 
-def convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]], radianLastSelected: float=0.0) -> tuple[tuple[int, int], list[str]]:
+def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]], radianLastSelected: float=0.0) -> tuple[tuple[int, int], list[str]]:
     """in a given point set, find the next elem of the hull,
     if start point is defined.
 
@@ -153,7 +153,7 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
 
     minimumOneElemDetected = True
     while minimumOneElemDetected:
-        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected)
         errors.extend(errorsFromHull)
 
         if minimumOneElemDetected:

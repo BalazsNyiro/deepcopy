@@ -91,37 +91,37 @@ class Test_convex_hull(unittest.TestCase):
         pointStart = (3, 1)
         radianLastSelected = 0.0
 
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 1: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (3, 0))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 2: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (2, 0))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 3: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (1, 1))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 4: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (1, 2))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 5: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (2, 2))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, errors = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 6: {hullElemNext} {errors} minimumOneSelected: {minimumOneElemDetected}")
         self.assertFalse(minimumOneElemDetected)
 
@@ -134,7 +134,7 @@ class Test_convex_hull(unittest.TestCase):
 
         # special case, there is only one elem, so the answer is
         # the start point again
-        hullElemNext, errors = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        hullElemNext, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
         self.assertEqual(hullElemNext, pointStart)
         self.assertTrue(len(errors) == 0)
@@ -144,7 +144,7 @@ class Test_convex_hull(unittest.TestCase):
         pointStart = (2, 0)
 
         # special case, no avaialbe coord
-        hullElemNext, errors = img_2_pixel_select_convex_hull.convex_hull_next_elem_detect(pointStart, coords)
+        hullElemNext, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
         self.assertTrue(len(errors) > 0)
 
