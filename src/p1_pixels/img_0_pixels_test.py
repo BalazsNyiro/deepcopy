@@ -31,6 +31,24 @@ def path_abs_to_testfile(pathRelative: str):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), pathRelative)
 
 
+# python3 img_0_pixels_test.py Test_pixels_load_from_string
+class Test_pixels_load_from_string(unittest.TestCase):
+
+    def test_different_rowlength_in_input(self):
+        testName = "test_different_rowlength_in_input"
+
+        # the input line lengths are different
+        txt = """
+          ....
+          .**.......
+          ....
+        """
+
+        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        self.assertIn("num of pixels in the rows are different", str(errors))
+        
+
+
 # python3 img_0_pixels_test.py Test_pixelgroup_matrix_repr_select_corner
 class Test_pixelgroup_matrix_repr_select_corner(unittest.TestCase):
 
@@ -336,6 +354,24 @@ class TestLoadImageFile(unittest.TestCase):
         self.assertTrue(warnings == list())
 
 
+
+class Test_glyph_general(unittest.TestCase):
+
+    def test_pixel_remove(self):
+
+        glyph = img_0_pixels.PixelGroup_Glyph()
+        glyph.pixel_add(10, 11, (1,2,3))
+        glyph.pixel_add(2 , 22, (1,2,3))
+        glyph.pixel_add(20, 21, (4,5,6))
+
+        # the first pixel can be removed, the second is unknown
+        # in pixels, so that won't be removed
+        glyph.pixels_remove([(10, 11), (2, 33)])
+
+        self.assertTrue(len(glyph.pixels) == 2)
+
+
+
 # python3 img_0_pixels_test.py Test_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom
 class Test_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(unittest.TestCase):
 
@@ -343,7 +379,7 @@ class Test_matrix_representation_xAbsLeft_yAbsTop_xAbsRight_yAbsBottom(unittest.
 
         glyph = img_0_pixels.PixelGroup_Glyph()
         glyph.pixel_add(10, 11, (1,2,3))
-        glyph.pixel_add(2, 22, (1,2,3))
+        glyph.pixel_add(2 , 22, (1,2,3))
         glyph.pixel_add(20, 21, (4,5,6))
 
         glyph.matrix_representation_refresh()

@@ -21,6 +21,22 @@ import img_2_pixel_select_convex_hull, img_3_pixel_select
 # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull
 class Test_convex_hull(unittest.TestCase):
 
+    def test_convex_hull_noPixel_or_onePixel_only(self):
+        testName = "test_convex_hull_noPixel_or_onePixel_only"
+
+        # no pixel in glyph
+        glyph = img_0_pixels.PixelGroup_Glyph()
+        glyph.matrix_representation_refresh()
+        convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
+            glyph, {img_0_pixels.pixelsNameForegroundActive})
+
+
+        # if no pixel, then there is no convexHull,
+        # so this is logical, but special case
+        self.assertTrue(len(convexHullPoints) == 0)
+        self.assertTrue(len(errorsHull) == 0)
+
+
     # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull
     def test_convex_hull(self):
         testName = "test_convex_hull"
@@ -156,8 +172,9 @@ class Test_convex_hull(unittest.TestCase):
         radVal, err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertNotEqual( err, [] )
 
+        # there is no 0 value in the system
         radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
-        self.assertEqual( radVal_err, (0.0, []) )
+        self.assertEqual( radVal_err, (math.pi*2, []) )
 
         radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (math.pi/4, []) )

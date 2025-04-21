@@ -59,9 +59,39 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     # use only positive values, to see the relations between vectors
     # The next point cannot be in right direction, the searching is always go in counterClockWise
     # to the bigger radian direction.
-    # So radian 0 is always 2pi, there is no 0 value, to support counterClockWise complex hull searching
+
+    # radian 0 is always 2pi, there is no 0 value, to support counterClockWise complex hull searching
     # there is no 0 radian: every radian value is greater than 0, 0 is represented with 2pi,
     # to create a monotonous increasing radian range.
+
+    # explanation, why radian 0 is not used
+    """
+    The theoretical 0 value is in right direction:
+           pi/2
+            ^ 
+            | 
+      pi<---.-----> right direction, this is the theoretical 0 pi, and 2pi too.
+            |
+            |
+            V
+         pi+1/2 pi 
+   
+    But practially, the start point to detect convex hull is the BOTTOM-RIGHT position,
+    because the next elem's radiant will be a non-zero positive value in this case.
+        ..432 
+        ..51
+    
+    so point 1 is the start, and we go around to 2, 3, 4, 5 and return to 1.
+    in the last step 5->1 the theoretical radia value would be 0, which is less
+    than 4->5 radian 3/2pi, 
+    so I use 2pi instead of 0 pi for 5->1 direction.
+    
+    in other words: radian 0 is NEVER used, it is represented with 2pi,
+    because that is the bigger value in clockwise direction,
+    and the convexHull's end point can be closed with the biggest radian val.
+    
+    
+    """
 
     if arctan <= 0:
         arctan = arctan + 2*math.pi
