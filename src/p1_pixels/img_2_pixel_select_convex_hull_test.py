@@ -37,6 +37,16 @@ class Test_convex_hull(unittest.TestCase):
         self.assertTrue(len(errorsHull) == 0)
 
 
+        ### one pixel only - a special if is executed in the code without search
+        # if len(pixel...) == 1
+        glyph.pixel_add(1,2, (3,4,5))
+        glyph.matrix_representation_refresh()
+        convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
+            glyph, {img_0_pixels.pixelsNameForegroundActive})
+        self.assertTrue(len(convexHullPoints) == 1)
+        self.assertTrue(len(errorsHull) == 0)
+
+
     # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull
     def test_convex_hull(self):
         testName = "test_convex_hull"
@@ -164,6 +174,7 @@ class Test_convex_hull(unittest.TestCase):
         print(f"hullElemNext: {hullElemNext}")
         self.assertTrue(len(errors) > 0)
 
+
     def test_rad_calc(self):
 
         testName = "test_rad_calc"
@@ -201,5 +212,5 @@ class Test_convex_hull(unittest.TestCase):
                                                                                  coordinatesAreScreenZeroZeroInTopLeftRightSystem=True)
         self.assertEqual( radVal_err, (7*math.pi/4, []) )
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__':  # pragma: no cover
+    unittest.main()         # pragma: no cover

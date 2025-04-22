@@ -51,5 +51,5 @@ class Test_glyph_statistics(unittest.TestCase):
 
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__':  # pragma: no cover
+    unittest.main()         # pragma: no cover

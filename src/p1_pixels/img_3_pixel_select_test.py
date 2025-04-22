@@ -60,6 +60,7 @@ class Test_pixelGroups_active_select(unittest.TestCase):
             len(pixelGroups_Glyphs[0].pixels) == txt.count("*")-2)
 
 
+# python3 img_3_pixel_select_test.py  Test_isActive_checkAllSelectors
 class Test_isActive_checkAllSelectors(unittest.TestCase):
 
     def test_isActive_all_selector(self):
@@ -86,6 +87,39 @@ class Test_isActive_checkAllSelectors(unittest.TestCase):
 
         self.assertTrue(isActive)
 
+        ############### separated R channel selector
+        onePixelRgb = (0, 255, 255)  # too bright pixel
+        isActive = img_3_pixel_select.isActive_checkAllSelectors(
+            onePixelRgb,
+            [
+                (img_3_pixel_select.pixelGroupSelector_default,
+                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
+            ] )
+
+        self.assertTrue(isActive)
+
+        ############### separated G channel selector
+        onePixelRgb = (255, 0, 255)  # too bright pixel
+        isActive = img_3_pixel_select.isActive_checkAllSelectors(
+            onePixelRgb,
+            [
+                (img_3_pixel_select.pixelGroupSelector_default,
+                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
+            ] )
+
+        self.assertTrue(isActive)
+
+
+        ############### separated B channel selector
+        onePixelRgb = (255, 255, 0)  # too bright pixel
+        isActive = img_3_pixel_select.isActive_checkAllSelectors(
+            onePixelRgb,
+            [
+                (img_3_pixel_select.pixelGroupSelector_default,
+                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
+            ] )
+
+        self.assertTrue(isActive)
 
 
 # python3 img_3_pixel_select_test.py
@@ -128,5 +162,5 @@ class Test_coords_neighbour(unittest.TestCase):
 
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__':  # pragma: no cover
+    unittest.main()         # pragma: no cover
