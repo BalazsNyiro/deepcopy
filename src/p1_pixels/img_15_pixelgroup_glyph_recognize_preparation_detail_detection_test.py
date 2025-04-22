@@ -13,10 +13,10 @@
 # Please read the complete LICENSE file
 # in the root directory of this source tree.
 
-import unittest, img_0_pixels, img_3_pixel_select, img_5_pixelgroup_glyph_recognize_preparation_detail_detection
+import unittest, img_10_pixels, img_13_pixel_select, img_15_pixelgroup_glyph_recognize_preparation_detail_detection
 
 
-# python3  img_5_pixelgroup_glyph_recognize_preparation_detail_detection_test.py Test_glyph_statistics
+# python3  img_15_pixelgroup_glyph_recognize_preparation_detail_detection_test.py Test_glyph_statistics
 class Test_glyph_statistics(unittest.TestCase):
 
     def test_glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph(self):
@@ -32,9 +32,9 @@ class Test_glyph_statistics(unittest.TestCase):
           ****.
         """
 
-        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txtB, callerPlaceName=testName)
+        pixels, errors, warnings = img_10_pixels.pixels_load_from_string(txtB, callerPlaceName=testName)
         print(pixels)
-        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_13_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
         print(pixelGroups_Glyphs[0].pixels)
 
@@ -46,7 +46,7 @@ class Test_glyph_statistics(unittest.TestCase):
         pixelGroups_Glyphs[0].matrix_representation_display_in_terminal(refreshTheMatrix=False)
 
         print("txtB closed inactive segment detect:")
-        enclosedInactiveSegmentsNum, errors = img_5_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(pixelGroups_Glyphs[0])
+        enclosedInactiveSegmentsNum, errors = img_15_pixelgroup_glyph_recognize_preparation_detail_detection.glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(pixelGroups_Glyphs[0])
         self.assertEqual(len(enclosedInactiveSegmentsNum), 2)
 
 

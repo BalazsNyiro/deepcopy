@@ -21,12 +21,12 @@ Every pixelgroup has a unique ID, the statistics are stored based on that id.
 """
 
 import typing
-import img_0_pixels
-import img_3_pixel_select
-from img_0_pixels import PixelGroup_Glyph
+import img_10_pixels
+import img_13_pixel_select
+from img_10_pixels import PixelGroup_Glyph
 
 
-def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: dict[int, img_0_pixels.PixelGroup_Glyph]) -> dict[int, dict[str, int|list[PixelGroup_Glyph]]]:
+def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: dict[int, img_10_pixels.PixelGroup_Glyph]) -> dict[int, dict[str, int|list[PixelGroup_Glyph]]]:
     """analyse every glyphs one by one to support the recognise step later.
 
     This section is about data collection about the pixelgroups.
@@ -67,9 +67,9 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: dict[int, img_0
 
 
 def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix(
-        pixelGroup_glyph: img_0_pixels.PixelGroup_Glyph,
+        pixelGroup_glyph: img_10_pixels.PixelGroup_Glyph,
         checkEmptyBorderAroundMatrixRepresentation: bool = True
-) -> tuple[list[img_0_pixels.PixelGroup_Glyph], list[str]]:
+) -> tuple[list[img_10_pixels.PixelGroup_Glyph], list[str]]:
     """count the closed inactive segments inside of a glyph.
 
     The matrix representation HAS to have an empty border around the glyph: matrix_representation_refresh(1,1,1,1) in the caller function.
@@ -93,17 +93,17 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
     ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
     # def matrix_representation_has_emptyborder_around_glyph()
     if checkEmptyBorderAroundMatrixRepresentation:
-        if not img_0_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(
+        if not img_10_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(
             pixelGroup_glyph.matrix_representation, raiseExceptionIfNoBorder=False):
-            errorsInStatClosedInactive.append(f"no empty border around glyph: \n{img_0_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(pixelGroup_glyph.matrix_representation)}\n\n")
+            errorsInStatClosedInactive.append(f"no empty border around glyph: \n{img_10_pixels.pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(pixelGroup_glyph.matrix_representation)}\n\n")
     ######################## This validation can be turned off IF the caller has a declared border creation in matrix representation ##########
 
 
 
     ############ VISUALISE THE COLLECTED PIXELGROUP: ################################################
     # at this point we know that the matrix has an empty border, so the outside pixels can be collected
-    pixelCoordsOutside_Glyph_collector = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
-        pixelGroup_glyph.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameBackgroundInactive})
+    pixelCoordsOutside_Glyph_collector = img_13_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+        pixelGroup_glyph.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_10_pixels.pixelsNameBackgroundInactive})
     # print(f"0 - pixels outside the character: {len(pixelCoordsOutside_Glyph_collector.pixels)} elems")
     # pixelCoordsOutside_Glyph_collector.matrix_representation_refresh()
     # pixelCoordsOutside_Glyph_collector.matrix_representation_display_in_terminal()
@@ -118,7 +118,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
 
     if not errorsInStatClosedInactive:
 
-        insidePixelCollector = img_0_pixels.PixelGroup_Glyph()
+        insidePixelCollector = img_10_pixels.PixelGroup_Glyph()
         insidePixelCollector.pixels_add_with_nonimportant_rgb(xStart=xAbsLeft, yStart=yAbsTop, xEnd=xAbsRight, yEnd=yAbsBottom)
         insidePixelCollector.pixels_remove(list(pixelGroup_glyph.pixels.keys()))
         insidePixelCollector.pixels_remove(list(pixelCoordsOutside_Glyph_collector.pixels.keys()))
@@ -134,13 +134,13 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
             insidePixelCollector.matrix_representation_refresh()
             # print(f"matrix representation: {insidePixelCollector.matrix_representation}")
 
-            activeRelativeMatrixCoords = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
-                insidePixelCollector.matrix_representation, wantedRepresentedNames={img_0_pixels.pixelsNameForegroundActive}
+            activeRelativeMatrixCoords = img_10_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
+                insidePixelCollector.matrix_representation, wantedRepresentedNames={img_10_pixels.pixelsNameForegroundActive}
             )
             oneCoordX, oneCoordY = activeRelativeMatrixCoords[0]
 
-            emptyGroup = img_3_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
-                insidePixelCollector.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_0_pixels.pixelsNameForegroundActive},
+            emptyGroup = img_13_pixel_select.coords_drop_collect_pixelgroups_from_starting_point(
+                insidePixelCollector.matrix_representation, allowedDirections={1, 3, 5, 7}, wantedRepresentedPixelGroupNames={img_10_pixels.pixelsNameForegroundActive},
                 xStartInMatrix=oneCoordX, yStartInMatrix=oneCoordY
             )
 

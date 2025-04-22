@@ -14,13 +14,13 @@
 # in the root directory of this source tree.
 
 import unittest
-import img_3_pixel_select, img_0_pixels
+import img_13_pixel_select, img_10_pixels
 
-# python3 img_3_pixel_select_test.py
+# python3 img_13_pixel_select_test.py
 
 
 
-# python3 img_3_pixel_select_test.py Test_pixelGroups_active_select
+# python3 img_13_pixel_select_test.py Test_pixelGroups_active_select
 class Test_pixelGroups_active_select(unittest.TestCase):
 
     def test_pixelGroups_active_select(self):
@@ -34,12 +34,12 @@ class Test_pixelGroups_active_select(unittest.TestCase):
           .*........*...
         """
 
-        pixels, errors, warnings = img_0_pixels.pixels_load_from_string(
+        pixels, errors, warnings = img_10_pixels.pixels_load_from_string(
             txt, callerPlaceName=testName)
 
         print(pixels)
 
-        pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs_id_group_dict = img_13_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
         print(f"=== Detected pixel groups (glyphs),  ===")
@@ -60,17 +60,17 @@ class Test_pixelGroups_active_select(unittest.TestCase):
             len(pixelGroups_Glyphs[0].pixels) == txt.count("*")-2)
 
 
-# python3 img_3_pixel_select_test.py  Test_isActive_checkAllSelectors
+# python3 img_13_pixel_select_test.py  Test_isActive_checkAllSelectors
 class Test_isActive_checkAllSelectors(unittest.TestCase):
 
     def test_isActive_all_selector(self):
 
         onePixelRgb = (200, 244, 199)  # too bright pixel
 
-        isActive = img_3_pixel_select.isActive_checkAllSelectors(
+        isActive = img_13_pixel_select.isActive_checkAllSelectors(
             onePixelRgb,
             [
-                (img_3_pixel_select.pixelGroupSelector_default,
+                (img_13_pixel_select.pixelGroupSelector_default,
                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
             ] )
 
@@ -78,10 +78,10 @@ class Test_isActive_checkAllSelectors(unittest.TestCase):
 
 
 
-        isActive = img_3_pixel_select.isActive_checkAllSelectors(
+        isActive = img_13_pixel_select.isActive_checkAllSelectors(
             onePixelRgb,
             [
-                (img_3_pixel_select.pixelGroupSelector_default,
+                (img_13_pixel_select.pixelGroupSelector_default,
                  {"rMax_toSelect": 222, "gMax_toSelect": 222, "bMax_toSelect": 222})
             ] )
 
@@ -90,25 +90,25 @@ class Test_isActive_checkAllSelectors(unittest.TestCase):
         ############### separated R, G, B channel selector
         for onePixelRgb in [(0, 255, 255), (255, 0, 255), (255, 255, 0) ]:
 
-            isActive = img_3_pixel_select.isActive_checkAllSelectors(
+            isActive = img_13_pixel_select.isActive_checkAllSelectors(
                 onePixelRgb,
                 [
-                    (img_3_pixel_select.pixelGroupSelector_default,
+                    (img_13_pixel_select.pixelGroupSelector_default,
                      {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
                 ] )
 
             self.assertTrue(isActive)
 
 
-# python3 img_3_pixel_select_test.py
+# python3 img_13_pixel_select_test.py
 class Test_coords_neighbour(unittest.TestCase):
 
     def test_find_neighbours_basic(self):
 
-        neighbours = img_3_pixel_select.coords_neighbours(3, 3, 0, 0, 6, 6)
+        neighbours = img_13_pixel_select.coords_neighbours(3, 3, 0, 0, 6, 6)
         self.assertTrue(len(neighbours) == 8)
 
-        neighbours = img_3_pixel_select.coords_neighbours(x=3, y=3,
+        neighbours = img_13_pixel_select.coords_neighbours(x=3, y=3,
                                                         xMinValidPossibleCoordValue=0, yMinValidPossibleCoordValue=0,
                                                         xMaxValidPossibleCoordValue=6, yMaxValidPossibleCoordValue=6,
                                                         allowedDirections={1}
@@ -116,7 +116,7 @@ class Test_coords_neighbour(unittest.TestCase):
         self.assertTrue(len(neighbours) == 1)
 
 
-        neighbours = img_3_pixel_select.coords_neighbours(x=3, y=3,
+        neighbours = img_13_pixel_select.coords_neighbours(x=3, y=3,
                                                         xMinValidPossibleCoordValue=0, yMinValidPossibleCoordValue=3,
                                                         xMaxValidPossibleCoordValue=6, yMaxValidPossibleCoordValue=6,
                                                         allowedDirections={1}
@@ -124,14 +124,14 @@ class Test_coords_neighbour(unittest.TestCase):
         self.assertTrue(len(neighbours) == 0)
 
 
-        neighbours = img_3_pixel_select.coords_neighbours(x=3, y=3,
+        neighbours = img_13_pixel_select.coords_neighbours(x=3, y=3,
                                                         xMinValidPossibleCoordValue=0, yMinValidPossibleCoordValue=3,
                                                         xMaxValidPossibleCoordValue=6, yMaxValidPossibleCoordValue=6
                                                         )
         self.assertTrue(len(neighbours) == 5)
 
 
-        neighbours = img_3_pixel_select.coords_neighbours(x=3, y=3,
+        neighbours = img_13_pixel_select.coords_neighbours(x=3, y=3,
                                                         xMinValidPossibleCoordValue=0, yMinValidPossibleCoordValue=0,
                                                         xMaxValidPossibleCoordValue=3, yMaxValidPossibleCoordValue=3
                                                         )

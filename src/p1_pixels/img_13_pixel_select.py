@@ -15,7 +15,7 @@
 
 
 import typing
-import img_0_pixels
+import img_10_pixels
 
 direction_standards_in_the_whole_project = \
 """
@@ -68,22 +68,22 @@ def coords_neighbours(x: int, y: int,
 ########################################################################################################################
 # TODO: dedicated unittest for this:
 def coords_drop_collect_pixelgroups_from_starting_point(
-        pixelGroup_glyph_matrix_representation: img_0_pixels.typeAlias_matrix_representation,
+        pixelGroup_glyph_matrix_representation: img_10_pixels.typeAlias_matrix_representation,
         xStartInMatrix: int=0,
         yStartInMatrix: int=0,
 
         allowedDirections: set[int] = {1, 3, 5, 7},
-        wantedRepresentedPixelGroupNames: set[str] = {img_0_pixels.pixelsNameForegroundActive}
+        wantedRepresentedPixelGroupNames: set[str] = {img_10_pixels.pixelsNameForegroundActive}
         # it means that the collection cannot move diagonal, only horizontal/vertical
 
-) -> img_0_pixels.PixelGroup_Glyph:
+) -> img_10_pixels.PixelGroup_Glyph:
     """collect all coords, in a given direction.
 
     :param allowedDirections: direction standards are documented in img_1_pixels_select.py
 
     TODO?: receive a parameter: conditionFunToCollect(matrix_representation, currentX, currentY)
     """
-    pixelGroup_collected = img_0_pixels.PixelGroup_Glyph()
+    pixelGroup_collected = img_10_pixels.PixelGroup_Glyph()
 
     pixelCoords_to_analyse = [(xStartInMatrix, yStartInMatrix)]
     pixelCoordsInMatrix_analysed = set()
@@ -136,7 +136,7 @@ def pixelGroupSelector_default(rNow: int, gNow: int, bNow:int, params: dict ) ->
 
 
 
-def isActive_checkAllSelectors(onePixelRgb: img_0_pixels.typeAlias_pixelRgb,
+def isActive_checkAllSelectors(onePixelRgb: img_10_pixels.typeAlias_pixelRgb,
                                selectorFunctions: list[tuple[typing.Callable, dict]]) -> bool:
     """is the current pixel RGB value is active/part of a wanted patter or not?"""
 
@@ -153,10 +153,10 @@ def isActive_checkAllSelectors(onePixelRgb: img_0_pixels.typeAlias_pixelRgb,
 
 
 
-def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb,
+def pixelGroups_active_select(pixelsAll: img_10_pixels.typeAlias_array2D_pixelRgb,
                               selectorFunctions=[(pixelGroupSelector_default,
                                                   {"rMax_toSelect":127, "gMax_toSelect": 127, "bMax_toSelect": 127})]) \
-        ->dict[int, img_0_pixels.PixelGroup_Glyph]:
+        ->dict[int, img_10_pixels.PixelGroup_Glyph]:
 
     """
 
@@ -173,9 +173,9 @@ def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb
 
     coordsAnalysedOnce = set()
 
-    pixelGroups: dict[int, img_0_pixels.PixelGroup_Glyph] = dict()
+    pixelGroups: dict[int, img_10_pixels.PixelGroup_Glyph] = dict()
 
-    pixelGroupNow = img_0_pixels.PixelGroup_Glyph()
+    pixelGroupNow = img_10_pixels.PixelGroup_Glyph()
 
     for y, row in enumerate(pixelsAll):
         for x in range(0, len(row)):
@@ -209,7 +209,7 @@ def pixelGroups_active_select(pixelsAll: img_0_pixels.typeAlias_array2D_pixelRgb
                 # the top-left coord of the group is the registration point
                 pixelGroups[pixelGroupNow.groupId] = pixelGroupNow
 
-                pixelGroupNow = img_0_pixels.PixelGroup_Glyph()  # create a new one
+                pixelGroupNow = img_10_pixels.PixelGroup_Glyph()  # create a new one
 
     return pixelGroups
 

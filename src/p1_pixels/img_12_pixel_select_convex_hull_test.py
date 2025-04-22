@@ -15,20 +15,20 @@
 
 import unittest, math
 
-import img_0_pixels
-import img_2_pixel_select_convex_hull, img_3_pixel_select
+import img_10_pixels
+import img_12_pixel_select_convex_hull, img_13_pixel_select
 
-# python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull
+# python3 img_12_pixel_select_convex_hull_test.py Test_convex_hull
 class Test_convex_hull(unittest.TestCase):
 
     def test_convex_hull_noPixel_or_onePixel_only(self):
         testName = "test_convex_hull_noPixel_or_onePixel_only"
 
         # no pixel in glyph
-        glyph = img_0_pixels.PixelGroup_Glyph()
+        glyph = img_10_pixels.PixelGroup_Glyph()
         glyph.matrix_representation_refresh()
-        convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-            glyph.matrix_representation, {img_0_pixels.pixelsNameForegroundActive})
+        convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect(
+            glyph.matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
 
 
         # if no pixel, then there is no convexHull,
@@ -41,25 +41,25 @@ class Test_convex_hull(unittest.TestCase):
         # if len(pixel...) == 1
         glyph.pixel_add(1,2, (3,4,5))
         glyph.matrix_representation_refresh()
-        convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-            glyph.matrix_representation, {img_0_pixels.pixelsNameForegroundActive})
+        convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect(
+            glyph.matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
         self.assertTrue(len(convexHullPoints) == 1)
         self.assertTrue(len(errorsHull) == 0)
 
 
-    # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull
+    # python3 img_12_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull
     def test_convex_hull(self):
         testName = "test_convex_hull"
 
         def get_hull_points(txt, testName):
-            pixels, errors, warnings = img_0_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
-            pixelGroups_Glyphs_id_group_dict = img_3_pixel_select.pixelGroups_active_select(pixels)
+            pixels, errors, warnings = img_10_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+            pixelGroups_Glyphs_id_group_dict = img_13_pixel_select.pixelGroups_active_select(pixels)
             pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
             pixelGroups_Glyphs[0].matrix_representation_refresh()
 
             pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
-            convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-                pixelGroups_Glyphs[0].matrix_representation, {img_0_pixels.pixelsNameForegroundActive})
+            convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect(
+                pixelGroups_Glyphs[0].matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
 
             print(f"Test: {testName}, convex hull points: {convexHullPoints}")
             return convexHullPoints
@@ -103,7 +103,7 @@ class Test_convex_hull(unittest.TestCase):
 
 
 
-    # python3 img_2_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull_find_next_point_in_hull
+    # python3 img_12_pixel_select_convex_hull_test.py Test_convex_hull.test_convex_hull_find_next_point_in_hull
     def test_convex_hull_find_next_point_in_hull(self):
         testName = "test_convex_hull_find_next_point_in_hull"
         print(f"Test: {testName}")
@@ -117,37 +117,37 @@ class Test_convex_hull(unittest.TestCase):
         pointStart = (3, 1)
         radianLastSelected = 0.0
 
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 1: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (3, 0))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 2: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (2, 0))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 3: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (1, 1))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 4: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (1, 2))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, _ = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 5: {hullElemNext} minimumOneSelected: {minimumOneElemDetected}")
         self.assertEqual(hullElemNext, (2, 2))
         self.assertTrue(minimumOneElemDetected)
 
         pointStart = hullElemNext
-        hullElemNext, radianLastSelected, minimumOneElemDetected, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errors = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords, radianLastSelected)
         print(f"hullElemNext 6: {hullElemNext} {errors} minimumOneSelected: {minimumOneElemDetected}")
         self.assertFalse(minimumOneElemDetected)
 
@@ -160,7 +160,7 @@ class Test_convex_hull(unittest.TestCase):
 
         # special case, there is only one elem, so the answer is
         # the start point again
-        hullElemNext, _, _, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
+        hullElemNext, _, _, errors = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
         self.assertEqual(hullElemNext, pointStart)
         self.assertTrue(len(errors) == 0)
@@ -170,7 +170,7 @@ class Test_convex_hull(unittest.TestCase):
         pointStart = (2, 0)
 
         # special case, no avaialbe coord
-        hullElemNext, _, _, errors = img_2_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
+        hullElemNext, _, _, errors = img_12_pixel_select_convex_hull._convex_hull_next_elem_detect(pointStart, coords)
         print(f"hullElemNext: {hullElemNext}")
         self.assertTrue(len(errors) > 0)
 
@@ -180,35 +180,35 @@ class Test_convex_hull(unittest.TestCase):
         testName = "test_rad_calc"
         print(f"Test: {testName}")
 
-        radVal, err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal, err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertNotEqual( err, [] )
 
         # there is no 0 value in the system
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (math.pi*2, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (math.pi/4, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (math.pi/2, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, -10, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, -10, 10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (3*math.pi/4, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, -10, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, -10, 0, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (math.pi, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, -10, -10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, -10, -10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (5*math.pi/4, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, -10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 0, -10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (3*math.pi/2, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, -10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, -10, coordinatesAreScreenZeroZeroInTopLeftRightSystem=False)
         self.assertEqual( radVal_err, (7*math.pi/4, []) )
 
-        radVal_err = img_2_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 10,
+        radVal_err = img_12_pixel_select_convex_hull.radian_calculate_with_arctan(0, 0, 10, 10,
                                                                                  coordinatesAreScreenZeroZeroInTopLeftRightSystem=True)
         self.assertEqual( radVal_err, (7*math.pi/4, []) )
 
