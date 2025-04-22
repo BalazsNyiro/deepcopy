@@ -87,39 +87,17 @@ class Test_isActive_checkAllSelectors(unittest.TestCase):
 
         self.assertTrue(isActive)
 
-        ############### separated R channel selector
-        onePixelRgb = (0, 255, 255)  # too bright pixel
-        isActive = img_3_pixel_select.isActive_checkAllSelectors(
-            onePixelRgb,
-            [
-                (img_3_pixel_select.pixelGroupSelector_default,
-                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
-            ] )
+        ############### separated R, G, B channel selector
+        for onePixelRgb in [(0, 255, 255), (255, 0, 255), (255, 255, 0) ]:
 
-        self.assertTrue(isActive)
+            isActive = img_3_pixel_select.isActive_checkAllSelectors(
+                onePixelRgb,
+                [
+                    (img_3_pixel_select.pixelGroupSelector_default,
+                     {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
+                ] )
 
-        ############### separated G channel selector
-        onePixelRgb = (255, 0, 255)  # too bright pixel
-        isActive = img_3_pixel_select.isActive_checkAllSelectors(
-            onePixelRgb,
-            [
-                (img_3_pixel_select.pixelGroupSelector_default,
-                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
-            ] )
-
-        self.assertTrue(isActive)
-
-
-        ############### separated B channel selector
-        onePixelRgb = (255, 255, 0)  # too bright pixel
-        isActive = img_3_pixel_select.isActive_checkAllSelectors(
-            onePixelRgb,
-            [
-                (img_3_pixel_select.pixelGroupSelector_default,
-                 {"rMax_toSelect": 100, "gMax_toSelect": 100, "bMax_toSelect": 100})
-            ] )
-
-        self.assertTrue(isActive)
+            self.assertTrue(isActive)
 
 
 # python3 img_3_pixel_select_test.py
