@@ -195,6 +195,9 @@ class PixelGroup_Glyph:
         PixelGroup_Glyph.groupCounter += 1
 
         ###########################################################
+        # the convex hull representation has to be generated in a higher level and load here, if it's used
+        self.matrix_representation_convex_hull: typeAlias_matrix_representation = []
+
         self.matrix_representation: typeAlias_matrix_representation = []
         # matrixRepresentation is y,x based!!!
 
@@ -579,7 +582,7 @@ def pixelgroup_matrix_errorCreateIfEmpty(matrixRepr: typeAlias_matrix_representa
     return noErrorRetVal  # the list is generated only once in fun definition
 
 
-def pixelgroup_matrix_repr_select_corner_coord(pixelGroup_Glyph: PixelGroup_Glyph,
+def pixelgroup_matrix_repr_select_corner_coord(matrix_representation: typeAlias_matrix_representation,
                                                wantedRepresentedNames: set[str]={pixelsNameForegroundActive},
                                                wantedCorner: tuple[str, str] = ("top", "left"),
                                                wantedCoordType: str = "relativeInMatrix") -> tuple [list[tuple[int, int]], typeAlias_errorMessages]:
@@ -588,13 +591,13 @@ def pixelgroup_matrix_repr_select_corner_coord(pixelGroup_Glyph: PixelGroup_Glyp
 
     """
 
-    errors = pixelgroup_matrix_errorCreateIfEmpty(pixelGroup_Glyph.matrix_representation)
+    errors = pixelgroup_matrix_errorCreateIfEmpty(matrix_representation)
 
     selectedsAbs: list[tuple[int, int]] = []  # zero or one elem can be selected with the wanted name
     selectedsRel: list[tuple[int, int]] = []
 
     ####################################################################
-    for y, row in enumerate(pixelGroup_Glyph.matrix_representation):
+    for y, row in enumerate(matrix_representation):
 
         detectionCounterInRow = 0
         for x, (absX, absY, glyphInRow) in enumerate(row):

@@ -74,47 +74,45 @@ class Test_pixelgroup_matrix_repr_select_corner(unittest.TestCase):
         pixelGroups_Glyphs[0].matrix_representation_display_in_terminal(refreshTheMatrix=False)
 
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("top", "left"))
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("top", "left"))
         print(f"topLeft relative coord: {coordSelected}")
         self.assertEqual(coordSelected, [(2, 0)])
 
-        emptyGrp = img_0_pixels.PixelGroup_Glyph()
-        coordSelected, err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(emptyGrp)
+        coordSelected, err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord([])
         self.assertEqual(err, ["ERROR in '' no rows in matrix representation"])
 
-        emptyGrp.matrix_representation = [[]]
-        coordSelected, err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(emptyGrp)
+        coordSelected, err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord([[]])
         self.assertEqual(err, ["ERROR in '' missing characters in matrix row in a representation (the row is empty)"])
 
 
 
         #### ABS top-left:
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("top", "left"), wantedCoordType="absInPage")
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("top", "left"), wantedCoordType="absInPage")
         print(f"topLeft absolute coord: {coordSelected}")
         self.assertEqual(coordSelected, [(4, 1)])
 
         #### ABS top-right:
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("top", "right"), wantedCoordType="absInPage")
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("top", "right"), wantedCoordType="absInPage")
         print(f"topRight absolute coord: {coordSelected}")
         self.assertEqual(coordSelected, [(6, 1)])
 
         #### ABS bottom-left:
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("bottom", "left"), wantedCoordType="absInPage")
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("bottom", "left"), wantedCoordType="absInPage")
         print(f"bottomLeft absolute coord: {coordSelected}")
         self.assertEqual(coordSelected, [(2, 4)])
 
         #### ABS bottom-right:
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("bottom", "right"), wantedCoordType="absInPage")
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("bottom", "right"), wantedCoordType="absInPage")
         print(f"bottomRight absolute coord: {coordSelected}")
         self.assertEqual(coordSelected, [(6, 4)])
 
         #### REL bottom-right:
         coord, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("bottom", "right"), wantedCoordType="relativeInMatrix")
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("bottom", "right"), wantedCoordType="relativeInMatrix")
         print(f"bottomRight rel coord: {coord}")
         self.assertEqual(coord, [(4, 3)])
 
@@ -122,7 +120,7 @@ class Test_pixelgroup_matrix_repr_select_corner(unittest.TestCase):
 
         # no selection
         coordSelected, _err = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-            pixelGroups_Glyphs[0], wantedCorner=("top", "left"),
+            pixelGroups_Glyphs[0].matrix_representation, wantedCorner=("top", "left"),
             wantedCoordType="absInPage", wantedRepresentedNames={"unknown"}
         )
         self.assertEqual(coordSelected, [])

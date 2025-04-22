@@ -28,7 +28,7 @@ class Test_convex_hull(unittest.TestCase):
         glyph = img_0_pixels.PixelGroup_Glyph()
         glyph.matrix_representation_refresh()
         convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-            glyph, {img_0_pixels.pixelsNameForegroundActive})
+            glyph.matrix_representation, {img_0_pixels.pixelsNameForegroundActive})
 
 
         # if no pixel, then there is no convexHull,
@@ -42,7 +42,7 @@ class Test_convex_hull(unittest.TestCase):
         glyph.pixel_add(1,2, (3,4,5))
         glyph.matrix_representation_refresh()
         convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-            glyph, {img_0_pixels.pixelsNameForegroundActive})
+            glyph.matrix_representation, {img_0_pixels.pixelsNameForegroundActive})
         self.assertTrue(len(convexHullPoints) == 1)
         self.assertTrue(len(errorsHull) == 0)
 
@@ -59,7 +59,7 @@ class Test_convex_hull(unittest.TestCase):
 
             pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
             convexHullPoints, errorsHull = img_2_pixel_select_convex_hull.convex_hull_points_collect(
-                pixelGroups_Glyphs[0], {img_0_pixels.pixelsNameForegroundActive})
+                pixelGroups_Glyphs[0].matrix_representation, {img_0_pixels.pixelsNameForegroundActive})
 
             print(f"Test: {testName}, convex hull points: {convexHullPoints}")
             return convexHullPoints

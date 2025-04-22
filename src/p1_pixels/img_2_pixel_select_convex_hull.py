@@ -151,7 +151,8 @@ def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: l
 
 
 
-def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
+def convex_hull_points_collect(matrix_representation: img_0_pixels.typeAlias_matrix_representation,
+                               wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
     """detect convex hull points in a matrix representation
 
     naive implementation, this is a very frequently used fun, so optimization is necessary later
@@ -162,20 +163,23 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
     # the order of the points are important, so I need to use a list
     # convexHullPoints currently has only ONE element, the first point
     convexHullPoints, errors = img_0_pixels.pixelgroup_matrix_repr_select_corner_coord(
-        pixelGroup_Glyph, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("bottom", "right"))
+        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("bottom", "right"))
     print(f"Hull with one start point: {convexHullPoints}")
 
     if not convexHullPoints:  # theoretically for an empty set an empty answer is correct.
-        msg = f"WARNING: no selected top right coord in given PixelGroup!! wantedNames: {wantedPixelGroupNames} pixelGroup: {pixelGroup_Glyph}"
+        msg = (f"WARNING: no selected top right coord in given matrix representation! "
+               f"wantedNames: {wantedPixelGroupNames} "
+               f"matrixRepresentation: {matrix_representation}")
         print(msg)
         return list(), errors  # no hull coord in empty selection
     ###################################################################################################
 
-    if len(pixelGroup_Glyph.pixels) == 1:  # for 1 point the hull has 1 elem
-        return convexHullPoints, errors
+    # if len(matrix_representation.pixels) == 1:  # if the whole representation has only 1 element
+    #     if len(matrix_representation[0]) == 1:
+    #         return convexHullPoints, errors
 
     coordinatesAll: list[tuple[int, int]] = img_0_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
-        pixelGroup_Glyph.matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
+        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
     # TODO: OPTIMIZE. remove middle pixels, they cannot be the part of the hull,
@@ -183,8 +187,6 @@ def convex_hull_points_collect(pixelGroup_Glyph: img_0_pixels.PixelGroup_Glyph, 
     #   *    *
     #  *m*  *m*   *m*     a middle pixel cannot be the part of the complex hull,
     #   *                 if it has 4 or 3 neighbours. or maybe '2 oppose only?' Check that.
-
-
 
 
     hullPointsSet = set(convexHullPoints)
