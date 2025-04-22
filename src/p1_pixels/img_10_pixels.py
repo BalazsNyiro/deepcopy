@@ -29,7 +29,7 @@ sys.path.append("../p0_base")
 pixelsNameBackgroundInactive = "pixelsBackgroundInactive"
 pixelsNameForegroundActive = "pixelsForegroundActive_partOfGlyph"
 
-inactivePixelRgbDefaultVal = (255, 255, 255)
+pixelRgbDefaultValInactive = (255, 255, 255)
 ################################################################
 
 typeAlias_pixelRgb = tuple[int, int, int]
@@ -47,7 +47,7 @@ class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
 
 
 def pixels_load_from_string(txt: str, activePixelRgb: typeAlias_pixelRgb=(0, 0, 0),
-                            inactivePixelRgb: typeAlias_pixelRgb=inactivePixelRgbDefaultVal,
+                            inactivePixelRgb: typeAlias_pixelRgb=pixelRgbDefaultValInactive,
                             activePixelRepresenter: str="*", inactivePixelRepresenter: str=".",
                             callerPlaceName=""
                             ) -> tuple[typeAlias_array2D_pixelRgb, list[str], list[str]]:
@@ -245,7 +245,7 @@ class PixelGroup_Glyph:
 
     def pixels_add_with_nonimportant_rgb(
             self, xStart: int, yStart: int,
-            xEnd: int, yEnd: int, rgb=inactivePixelRgbDefaultVal,
+            xEnd: int, yEnd: int, rgb=pixelRgbDefaultValInactive,
     ):
         """the object is a pixel collector only, sometime the rgb val is not important"""
         for x in range(xStart, xEnd+1):
@@ -397,7 +397,7 @@ pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupN
 
 def pixelGroup_matrix_representation_empty_area_create(
         pixelGroupBackgroundRepresenter: PixelGroup_Glyph, x_min: int=0, x_max: int=100, y_min: int=0, y_max: int=100,
-        defaultEmptyColors: tuple[int, int, int] = inactivePixelRgbDefaultVal
+        defaultEmptyColors: tuple[int, int, int] = pixelRgbDefaultValInactive
 ) -> typeAlias_matrix_representation:
     """create an empty area
 
