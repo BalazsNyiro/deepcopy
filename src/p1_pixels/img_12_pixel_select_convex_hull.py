@@ -150,9 +150,20 @@ def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: l
     return radianMinNextHullPoint, radianMinInPoints, minimumOneElemDetected, errors
 
 
-
 def convex_hull_points_collect(matrix_representation: img_10_pixels.typeAlias_matrix_representation,
                                wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
+
+    coordinatesAll: list[tuple[int, int]] = img_10_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
+        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
+        useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
+
+    return convex_hull_points_collect_from_coordinates(coordinatesAll, matrix_representation, wantedPixelGroupNames)
+
+
+def convex_hull_points_collect_from_coordinates(
+        coordinatesAll: list[tuple[int, int]],
+        matrix_representation: img_10_pixels.typeAlias_matrix_representation,
+        wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
     """detect convex hull points in a matrix representation
 
     naive implementation, this is a very frequently used fun, so optimization is necessary later
@@ -178,9 +189,6 @@ def convex_hull_points_collect(matrix_representation: img_10_pixels.typeAlias_ma
     #     if len(matrix_representation[0]) == 1:
     #         return convexHullPoints, errors
 
-    coordinatesAll: list[tuple[int, int]] = img_10_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
-        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
-        useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
     # TODO: OPTIMIZE. remove middle pixels, they cannot be the part of the hull,
     # if the current solution is too slow
