@@ -570,28 +570,13 @@ def pixelGroup_matrix_representation_has_emptyborder_around_glyph(
 
 
 
-
-def pixelgroup_matrix_errorCreateIfEmpty(matrixRepr: typeAlias_matrix_representation, caller="", noErrorRetVal=list()) -> typeAlias_errorMessages:
-    """produce errors if the matrix repr is empty """
-    if not matrixRepr:
-        return [f"ERROR in '{caller}' no rows in matrix representation"]
-
-    if not matrixRepr[0]:
-        return [f"ERROR in '{caller}' missing characters in matrix row in a representation (the row is empty)"]
-
-    return noErrorRetVal  # the list is generated only once in fun definition
-
-
 def pixelgroup_matrix_repr_select_corner_coord(matrix_representation: typeAlias_matrix_representation,
                                                wantedRepresentedNames: set[str]={pixelsNameForegroundActive},
                                                wantedCorner: tuple[str, str] = ("top", "left"),
-                                               wantedCoordType: str = "relativeInMatrix") -> tuple [list[tuple[int, int]], typeAlias_errorMessages]:
+                                               wantedCoordType: str = "relativeInMatrix") -> list[tuple[int, int]]:
 
-    """select the top|bottom,  left|right  relativeInMatrix|absInPage coord.
+    """select the top|bottom,  left|right  relativeInMatrix|absInPage coord. """
 
-    """
-
-    errors = pixelgroup_matrix_errorCreateIfEmpty(matrix_representation)
 
     selectedsAbs: list[tuple[int, int]] = []  # zero or one elem can be selected with the wanted name
     selectedsRel: list[tuple[int, int]] = []
@@ -616,17 +601,18 @@ def pixelgroup_matrix_repr_select_corner_coord(matrix_representation: typeAlias_
             break
     ####################################################################
 
-    if not selectedsRel:  # no detected coord
-        return selectedsRel, errors
+    if not selectedsRel:  # no detected coord: there is no selected point in the result set
+        # for an empty set it is normal if there is no corner
+        return selectedsRel
 
     if wantedCoordType == "relativeInMatrix":
         if wantedCorner[1] == "left":
-            return selectedsRel[:1], errors
+            return selectedsRel[:1]
         else:
-            return selectedsRel[-1:], errors
+            return selectedsRel[-1:]
 
     # absolute coord in matrix:
     if wantedCorner[1] == "left":
-        return selectedsAbs[:1], errors
+        return selectedsAbs[:1]
     else:
-        return selectedsAbs[-1:], errors
+        return selectedsAbs[-1:]

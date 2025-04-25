@@ -150,8 +150,9 @@ def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: l
     return radianMinNextHullPoint, radianMinInPoints, minimumOneElemDetected, errors
 
 
-def convex_hull_points_collect(matrix_representation: img_10_pixels.typeAlias_matrix_representation,
-                               wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
+def convex_hull_points_collect_from_matrix_representation(
+        matrix_representation: img_10_pixels.typeAlias_matrix_representation,
+        wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
 
     coordinatesAll: list[tuple[int, int]] = img_10_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
         matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
@@ -171,10 +172,14 @@ def convex_hull_points_collect_from_coordinates(
     The matrix representation is prepared before this fun call...
     """
 
+    errors: img_10_pixels.typeAlias_errorMessages = []
     # the order of the points are important, so I need to use a list
     # convexHullPoints currently has only ONE element, the first point
-    convexHullPoints, errors = img_10_pixels.pixelgroup_matrix_repr_select_corner_coord(
+    convexHullPoints = img_10_pixels.pixelgroup_matrix_repr_select_corner_coord(
         matrix_representation, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("bottom", "right"))
+    # if there is no pixel, errors are given back, because there is no corner and we
+    # but
+
     print(f"Hull with one start point: {convexHullPoints}")
 
     if not convexHullPoints:  # theoretically for an empty set an empty answer is correct.

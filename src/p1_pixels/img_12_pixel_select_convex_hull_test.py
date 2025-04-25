@@ -27,7 +27,7 @@ class Test_convex_hull(unittest.TestCase):
         # no pixel in glyph
         glyph = img_10_pixels.PixelGroup_Glyph()
         glyph.matrix_representation_refresh()
-        convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect(
+        convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect_from_matrix_representation(
             glyph.matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
 
 
@@ -41,7 +41,7 @@ class Test_convex_hull(unittest.TestCase):
         # if len(pixel...) == 1
         glyph.pixel_add(1,2, (3,4,5))
         glyph.matrix_representation_refresh()
-        convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect(
+        convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect_from_matrix_representation(
             glyph.matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
         self.assertTrue(len(convexHullPoints) == 1)
         self.assertTrue(len(errorsHull) == 0)
@@ -58,7 +58,7 @@ class Test_convex_hull(unittest.TestCase):
             pixelGroups_Glyphs[0].matrix_representation_refresh()
 
             pixelGroups_Glyphs[0].matrix_representation_display_in_terminal()
-            convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect(
+            convexHullPoints, errorsHull = img_12_pixel_select_convex_hull.convex_hull_points_collect_from_matrix_representation(
                 pixelGroups_Glyphs[0].matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
 
             print(f"Test: {testName}, convex hull points: {convexHullPoints}")
