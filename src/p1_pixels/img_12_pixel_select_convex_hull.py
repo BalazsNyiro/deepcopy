@@ -158,7 +158,7 @@ def convex_hull_points_collect_from_matrix_representation(
         matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
         useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
 
-    return convex_hull_points_collect_from_coordinates(coordinatesAll, matrix_representation, wantedPixelGroupNames)
+    return convex_hull_points_collect_from_coordinates(coordinatesAll)
 
 
 def coord_find_bottom_right__minimumOneElemInTheList(coords_withMinimumOneElement: list[tuple[int, int]]) -> tuple[int, int]:
@@ -177,9 +177,7 @@ def coord_find_bottom_right__minimumOneElemInTheList(coords_withMinimumOneElemen
 
 
 def convex_hull_points_collect_from_coordinates(
-        coordinatesAll: list[tuple[int, int]],
-        matrix_representation: img_10_pixels.typeAlias_matrix_representation,
-        wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
+        coordinatesAll: list[tuple[int, int]]) -> tuple[list[tuple[int, int]], list[str]]:
     """detect convex hull points in a matrix representation
 
     naive implementation, this is a very frequently used fun, so optimization is necessary later
@@ -187,7 +185,7 @@ def convex_hull_points_collect_from_coordinates(
     The matrix representation is prepared before this fun call...
     """
 
-    errors: img_10_pixels.typeAlias_errorMessages = []
+    errors: list[str] = []
 
     if not coordinatesAll:  # without coords, there is no hull.
         return list(), errors

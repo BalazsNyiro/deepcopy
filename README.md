@@ -1,6 +1,10 @@
 # deepcopy
 Python based OCR program with deep text structure analysing and style detecting
 
+## Project progress
+2025 Apr 25: 30%,
+I am working on the character shape recognition part.
+
 ## Goal - read from screenshots
 Read simple human texts (basic English/French/latin alphabet with numbers, and dot, questionmark, exclamation mark)
 
