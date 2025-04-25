@@ -161,6 +161,21 @@ def convex_hull_points_collect_from_matrix_representation(
     return convex_hull_points_collect_from_coordinates(coordinatesAll, matrix_representation, wantedPixelGroupNames)
 
 
+def coord_find_bottom_right__minimumOneElemInTheList(coords_withMinimumOneElement: list[tuple[int, int]]) -> tuple[int, int]:
+    """find bottom-right coord"""
+    coordBottomRight: tuple[int, int] = coords_withMinimumOneElement[0]
+    for coord in coords_withMinimumOneElement:
+        # coord is below the old bottomRight (0, 0) is in top-left, so greater Y is below smaller Y:
+        if coord[1] > coordBottomRight[1]:
+            coordBottomRight = coord
+            continue
+        if coord[1] == coordBottomRight[1]:
+            if coord[0] > coordBottomRight[0]:
+                coordBottomRight = coord
+
+    return coordBottomRight
+
+
 def convex_hull_points_collect_from_coordinates(
         coordinatesAll: list[tuple[int, int]],
         matrix_representation: img_10_pixels.typeAlias_matrix_representation,
@@ -173,27 +188,19 @@ def convex_hull_points_collect_from_coordinates(
     """
 
     errors: img_10_pixels.typeAlias_errorMessages = []
+
+    if not coordinatesAll:  # without coords, there is no hull.
+        return list(), errors
+
+    ########## search bottom-right ##############
+    # from this point there is minimum one point in coordinatesAll
+    coordBottomRight = coord_find_bottom_right__minimumOneElemInTheList(coordinatesAll)
+    #############################################
+
     # the order of the points are important, so I need to use a list
     # convexHullPoints currently has only ONE element, the first point
-    convexHullPoints = img_10_pixels.pixelgroup_matrix_repr_select_corner_coord(
-        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames, wantedCorner=("bottom", "right"))
-    # if there is no pixel, errors are given back, because there is no corner and we
-    # but
-
-    print(f"Hull with one start point: {convexHullPoints}")
-
-    if not convexHullPoints:  # theoretically for an empty set an empty answer is correct.
-        msg = (f"WARNING: no selected top right coord in given matrix representation! "
-               f"wantedNames: {wantedPixelGroupNames} "
-               f"matrixRepresentation: {matrix_representation}")
-        print(msg)
-        return list(), errors  # no hull coord in empty selection
-    ###################################################################################################
-
-    # if len(matrix_representation.pixels) == 1:  # if the whole representation has only 1 element
-    #     if len(matrix_representation[0]) == 1:
-    #         return convexHullPoints, errors
-
+    convexHullPoints = [coordBottomRight]
+    print(f"Hull with bottom-right start point: {convexHullPoints}")
 
     # TODO: OPTIMIZE. remove middle pixels, they cannot be the part of the hull,
     # if the current solution is too slow
@@ -203,12 +210,13 @@ def convex_hull_points_collect_from_coordinates(
 
 
     hullPointsSet = set(convexHullPoints)
-    pointStart = convexHullPoints[0]
+    pointStart = coordBottomRight
     radianLastSelected = 0.0
 
     minimumOneElemDetected = True
     while minimumOneElemDetected:
-        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = _convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected)
+        hullElemNext, radianLastSelected, minimumOneElemDetected, errorsFromHull = (
+            _convex_hull_next_elem_detect(pointStart, coordinatesAll, radianLastSelected=radianLastSelected))
         errors.extend(errorsFromHull)
 
         if minimumOneElemDetected:
