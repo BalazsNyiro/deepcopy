@@ -150,16 +150,6 @@ def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: l
     return radianMinNextHullPoint, radianMinInPoints, minimumOneElemDetected, errors
 
 
-def convex_hull_points_collect_from_matrix_representation(
-        matrix_representation: img_10_pixels.typeAlias_matrix_representation,
-        wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
-
-    coordinatesAll: list[tuple[int, int]] = img_10_pixels.pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
-        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
-        useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
-
-    return convex_hull_points_collect_from_coordinates(coordinatesAll)
-
 
 def coord_find_bottom_right__minimumOneElemInTheList(coords_withMinimumOneElement: list[tuple[int, int]]) -> tuple[int, int]:
     """find bottom-right coord"""

@@ -24,6 +24,7 @@ from PIL import Image
 
 sys.path.append("../p0_base")
 
+import img_05_pixel_select_convex_hull
 
 ################################################################
 pixelsNameBackgroundInactive = "pixelsBackgroundInactive"
@@ -616,3 +617,15 @@ def pixelgroup_matrix_repr_select_corner_coord(matrix_representation: typeAlias_
         return selectedsAbs[:1]
     else:
         return selectedsAbs[-1:]
+
+
+def pixelgroup_matrix_representation_convex_hull_points_collect(
+        matrix_representation: typeAlias_matrix_representation,
+        wantedPixelGroupNames: set[str]) -> tuple[list[tuple[int, int]], list[str]]:
+
+    coordinatesAll: list[tuple[int, int]] = pixelGroup_matrix_representation_collect_matrix_coords_with_represented_names(
+        matrix_representation, wantedRepresentedNames=wantedPixelGroupNames,
+        useAbsolutePixelCoordsInPage_insteadOf_relativeMatrixCoords=False)
+
+    return img_05_pixel_select_convex_hull.convex_hull_points_collect_from_coordinates(coordinatesAll)
+
