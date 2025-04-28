@@ -226,12 +226,21 @@ def convex_hull_points_collect_from_coordinates(
     return convexHullPoints, errors
 
 
-def convex_hull_contain_this_coord(pointX: int, pointY: int, coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> bool:
-    """answer with yes/no: is the point inside the convex hull, or not?
+def area_double_of_triangle(coordA: tuple[int, int], coordB: tuple[int, int], coordC: tuple[int, int]) -> int:
+    """calc the double area of a triangle, (without division, to speed up the program, use only integers)
+    
+    Triangle area calc formula: A= 1/2 * abs( x1(y2-y3) + x2(y3-y1) + x3(y1-y2)    )
+    """
+    return  abs(coordA[0]*(coordB[1]-coordC[1]) + coordB[0]*(coordC[1]-coordA[1]) + coordC[0]*(coordA[1]-coordB[1]))
 
-    The first coord and last coord are same, for example:
+
+def convex_hull_area_calc_with_coord(coordToCheck: tuple[int, int], coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> \
+        (float, float, list[str]):
+    """if the area is equal with the area of the hull, the coord is in the hull. otherwise the area is greater.
+    if the coord is far from the hull, the area is greater than with a closely point
+
+    The first coord and last coord are same (4, 3), for example:
     [(4, 3), (6, 2), (4, 0), (2, 0), (0, 2), (0, 3), (1, 3), (4, 3)]
-    This is true for
 
     To check if a point lies inside a triangle:
     use the cross product method to calculate the area of the triangle
@@ -240,6 +249,30 @@ def convex_hull_contain_this_coord(pointX: int, pointY: int, coordsOfConvexHull_
     If the sum of these areas equals the area of the original triangle, the point is inside.
     """
 
-    pass
+
+
+    errors: list[str] = list()
+
+    if len(coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle) < 3:
+        errors.append("Minimum 3 points are necessary to form a triangle, a 2D body")
+
+    coordToCheck_is_in_convex_hull = False
+    areaElemsOfHull = 0.0
+    areaCoordToCheckAndHullCoordPairs = 0.0
+
+    if not errors:
+        indexLastPossible = len(coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle) - 1
+        indexA = 0
+        indexB = 1
+
+        while indexB <= indexLastPossible:
+            coordA = coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[indexA]
+            coordB = coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[indexB]
+
+            indexA += 1
+            indexB += 1
+
+
+    return coordToCheck_is_in_convex_hull, areaElemsOfHull, areaCoordToCheckAndHullCoordPairs, errors
 
 

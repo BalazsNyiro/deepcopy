@@ -16,11 +16,14 @@
 
 import os, time, sys, typing
 
-print("""
-      Python image library (PIL) is important to load images. If the 'PIL import' is unsuccessful,
-      please install pillow: 'pip install pillow'
-      """)
-from PIL import Image
+try:
+    from PIL import Image
+except:
+    print("""
+          Python image library (PIL) is important to load images. If the 'PIL import' is unsuccessful,
+          please install pillow: 'pip install pillow'
+          """)
+    sys.exit(1)
 
 sys.path.append("../p0_base")
 

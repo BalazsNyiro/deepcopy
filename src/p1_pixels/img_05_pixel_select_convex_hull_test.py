@@ -20,11 +20,26 @@ import img_10_pixels
 
 import img_05_pixel_select_convex_hull, img_13_pixel_select
 
+
+# python3 img_05_pixel_select_convex_hull_test.py Test_convex_hull_area_calculations_and_point_in_hull_detect
+class Test_convex_hull_area_calculations_and_point_in_hull_detect(unittest.TestCase):
+
+    def test_triangle_area_calculation(self):
+
+        areaDouble = img_05_pixel_select_convex_hull.area_double_of_triangle((0, 0), (0, 10), (8, 10))
+        self.assertEqual(areaDouble, 80)
+
+        areaDouble = img_05_pixel_select_convex_hull.area_double_of_triangle((0, 0), (0, 10), (0, 5))
+        self.assertEqual(areaDouble, 0)
+
+        areaDouble = img_05_pixel_select_convex_hull.area_double_of_triangle((-5, 0), (2, 2), (3, 11))
+        self.assertEqual(areaDouble, 61)
+
+
 # python3 img_05_pixel_select_convex_hull_test.py Test_convex_hull
 class Test_convex_hull(unittest.TestCase):
 
     def test_convex_hull_noPixel_or_onePixel_only(self):
-        testName = "test_convex_hull_noPixel_or_onePixel_only"
 
         # no pixel in glyph
         glyph = img_10_pixels.PixelGroup_Glyph()
