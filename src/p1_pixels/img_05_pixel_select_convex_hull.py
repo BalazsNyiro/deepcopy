@@ -99,12 +99,21 @@ def radian_calculate_with_arctan(xStart: int, yStart: int, xEnd: int, yEnd: int,
     return arctan, []
 
 
-def _convex_hull_next_elem_detect(pointStart: tuple[int, int], coordinatesAll: list[tuple[int, int]], radianLastSelected: float=0.0) -> (
+def _convex_hull_next_elem_detect(pointStart: tuple[int, int],
+                                  coordinatesAll: list[tuple[int, int]],
+                                  radianLastSelected: float=0.0  # very important to know what was the last used radian
+                                                                 # to find the next closest one, which is greater
+                                  ) -> (
         tuple)[tuple[int, int], float, bool, list[str]]:
     """in a given point set, find the next elem of the hull,
     if start point is defined.
 
     radianLastSelected = 0.0 is the smallest possible radian val, every calculated value is greater than this
+
+    pointStart is the bottomRight coord, because
+    every pixel's radian is greater than 0.0 if the bottomRight pixel is the start point
+    from the perspective of algorithm, the bottomRight point has the greater radian,
+    because 0.0 == 2pi, and 0.0 is never calculated, so that is always the close point
     """
     errors: list[str] = list()
     minimumOneElemDetected: bool = False
@@ -188,6 +197,7 @@ def convex_hull_points_collect_from_coordinates(
     # the order of the points are important, so I need to use a list
     # convexHullPoints currently has only ONE element, the first point
     convexHullPoints = [coordBottomRight]
+    # the close elem will be the same coordBottomRight coord, after the algorithm execution
     print(f"Hull with bottom-right start point: {convexHullPoints}")
 
     # TODO: OPTIMIZE. remove middle pixels, they cannot be the part of the hull,
@@ -197,9 +207,10 @@ def convex_hull_points_collect_from_coordinates(
     #   *                 if it has 4 or 3 neighbours. or maybe '2 oppose only?' Check that.
 
 
-    hullPointsSet = set(convexHullPoints)
-    pointStart = coordBottomRight
-    radianLastSelected = 0.0
+    pointStart = coordBottomRight # this is a good start point, because
+    radianLastSelected = 0.0      # every pixel's radian is greater than 0.0 if the bottomRight pixel is the start point
+                                  # from the perspective of algorithm, the bottomRight point has the greater radian,
+                                  # because 0.0 == 2pi, and 0.0 is never calculated, so that is always the close point
 
     minimumOneElemDetected = True
     while minimumOneElemDetected:
@@ -209,8 +220,26 @@ def convex_hull_points_collect_from_coordinates(
 
         if minimumOneElemDetected:
             convexHullPoints.append(hullElemNext)
-            hullPointsSet.add(hullElemNext)  # it is faster to search in a set instead of convexHullPoints
-
             pointStart = hullElemNext
 
+    # the first and last point of the convex hull is the start point.
     return convexHullPoints, errors
+
+
+def convex_hull_contain_this_coord(pointX: int, pointY: int, coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> bool:
+    """answer with yes/no: is the point inside the convex hull, or not?
+
+    The first coord and last coord are same, for example:
+    [(4, 3), (6, 2), (4, 0), (2, 0), (0, 2), (0, 3), (1, 3), (4, 3)]
+    This is true for
+
+    To check if a point lies inside a triangle:
+    use the cross product method to calculate the area of the triangle
+    and the areas of the sub-triangles formed by the point and each pair of vertices.
+
+    If the sum of these areas equals the area of the original triangle, the point is inside.
+    """
+
+    pass
+
+
