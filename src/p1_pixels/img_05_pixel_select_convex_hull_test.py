@@ -36,6 +36,28 @@ class Test_convex_hull_area_calculations_and_point_in_hull_detect(unittest.TestC
         self.assertEqual(areaDouble, 61)
 
 
+    def test_convex_hull_area_double_calc_with_given_start_coord(self):
+
+        _, errors \
+            = img_05_pixel_select_convex_hull.convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
+            (0, 0), list())
+        self.assertTrue(len(errors) > 0)
+
+        # last coordinate is different from the first one
+        _, errors \
+            = img_05_pixel_select_convex_hull.convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
+            (0, 0), [(0, 0), (1, 1), (2, 2)])
+        self.assertIn("first and last coordinates have to be the same", str(errors))
+
+
+        hullCoords = [(0, 0), (10, 0), (10, 4), (0,5), (0, 0)]
+        areaDoubled, errors \
+            = img_05_pixel_select_convex_hull.convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
+            (0, 0), hullCoords
+        )
+        self.assertEqual(areaDoubled, 90)
+
+
 # python3 img_05_pixel_select_convex_hull_test.py Test_convex_hull
 class Test_convex_hull(unittest.TestCase):
 

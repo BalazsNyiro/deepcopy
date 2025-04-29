@@ -234,8 +234,10 @@ def area_double_of_triangle(coordA: tuple[int, int], coordB: tuple[int, int], co
     return  abs(coordA[0]*(coordB[1]-coordC[1]) + coordB[0]*(coordC[1]-coordA[1]) + coordC[0]*(coordA[1]-coordB[1]))
 
 
-def convex_hull_area_calc_with_coord(coordToCheck: tuple[int, int], coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> \
-        (float, float, list[str]):
+def convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
+        coordToCheck: tuple[int, int],
+        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> \
+        (int, list[str]):
     """if the area is equal with the area of the hull, the coord is in the hull. otherwise the area is greater.
     if the coord is far from the hull, the area is greater than with a closely point
 
@@ -247,8 +249,10 @@ def convex_hull_area_calc_with_coord(coordToCheck: tuple[int, int], coordsOfConv
     and the areas of the sub-triangles formed by the point and each pair of vertices.
 
     If the sum of these areas equals the area of the original triangle, the point is inside.
-    """
 
+    to avoid a division with every triangle calculation, this function calculates the double of the area.
+
+    """
 
 
     errors: list[str] = list()
@@ -256,9 +260,14 @@ def convex_hull_area_calc_with_coord(coordToCheck: tuple[int, int], coordsOfConv
     if len(coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle) < 3:
         errors.append("Minimum 3 points are necessary to form a triangle, a 2D body")
 
-    coordToCheck_is_in_convex_hull = False
-    areaElemsOfHull = 0.0
-    areaCoordToCheckAndHullCoordPairs = 0.0
+    else: # there are minimum 3 points in the coordinate list
+        if coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[0] != coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[-1]:
+            errors.append("in a convex hull point list the first and last coordinates have to be the same, to have a full circle."
+                          " The last coordinate is different from the first one")
+
+    areaCoordToCheckAndHullCoordPairs__doubleValueBecauseNoDivisionInTriangleAreaCalc = 0
+
+    # print(f"errors: {errors}")
 
     if not errors:
         indexLastPossible = len(coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle) - 1
@@ -268,11 +277,14 @@ def convex_hull_area_calc_with_coord(coordToCheck: tuple[int, int], coordsOfConv
         while indexB <= indexLastPossible:
             coordA = coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[indexA]
             coordB = coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[indexB]
+            # print(f"coordA: {str(coordA):>8}, coordB: {str(coordB):>8}, coordToCheck: {str(coordToCheck):>8}")
+
+            areaTriangleDouble = area_double_of_triangle(coordA, coordB, coordToCheck)
+            areaCoordToCheckAndHullCoordPairs__doubleValueBecauseNoDivisionInTriangleAreaCalc += areaTriangleDouble
 
             indexA += 1
             indexB += 1
 
-
-    return coordToCheck_is_in_convex_hull, areaElemsOfHull, areaCoordToCheckAndHullCoordPairs, errors
+    return areaCoordToCheckAndHullCoordPairs__doubleValueBecauseNoDivisionInTriangleAreaCalc, errors
 
 
