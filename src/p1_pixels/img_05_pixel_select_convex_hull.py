@@ -252,6 +252,12 @@ def convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be
 
     to avoid a division with every triangle calculation, this function calculates the double of the area.
 
+    The main reason why there is no division/float number usage in the func:
+    later I would like to see if a point is in the hull, or not.
+    if I use float numbers, there can be rounding problems.
+
+    The current function without division uses only integers, so there is no rounding problem.
+
     """
 
 
@@ -288,3 +294,34 @@ def convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be
     return areaCoordToCheckAndHullCoordPairs__doubleValueBecauseNoDivisionInTriangleAreaCalc, errors
 
 
+def convex_hull_include_this_coord(
+        coordToCheck: tuple[int, int],
+        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> (bool, list[str]):
+
+    """is the point in the area of convex hull?"""
+    errors: list[str] = list()
+
+    if len(coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle) < 3:
+        errors.append("Minimum 3 points are necessary to form a triangle, a 2D body")
+        return False, errors
+
+    pointIsInTheHull = False
+
+    areaOfHull_withKnownConvexHullCoord, errorsA = convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
+        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[0],
+        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle
+    )
+
+    areaOfHullWithGivenStartPoint, errorsB = convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
+        coordToCheck,
+        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle
+    )
+
+    errors.extend(errorsA)
+    errors.extend(errorsB)
+
+    if not errors:
+        if areaOfHull_withKnownConvexHullCoord == areaOfHullWithGivenStartPoint:
+            pointIsInTheHull = True
+
+    return pointIsInTheHull, errors
