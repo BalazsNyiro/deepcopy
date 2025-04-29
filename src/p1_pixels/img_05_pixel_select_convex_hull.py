@@ -15,8 +15,6 @@
 
 import math
 
-import img_10_pixels
-
 """naive complex hull functions.
 
 The Glyphs are typically small areas, so a naive algorithm can be enough first.
@@ -237,7 +235,7 @@ def area_double_of_triangle(coordA: tuple[int, int], coordB: tuple[int, int], co
 def convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
         coordToCheck: tuple[int, int],
         coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> \
-        (int, list[str]):
+        tuple[int, list[str]]:
     """if the area is equal with the area of the hull, the coord is in the hull. otherwise the area is greater.
     if the coord is far from the hull, the area is greater than with a closely point
 
@@ -271,7 +269,7 @@ def convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be
             errors.append("in a convex hull point list the first and last coordinates have to be the same, to have a full circle."
                           " The last coordinate is different from the first one")
 
-    areaCoordToCheckAndHullCoordPairs__doubleValueBecauseNoDivisionInTriangleAreaCalc = 0
+    areaCoordToCheckAndHullCoordPairs__doubleValueBecauseNoDivisionInTriangleAreaCalc: int = 0
 
     # print(f"errors: {errors}")
 
@@ -296,7 +294,7 @@ def convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be
 
 def convex_hull_include_this_coord(
         coordToCheck: tuple[int, int],
-        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> (bool, list[str]):
+        coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle: list[tuple[int, int]]) -> tuple[bool, list[str]]:
 
     """is the point in the area of convex hull?"""
     errors: list[str] = list()

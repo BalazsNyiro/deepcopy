@@ -69,7 +69,7 @@ class Test_convex_hull_area_calculations_and_point_in_hull_detect(unittest.TestC
         pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((-1, -1), hullCoords)
         self.assertFalse(pointIsInTheHull)
         self.assertTrue(len(errors) == 0)
-        
+
 
 # python3 img_05_pixel_select_convex_hull_test.py Test_convex_hull
 class Test_convex_hull(unittest.TestCase):
