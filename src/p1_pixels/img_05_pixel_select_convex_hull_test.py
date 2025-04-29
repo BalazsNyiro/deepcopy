@@ -62,11 +62,13 @@ class Test_convex_hull_area_calculations_and_point_in_hull_detect(unittest.TestC
         """is the coordinate in the hull area?"""
         hullCoords = [(0, 0), (10, 0), (10, 4), (0,5), (0, 0)]
 
-        pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((1, 1), hullCoords)
+        areaOfOrigHull, pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((1, 1), hullCoords)
         self.assertTrue(pointIsInTheHull)
         self.assertTrue(len(errors) == 0)
 
-        pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((-1, -1), hullCoords)
+        _, pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord(
+            (-1, -1), hullCoords,
+            areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall=areaOfOrigHull)
         self.assertFalse(pointIsInTheHull)
         self.assertTrue(len(errors) == 0)
 
