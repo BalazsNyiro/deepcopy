@@ -16,14 +16,14 @@
 
 import os, time, sys, typing
 
-try:
+try: # pragma: no cover
     from PIL import Image
-except:
+except: # pragma: no cover
     print("""
           Python image library (PIL) is important to load images. If the 'PIL import' is unsuccessful,
           please install pillow: 'pip install pillow'
-          """)
-    sys.exit(1)
+          """)   # pragma: no cover
+    sys.exit(1)  # pragma: no cover
 
 sys.path.append("../p0_base")
 

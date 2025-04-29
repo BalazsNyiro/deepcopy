@@ -57,20 +57,33 @@ class Test_convex_hull_area_calculations_and_point_in_hull_detect(unittest.TestC
         )
         self.assertEqual(areaDoubled, 90)
 
-
+    # python3 img_05_pixel_select_convex_hull_test.py Test_convex_hull_area_calculations_and_point_in_hull_detect.test_convex_hull_include_a_coordinate
     def test_convex_hull_include_a_coordinate(self):
         """is the coordinate in the hull area?"""
-        hullCoords = [(0, 0), (10, 0), (10, 4), (0,5), (0, 0)]
+        hullCoords = [(0, 0), (10, 0), (10, 4), (0, 5), (0, 0)]
 
         areaOfOrigHull, pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((1, 1), hullCoords)
         self.assertTrue(pointIsInTheHull)
         self.assertTrue(len(errors) == 0)
 
-        _, pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord(
-            (-1, -1), hullCoords,
+        # precalculated areaOfOrigHull is used:
+        areaOfOrigHull, pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord(
+            (1, 1), hullCoords,
             areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall=areaOfOrigHull)
+        self.assertTrue(pointIsInTheHull)
+        self.assertTrue(len(errors) == 0)
+
+
+
+
+        _, pointIsInTheHull, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord(
+            (-1, -1), hullCoords)
         self.assertFalse(pointIsInTheHull)
         self.assertTrue(len(errors) == 0)
+
+        _, _, errors = img_05_pixel_select_convex_hull.convex_hull_include_this_coord(
+            (4, 4), [(0, 0), (1, 1)])
+        self.assertIn("Minimum 3 points are necessary to form a triangle, a 2D body (convex_hull_include_this_coord)", str(errors))
 
 
 # python3 img_05_pixel_select_convex_hull_test.py Test_convex_hull

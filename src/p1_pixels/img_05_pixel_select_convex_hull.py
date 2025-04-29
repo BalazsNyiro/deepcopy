@@ -302,22 +302,25 @@ def convex_hull_include_this_coord(
     errors: list[str] = list()
 
     if len(coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle) < 3:
-        errors.append("Minimum 3 points are necessary to form a triangle, a 2D body")
-        return 0, False, errors
+        errors.append("Minimum 3 points are necessary to form a triangle, a 2D body (convex_hull_include_this_coord)")
+        return -1, False, errors
 
     pointIsInTheHull = False
 
+    # print(f"received coordinates: {coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle}")
+    # print(f"area precalculated: {areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall}")
+
     # if there is a lot of calculation with coords, the orig hull area is similar, so it is enough to calculate it only once.
     # a real area cannot be a negative value. so if it is negative, it is NOT pre-calculated:
-    if areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall > -1:
+    if areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall == -1:
 
         areaOfHullDouble_withKnownConvexHullCoord, errorsA = convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
             coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle[0],
             coordsOfConvexHull__firstCoordAndLastCoordAreSameToCloseTheCircle
         )
     else:
+        errorsA = list()
         areaOfHullDouble_withKnownConvexHullCoord = areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall
-
 
     areaOfHullDouble_withGivenStartPoint, errorsB = convex_hull_edge_coords_area_double_calc_with_given_start_coord_which_can_be_in_the_hull_or_outside(
         coordToCheck,
