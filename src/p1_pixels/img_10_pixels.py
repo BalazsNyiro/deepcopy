@@ -349,7 +349,9 @@ class PixelGroup_Glyph:
 
 def pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(
         matrix_representation:typeAlias_matrix_representation,
-        printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive}) -> str:
+        printStr=False, wantedFlagsToDisplay: set[str]={pixelsNameForegroundActive},
+        charPlaceholderInactive: str="-", charPlaceholderActive: str="#"
+) -> str:
     """display matrix representation of a pixel group or more pixel groups, a print command.
     The representation is given back as a string.
 
@@ -417,10 +419,10 @@ def pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(
                     break
 
             if display:
-                rowDisplayed.append("*")
+                rowDisplayed.append(charPlaceholderActive)
                 counterDisplayed += 1
             else:
-                rowDisplayed.append(".")
+                rowDisplayed.append(charPlaceholderInactive)
                 counterNonDisplayed += 1
 
         fullOut.append(f"{yAbs:>{yAxisIndent}}: " + "".join(rowDisplayed) + f"{yRelativeInMatrix:>{yAxisIndent}} (yRel)")
