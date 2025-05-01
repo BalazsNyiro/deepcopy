@@ -284,7 +284,7 @@ class PixelGroup_Glyph:
     def matrix_representation_refresh(self,
                                       addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)) -> typeAlias_matrix_representation:
 
-        self.matrix_representation: typeAlias_matrix_representation = pixelGroup_matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
+        self.matrix_representation = pixelGroup_matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
         return self.matrix_representation
 
 
@@ -293,18 +293,13 @@ class PixelGroup_Glyph:
         errors: list[str] = list()
 
         pixelCoordinates = list(self.pixels.keys())
-        # print(f"pixels: {self.pixels}")
         convexHull, errorsInHullPointCollect = img_05_pixel_select_convex_hull.convex_hull_points_collect_from_coordinates(pixelCoordinates)
-        # print(f"convexHull: {convexHull}")
 
         # calculate the area only once, to prepare the next step
         areaOfOrigHullDouble, _, errorsInHullAreaCalc = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((1, 1), convexHull)
         errors.extend(errorsInHullAreaCalc)
 
-        if errors:
-            print(f"Hull related errors after matrix representation update: {errors}")
-
-        else:
+        if not errors:
             self.pixels_convex_hull = dict()
             for x in range(self.x_min, self.x_max+1):
                 for y in range(self.y_min, self.y_max+1):
