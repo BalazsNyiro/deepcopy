@@ -30,6 +30,41 @@ def path_abs_to_testfile(pathRelative: str):
     """with absolute path the test """
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), pathRelative)
 
+# python3 img_10_pixels_test.py Test_convex_hull_pixels
+class Test_convex_hull_pixels(unittest.TestCase):
+
+    def test_convex_hull_pixels_detect(self):
+        testName = "test_convex_hull_pixels_detect"
+
+        txt = """
+          .........  
+          ...****..
+          ..*....*. 
+          ..*.***.. 
+          ..*...... 
+          ...****..
+          .........
+        """
+
+        pixels, errors, warnings = img_10_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+        pixelGroups_Glyphs_id_group_dict = img_13_pixel_select.pixelGroups_active_select(pixels)
+        pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
+
+        pixelGroups_Glyphs[0].pixels_convex_hull_collect()
+
+        print(f"TEST: {testName}")
+        print(f"convex hull pixels: {pixelGroups_Glyphs[0].pixels_convex_hull}")
+        self.assertTrue( (3, 1) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertTrue( (3, 2) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertTrue( (3, 3) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertFalse((2, 1) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertFalse((7, 1) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertTrue( (7, 2) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertFalse((7, 5) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertTrue( (6, 4) in pixelGroups_Glyphs[0].pixels_convex_hull)
+        self.assertTrue( (6, 5) in pixelGroups_Glyphs[0].pixels_convex_hull)
+
+
 
 # python3 img_10_pixels_test.py Test_pixels_load_from_string
 class Test_pixels_load_from_string(unittest.TestCase):
