@@ -46,6 +46,7 @@ typeAlias_errorMessages = list[str]
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: typeAlias_pixelRgb
     pixelGroupObj: 'PixelGroup_Glyph'
+    isFakePixelForConvexHull: bool
 ################################################################
 
 
@@ -190,6 +191,7 @@ class PixelGroup_Glyph:
 
     def __init__(self, representedPixelGroupName: str=pixelsNameForegroundActive) -> None:
         self.pixels : dict[tuple[int, int], Pixel_elem_in_PixelGroup_Glyph] = dict()
+        self.pixels_convex_hull : dict[tuple[int, int], Pixel_elem_in_PixelGroup_Glyph] = dict()
         self.x_min = -1
         self.x_max = -1
         self.y_min = -1
@@ -200,7 +202,9 @@ class PixelGroup_Glyph:
 
         ###########################################################
         # the convex hull representation has to be generated in a higher level and load here, if it's used
-        self.matrix_representation_convex_hull: typeAlias_matrix_representation = []
+        # self.matrix_representation_convex_hull: typeAlias_matrix_representation = []
+
+
 
         self.matrix_representation: typeAlias_matrix_representation = []
         # matrixRepresentation is y,x based!!!
@@ -264,7 +268,7 @@ class PixelGroup_Glyph:
             self.y_max = y
 
         # the original coords from the orig image are saved here, as (x, y)
-        self.pixels[(x,y)] = {"rgb": rgbTuple, "pixelGroupObj": self}  # every point knows who is the parent group
+        self.pixels[(x,y)] = {"rgb": rgbTuple, "pixelGroupObj": self, "isFakePixelForConvexHull": False}  # every point knows who is the parent group
 
         self.x_max = max(self.x_max, x)
         self.x_min = min(self.x_min, x)
@@ -280,6 +284,19 @@ class PixelGroup_Glyph:
     def matrix_representation_refresh(self,
         addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0) ):
         self.matrix_representation = pixelGroup_matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
+
+
+        self.pixels_convex_hull = dict()
+        for x in range(self.x_min, self.x_max):
+            for y in range(self.y_min, self.y_max):
+
+                # if it is an active pixel, add that:
+                if (x, y) in self.pixels:
+                    self.pixels_convex_hull[(x, y)] = self.pixels[(x, y)]  # keep the original pixel info
+                else:
+                    self.pixels_convex_hull[(x, y)] = {"rgb": (0, 0, 0), "pixelGroupObj": self, "isFakePixelForConvexHull": True}
+
+
         return self.matrix_representation
 
 
