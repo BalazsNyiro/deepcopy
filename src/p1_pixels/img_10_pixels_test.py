@@ -602,7 +602,7 @@ class Test_pixelGroup_matrix_representation_has_emptyborder_around_glyph(unittes
         pixelGroups_Glyphs_id_group_dict = img_13_pixel_select.pixelGroups_active_select(pixels)
         pixelGroups_Glyphs = list(pixelGroups_Glyphs_id_group_dict.values())
 
-        pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1,1,1,1))
+        pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1, 1, 1, 1))
 
         self.assertTrue(img_10_pixels.pixelGroup_matrix_representation_has_emptyborder_around_glyph(pixelGroups_Glyphs[0].matrix_representation, raiseExceptionIfNoBorder=False))
 

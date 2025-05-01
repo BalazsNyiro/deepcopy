@@ -39,7 +39,7 @@ class Test_glyph_statistics(unittest.TestCase):
         print(pixelGroups_Glyphs[0].pixels)
 
         print("txtB matrix representation:")
-        pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1,1,1,1))
+        pixelGroups_Glyphs[0].matrix_representation_refresh(addExtraEmptyBorderAroundArea=(1, 1, 1, 1))
         print("=========")
         print(pixelGroups_Glyphs[0].matrix_representation)
         print("=========")

@@ -46,7 +46,7 @@ typeAlias_errorMessages = list[str]
 class Pixel_elem_in_PixelGroup_Glyph(typing.TypedDict):
     rgb: typeAlias_pixelRgb
     pixelGroupObj: 'PixelGroup_Glyph'
-    isFakePixelForConvexHull: bool
+    isInactivePixelForConvexHull: bool
 ################################################################
 
 
@@ -268,7 +268,7 @@ class PixelGroup_Glyph:
             self.y_max = y
 
         # the original coords from the orig image are saved here, as (x, y)
-        self.pixels[(x,y)] = {"rgb": rgbTuple, "pixelGroupObj": self, "isFakePixelForConvexHull": False}  # every point knows who is the parent group
+        self.pixels[(x,y)] = {"rgb": rgbTuple, "pixelGroupObj": self, "isInactivePixelForConvexHull": False}  # every point knows who is the parent group
 
         self.x_max = max(self.x_max, x)
         self.x_min = min(self.x_min, x)
@@ -282,22 +282,46 @@ class PixelGroup_Glyph:
 
     #################################################################################
     def matrix_representation_refresh(self,
-        addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0) ):
-        self.matrix_representation = pixelGroup_matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
+                                      addExtraEmptyBorderAroundArea: tuple[int, int, int, int] = (0, 0, 0, 0)) -> typeAlias_matrix_representation:
 
-
-        self.pixels_convex_hull = dict()
-        for x in range(self.x_min, self.x_max):
-            for y in range(self.y_min, self.y_max):
-
-                # if it is an active pixel, add that:
-                if (x, y) in self.pixels:
-                    self.pixels_convex_hull[(x, y)] = self.pixels[(x, y)]  # keep the original pixel info
-                else:
-                    self.pixels_convex_hull[(x, y)] = {"rgb": (0, 0, 0), "pixelGroupObj": self, "isFakePixelForConvexHull": True}
-
-
+        self.matrix_representation: typeAlias_matrix_representation = pixelGroup_matrix_representation_of_more_pixelgroups([self], addExtraEmptyBorderAroundArea)
         return self.matrix_representation
+
+
+    def convex_hull_pixels_collect(self) -> list[str]:
+
+        errorsHullDetect: list[str] = list()
+
+        pixelCoordinates = list(self.pixels.keys())
+        convexHull = img_05_pixel_select_convex_hull.convex_hull_points_collect_from_coordinates(pixelCoordinates)
+
+        # calculate the area only once, to prepare the next step
+        areaOfOrigHullDouble, _, errorsInHullAreaCalc = img_05_pixel_select_convex_hull.convex_hull_include_this_coord((1, 1), convexHull)
+        errorsHullDetect.extend(errorsInHullAreaCalc)
+
+        if errorsHullDetect:
+            print(f"Hull related errors after matrix representation update: {errorsHullDetect}")
+
+        else:
+            self.pixels_convex_hull = dict()
+            for x in range(self.x_min, self.x_max):
+                for y in range(self.y_min, self.y_max):
+
+                    # if it is an active pixel, add that:
+                    if (x, y) in self.pixels:
+                        self.pixels_convex_hull[(x, y)] = self.pixels[(x, y)]  # keep the original pixel info
+
+                    else:
+                        _, pointIsInTheHull, errorsInHullAreaCalc = (
+                            img_05_pixel_select_convex_hull.convex_hull_include_this_coord( (x, y), convexHull,
+                                areaOfHullDouble_withKnownConvexHullCoord_precalculatedBeforeThisCall=areaOfOrigHullDouble))
+
+                        errorsHullDetect.extend(errorsInHullAreaCalc)
+
+                        if pointIsInTheHull:
+                            self.pixels_convex_hull[(x, y)] = {"rgb": (0, 0, 0), "pixelGroupObj": self, "isInactivePixelForConvexHull": True}
+
+        return errorsHullDetect
 
 
     def matrix_representation_display_in_terminal(self, refreshTheMatrix: bool=True):
