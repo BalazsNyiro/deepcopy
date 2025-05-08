@@ -56,6 +56,7 @@ def statistics_collect_about_pixelgroups(pixelGroups_glyphs_all: dict[int, img_1
         # theoretically this is not possible, practically it's a validation
 
         pixelGroup_glyph.matrix_representation_refresh((1, 1, 1, 1))
+        pixelGroup_glyph.matrix_representation_display_in_terminal(refreshTheMatrix=False)
 
         stats_of_pixelGroups_glyphs[pixelGroup_glyph.groupId] = dict()
 
@@ -86,6 +87,31 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
            currently the overlapping is not analysed, the isolated segments are detected as pixel-sets only
            theoretically the copyright symbol has 2 pixelgroups, because the R and O are separated.
            TODO: decide: does the program need to be prepared for overlapping symbols or not?
+    """
+
+
+    """
+    ABC_Eng_Upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    ABC_Eng_Lower = "abcdefghijklmnopqrstuvwxyz"
+    numbers:  1234567890
+    
+    TODO: 
+     - detect closed pixel groups
+     - in all directions detect the average thickness of pixels around the group
+     - the pixelgroup and surrounding circle can be safely selected
+     - the extra elems, 'd': the top-right upper line can be isolated, as a OUTSIDE-CIRCLE elem
+     - method 2:
+       - around the group, always select one layer of active pixels, until in all directions you reach the end,
+       - so only the inactive group and the surrounding circle will be selected.
+       
+       circles and relations:
+       qp dp db
+       
+       circles:
+       abdegopq6890"
+       ABDOPQR"
+    
+    
     """
 
     errorsInStatClosedInactive: list[str] = []
