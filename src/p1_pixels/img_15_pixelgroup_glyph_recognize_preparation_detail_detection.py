@@ -110,7 +110,21 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
        circles:
        abdegopq6890"
        ABDOPQR"
+   
+   
+    =======================================================
     
+    where there is no closed group in convex-hull, there are lignes:
+    (next to open groups: XXX pattern:)
+    
+          .****.
+          *....* 
+          *****. 
+          *XXXX 
+          .****.
+    
+     
+    ======================================================= 
     
     """
 
