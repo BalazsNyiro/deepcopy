@@ -158,14 +158,28 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
 
     if not errorsInStatClosedInactive:
 
+        # create an empty pixel collector
         insidePixelCollector = img_10_pixels.PixelGroup_Glyph()
-        insidePixelCollector.pixels_add_with_nonimportant_rgb(xStart=xAbsLeft, yStart=yAbsTop, xEnd=xAbsRight, yEnd=yAbsBottom)
-        insidePixelCollector.pixels_remove(list(pixelGroup_glyph.pixels.keys()))
+
+        # add all coords in the total area of the glyph:
+        insidePixelCollector.pixels_fill_coordinates(xStart=xAbsLeft, yStart=yAbsTop, xEnd=xAbsRight, yEnd=yAbsBottom)
+
+        # remove external pixels, from the outside border to the direction of inside representation
         insidePixelCollector.pixels_remove(list(pixelCoordsOutside_Glyph_collector.pixels.keys()))
+
+        # remove active pixels
+        insidePixelCollector.pixels_remove(list(pixelGroup_glyph.pixels.keys()))
 
         # print(f"1 - pixels inside the character, isolated from outside pixels:")
         # insidePixelCollector.matrix_representation_display_in_terminal()
 
+
+        # if the character was a 'T' for example, then insidePixelCollector.pixels is empty.
+        # if the character has an internal group, in 'O' for example, then the
+        # external border and the active O will be removed, but the internal
+        # EMPTY pixels in the O char will be kept.
+
+        # in other words: in pixels you can find the internal white groups now.
 
         while insidePixelCollector.has_pixels():
             if not insidePixelCollector.has_pixels(): break

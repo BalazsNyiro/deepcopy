@@ -251,7 +251,7 @@ class PixelGroup_Glyph:
                 print(f"warning: coord was not in pixels: {xyCoord}")
 
 
-    def pixels_add_with_nonimportant_rgb(
+    def pixels_fill_coordinates(
             self, xStart: int, yStart: int,
             xEnd: int, yEnd: int, rgb=pixelRgbDefaultValInactive,
     ):
