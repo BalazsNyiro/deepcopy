@@ -31,15 +31,31 @@ class Test_glyph_statistics_collect_all(unittest.TestCase):
         """
 
         pixels, errors, warnings = img_10_pixels.pixels_load_from_string(txt, callerPlaceName=testName)
+
+        # read the description of NON-CONTINUOUS-GROUP-IDS in
         pixelGroups_Glyphs_id_group_dict = img_13_pixel_select.pixelGroups_active_select(pixels)
 
         stats_pixelGroupId_statNames_values = img_15_pixelgroup_glyph_recognize_preparation_detail_detection.statistics_collect_about_pixelgroups(
             pixelGroups_Glyphs_id_group_dict)
 
-        print("keys in stats:", stats_pixelGroupId_statNames_values.keys())
-        self.assertTrue(stats_pixelGroupId_statNames_values[0]["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"], 2)
-        self.assertTrue(stats_pixelGroupId_statNames_values[1]["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"], 1)
-        self.assertTrue(stats_pixelGroupId_statNames_values[2]["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"], 0)
+        groupIdsInStat = list(stats_pixelGroupId_statNames_values.keys())
+        print("keys in stats:", groupIdsInStat)
+
+        # first id:
+        statNow = stats_pixelGroupId_statNames_values[groupIdsInStat[0]]
+        self.assertEqual(len(statNow["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"]), 2)
+
+        # second id:
+        statNow = stats_pixelGroupId_statNames_values[groupIdsInStat[1]]
+        self.assertEqual(len(statNow["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"]), 1)
+
+        # third id:
+        print(f"third elem's id: {groupIdsInStat[2]}")
+        statNow = stats_pixelGroupId_statNames_values[groupIdsInStat[2]]
+        print("       statNow: ",     statNow["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"])
+        print("len of statNow: ", len(statNow["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"]))
+
+        self.assertEqual(len(statNow["glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph"]), 0)
 
         for pixelGroupId, statsAll in stats_pixelGroupId_statNames_values.items():
             print(f"\n\n========= pixelGroupId in statistic collector test - {pixelGroupId} =========")

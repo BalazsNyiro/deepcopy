@@ -83,7 +83,7 @@ def coords_drop_collect_pixelgroups_from_starting_point(
 
     TODO?: receive a parameter: conditionFunToCollect(matrix_representation, currentX, currentY)
     """
-    pixelGroup_collected = img_10_pixels.PixelGroup_Glyph()
+    pixelGroup_collected = img_10_pixels.PixelGroup_Glyph(caller="coords_drop_collect_pixelgroups_from_starting_point init")
 
     pixelCoords_to_analyse = [(xStartInMatrix, yStartInMatrix)]
     pixelCoordsInMatrix_analysed = set()
@@ -175,7 +175,7 @@ def pixelGroups_active_select(pixelsAll: img_10_pixels.typeAlias_array2D_pixelRg
 
     pixelGroups: dict[int, img_10_pixels.PixelGroup_Glyph] = dict()
 
-    pixelGroupNow = img_10_pixels.PixelGroup_Glyph()
+    pixelGroupNow = img_10_pixels.PixelGroup_Glyph(caller="pixelGroups_active_select init")
 
     for y, row in enumerate(pixelsAll):
         for x in range(0, len(row)):
@@ -209,7 +209,7 @@ def pixelGroups_active_select(pixelsAll: img_10_pixels.typeAlias_array2D_pixelRg
                 # the top-left coord of the group is the registration point
                 pixelGroups[pixelGroupNow.groupId] = pixelGroupNow
 
-                pixelGroupNow = img_10_pixels.PixelGroup_Glyph()  # create a new one
+                pixelGroupNow = img_10_pixels.PixelGroup_Glyph(caller="pixelGroups_active_select new empty ")  # create a new one
 
     return pixelGroups
 

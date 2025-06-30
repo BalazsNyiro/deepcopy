@@ -187,9 +187,25 @@ class PixelGroup_Glyph:
 
     (0, 0) coord represents the left-top corner.
     """
+
+    """
+    Bookmark: NON-CONTINUOUS-GROUP-IDS
+    
+    PixelGroups can be created as Temporary work objects sometime, and these temp objects are not stored/collected.
+    It means that if you have 3 active pixel groups, it is not sure that the groupID is always 0,1,2.
+    
+    if a temporary group is created and later deleted because of any reason, and other groups
+    are saved/collected because they are important, then the group IDs are maybe not starts with 0 and 
+    there can be missing, unused groupIds. 
+    
+    So this is a possible groupId list: [2, 6] if a few temporary group was created first,  
+    then an important is detected, then other temporaries were used before the next important one.
+    """
     groupCounter = 0
 
-    def __init__(self, representedPixelGroupName: str=pixelsNameForegroundActive) -> None:
+    def __init__(self, representedPixelGroupName: str=pixelsNameForegroundActive, caller="") -> None:
+        print(f"new pixelGroup Created from: {caller}")
+
         self.pixels : dict[tuple[int, int], Pixel_elem_in_PixelGroup_Glyph] = dict()
         self.pixels_convex_hull : dict[tuple[int, int], Pixel_elem_in_PixelGroup_Glyph] = dict()
         self.x_min = -1
@@ -435,7 +451,7 @@ def pixelGroup_matrix_representation_convert_to_str__forHumanReadingInTerminal(
 
 
 #################################################################
-pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupName=pixelsNameBackgroundInactive)
+pixelGroupForBackgroundNonActivePixels = PixelGroup_Glyph(representedPixelGroupName=pixelsNameBackgroundInactive, caller="pixelGroupFroBackgroundNonActivePixels init")
 # TODO: maybe a new background collector has to be created for every page? not only one general?
 
 

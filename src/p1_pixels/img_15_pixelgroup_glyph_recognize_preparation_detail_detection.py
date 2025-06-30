@@ -159,7 +159,7 @@ def glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBor
     if not errorsInStatClosedInactive:
 
         # create an empty pixel collector
-        insidePixelCollector = img_10_pixels.PixelGroup_Glyph()
+        insidePixelCollector = img_10_pixels.PixelGroup_Glyph(caller="glyph_stat_collect_enclosed_inactive_unavailable_segments_in_glyph__emptyBorderHasToBePreparedAroundMatrix")
 
         # add all coords in the total area of the glyph:
         insidePixelCollector.pixels_fill_coordinates(xStart=xAbsLeft, yStart=yAbsTop, xEnd=xAbsRight, yEnd=yAbsBottom)

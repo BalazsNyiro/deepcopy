@@ -92,7 +92,7 @@ class Test_convex_hull(unittest.TestCase):
     def test_convex_hull_noPixel_or_onePixel_only(self):
 
         # no pixel in glyph
-        glyph = img_10_pixels.PixelGroup_Glyph()
+        glyph = img_10_pixels.PixelGroup_Glyph(caller="test_convex_hull_noPixel_or_onePixel_only")
         glyph.matrix_representation_refresh()
         convexHullPoints, errorsHull = img_10_pixels.pixelgroup_matrix_representation_convex_hull_points_collect(
             glyph.matrix_representation, {img_10_pixels.pixelsNameForegroundActive})
